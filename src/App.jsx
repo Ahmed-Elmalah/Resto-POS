@@ -12,7 +12,7 @@ export default function App() {
         <Routes>
 
           <Route path="/" element={<UserLayout />} />
-          
+
           <Route path="login" element={<h1>this is login page</h1>} />
           <Route path="signup" element={<h1>this is signup page</h1>} />
 
