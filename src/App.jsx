@@ -1,9 +1,8 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import UserLayout from "./layouts/userLayout";
-import AdminLayout from "./layouts/adminLayout";
-import CasherLayout from "./layouts/casherLayout";
-
+import UserLayout from "./layouts/UserLayout";
+import AdminLayout from "./layouts/AdminLayout";
+import CasherLayout from "./layouts/CasherLayout";
 
 
 export default function App() {
