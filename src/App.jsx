@@ -1,19 +1,36 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
+import UserLayout from "./layouts/userLayout";
+import AdminLayout from "./layouts/adminLayout";
+import CasherLayout from "./layouts/casherLayout";
+
+
+
 export default function App() {
   return (
-	<div>
-		<BrowserRouter>
-			<Routes>
+    <div>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={< UserLayout/>} />
 
-				<Route path="/" element={<h1>this is home page</h1>}/>
-				<Route path="login" element={<h1>this is login page</h1>}/>
-				<Route path="signup" element={<h1>this is signup page</h1>}/>
-				<Route path="*" element={<h1>this is 404 page</h1>}/>
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<h1>admin laayout</h1>} />
+            <Route path="menu" element={<h1>menu page</h1>} />
+            <Route path="orders" element={<h1>orders page</h1>} />
+            <Route path="tabels" element={<h1>tabels page</h1>} />
+            <Route path="staff" element={<h1>staff page</h1>} />
+            <Route path="promotions" element={<h1>promotions page</h1>} />
+            <Route path="settings" element={<h1>settings page</h1>} />
+          </Route>
 
-
-			</Routes>
-		</BrowserRouter>
-	</div>
-  )
+          <Route path="/casher" element={<CasherLayout />}/>
+            
+         
+          <Route path="login" element={<h1>this is login page</h1>} />
+          <Route path="signup" element={<h1>this is signup page</h1>} />
+          <Route path="*" element={<h1>this is 404 page</h1>} />
+        </Routes>
+      </BrowserRouter>
+    </div>
+  );
 }
