@@ -1,14 +1,17 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import AdminLayout from "./layouts/adminLayout";
+
 import UserLayout from "./layouts/userLayout";
+import AdminLayout from "./layouts/adminLayout";
 import CasherLayout from "./layouts/casherLayout";
+
+
 
 export default function App() {
   return (
     <div>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<UserLayout />} />
+          <Route path="/" element={< UserLayout/>} />
 
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<h1>admin laayout</h1>} />
