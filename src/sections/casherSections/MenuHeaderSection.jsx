@@ -1,5 +1,5 @@
-import Header from "../../components/userComponents/Header";
-import CategoryTabs from "../../components/userComponents/CategoryTabs";
+import Header from "../../components/casherComponents/Header"
+import CategoryTabs from "../../components/casherComponents/CategoryTabs";
 
 export default function MenuHeaderSection() {
   return (

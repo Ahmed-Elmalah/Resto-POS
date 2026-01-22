@@ -1,7 +1,7 @@
 import React from 'react';
-import UserLayout from "../../layouts/UserLayout";
-import MenuHeaderSection from "../../sections/userSection/MenuHeaderSection";
-import ProductCard from "../../components/userComponents/ProductCard";
+import CasherLayout from '../../layouts/CasherLayout';
+import MenuHeaderSection from "../../sections/casherSections/MenuHeaderSection"
+import ProductCard from "../../components/casherComponents/ProductCard";
 
 const PRODUCTS = [
     { id: 1, name: "Double Cheeseburger", price: 12.0, desc: "Double beef patty, cheddar...", image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500" },
@@ -12,13 +12,13 @@ const PRODUCTS = [
 
 export default function UserHomePage() {
     return (
-        <UserLayout>
+        <CasherLayout>
             <MenuHeaderSection />
             <div className="flex-1 overflow-y-auto p-6 pt-2 no-scrollbar">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                     {PRODUCTS.map((p) => <ProductCard key={p.id} product={p} />)}
                 </div>  
             </div>
-        </UserLayout>
+        </CasherLayout>
     );
 }

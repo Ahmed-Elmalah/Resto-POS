@@ -5,7 +5,7 @@ import UserLayout from "./layouts/UserLayout";
 import AdminLayout from "./layouts/AdminLayout";
 import CasherLayout from "./layouts/CasherLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
-import UserHomePage from "./pages/userPages/UserHomePage"; // استيراد صفحة اليوزر
+import CasherHomePage from "./pages/casherPages/CasherHomePage"
 
 export default function App() {
   return (
@@ -13,7 +13,7 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           {/* تعديل مسار اليوزر ليعرض الصفحة داخل الـ Layout */}
-          <Route path="/" element={<UserHomePage />} />
+          <Route path="/" element={<UserLayout />} />
 
           <Route path="login" element={<h1>this is login page</h1>} />
           <Route path="signup" element={<h1>this is signup page</h1>} />
@@ -41,7 +41,7 @@ export default function App() {
             path="/casher"
             element={
               <ProtectedRoute allowedRole="cashier">
-                <CasherLayout />
+                <CasherHomePage />
               </ProtectedRoute>
             }
           />
