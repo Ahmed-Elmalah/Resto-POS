@@ -1,21 +1,24 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { OrderProvider } from "./store/OrderContext"; // استيراد البروفايدر
 
 import UserLayout from "./layouts/UserLayout";
 import AdminLayout from "./layouts/AdminLayout";
 import CasherLayout from "./layouts/CasherLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
+import UserHomePage from "./pages/userPages/UserHomePage"; // استيراد صفحة اليوزر
 
 export default function App() {
   return (
-    <div>
+    <OrderProvider> {/* تغليف التطبيق بالكامل بالـ Provider لحل مشاكل الـ Context */}
       <BrowserRouter>
         <Routes>
-
-          <Route path="/" element={<UserLayout />} />
+          {/* تعديل مسار اليوزر ليعرض الصفحة داخل الـ Layout */}
+          <Route path="/" element={<UserHomePage />} />
 
           <Route path="login" element={<h1>this is login page</h1>} />
           <Route path="signup" element={<h1>this is signup page</h1>} />
 
+          {/* Admin Routes */}
           <Route
             path="/admin"
             element={
@@ -33,6 +36,7 @@ export default function App() {
             <Route path="settings" element={<h1>settings page</h1>} />
           </Route>
 
+          {/* Cashier Routes */}
           <Route
             path="/casher"
             element={
@@ -45,6 +49,6 @@ export default function App() {
           <Route path="*" element={<h1>this is 404 page</h1>} />
         </Routes>
       </BrowserRouter>
-    </div>
+    </OrderProvider>
   );
-}
+} 
