@@ -1,5 +1,5 @@
 import { useOrder } from "../../store/OrderContext";
-import CartItem from "../../components/userComponents/CartItem";
+import CartItem from "../../components/casherComponents/CartItem";
 
 export default function OrderSidebar() {
   const { cart = [], total = 0 } = useOrder() || {};
