@@ -1,25 +1,27 @@
 import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import { MdMenu } from 'react-icons/md'; // أيقونة المنيو
+import { MdMenu } from 'react-icons/md';
 import Sidebar from '../components/adminComponents/Sidebar';
 
 export default function AdminLayout() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="theme-admin bg-background-light dark:bg-background-dark min-h-screen flex text-slate-900 dark:text-white font-sans">
+    // 1. h-screen + overflow-hidden: عشان الصفحة متطولش عن الشاشة
+    <div className="theme-admin bg-background-light dark:bg-background-dark h-screen w-full flex text-slate-900 dark:text-white font-sans overflow-hidden">
       
-      {/* السايدبار وبنبعتله الـ state والدالة عشان يقفل نفسه */}
       <Sidebar 
         isOpen={isSidebarOpen} 
         closeMobileMenu={() => setSidebarOpen(false)} 
       />
 
-
-      <main className="flex-1 ml-0 md:ml-20 lg:ml-64 flex flex-col min-h-screen transition-all duration-300">
+      {/* 2. Main Content Wrapper */}
+      {/* w-full: عشان نضمن انه مياخدش عرض زيادة */}
+      {/* relative: عشان لو في عناصر مطلقة جواه */}
+      <main className="flex-1 flex flex-col h-full w-full md:ml-20 lg:ml-64 transition-all duration-300 relative">
         
-
-        <div className="md:hidden bg-white dark:bg-[#1a2632] p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between sticky top-0 z-30">
+        {/* Mobile Header */}
+        <div className="md:hidden flex-none bg-white dark:bg-[#1a2632] p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between z-30">
             <div className="flex items-center gap-3">
                 <button 
                     onClick={() => setSidebarOpen(true)}
@@ -29,10 +31,13 @@ export default function AdminLayout() {
                 </button>
                 <span className="font-bold text-lg">RestoAdmin</span>
             </div>
-            {/* ممكن تحط صورة البروفايل هنا للموبايل لو حابب */}
         </div>
 
-        <Outlet />
+        {/* Outlet Container */}
+        {/* overflow-hidden: عشان الصفحات اللي جوه هي اللي تحدد السكرول بتاعها */}
+        <div className="flex-1 overflow-hidden w-full relative">
+            <Outlet />
+        </div>
       </main>
     </div>
   );
