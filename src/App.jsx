@@ -6,6 +6,7 @@ import AdminLayout from "./layouts/AdminLayout";
 import CasherLayout from "./layouts/CasherLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CasherHomePage from "./pages/casherPages/CasherHomePage"
+import Dashboard from "./pages/adminPage/Dashboard";
 
 export default function App() {
   return (
@@ -27,10 +28,10 @@ export default function App() {
               </ProtectedRoute>
             }
           >
-            <Route index element={<h1>admin laayout</h1>} />
+            <Route index element={<Dashboard/>} />
             <Route path="menu" element={<h1>menu page</h1>} />
             <Route path="orders" element={<h1>orders page</h1>} />
-            <Route path="tabels" element={<h1>tabels page</h1>} />
+            <Route path="tables" element={<h1>tabels page</h1>} />
             <Route path="staff" element={<h1>staff page</h1>} />
             <Route path="promotions" element={<h1>promotions page</h1>} />
             <Route path="settings" element={<h1>settings page</h1>} />

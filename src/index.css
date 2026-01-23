@@ -5,6 +5,11 @@
   /* ألوان الـ Dark */
   --color-primary: #ec3713;
   --color-primary-hover: #d43212;
+
+  --color-blue-brand: #137fec;
+  --color-blue-brand-hover: #0f61b8;
+
+
   --color-background-dark: #1a0f0d;
   --color-card-dark: #261613;
   --color-border-dark: #3d241f;
@@ -30,3 +35,8 @@
 }
 
 @variant dark (&:where(.dark, .dark *));
+
+.theme-admin {
+  --color-primary: var(--color-blue-brand);
+  --color-primary-hover: var(--color-blue-brand-hover);
+}
