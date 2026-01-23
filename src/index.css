@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+
 @theme {
   /* ألوان الـ Dark */
   --color-primary: #ec3713;
@@ -27,3 +28,5 @@
   scrollbar-width: none;
   &::-webkit-scrollbar { display: none; }
 }
+
+@variant dark (&:where(.dark, .dark *));
