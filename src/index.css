@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-@variant dark (&:where(.dark, .dark *));
 
 @theme {
   /* ألوان الـ Dark */
@@ -29,3 +28,5 @@
   scrollbar-width: none;
   &::-webkit-scrollbar { display: none; }
 }
+
+@variant dark (&:where(.dark, .dark *));
