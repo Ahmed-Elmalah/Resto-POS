@@ -1,8 +1,7 @@
 import React from 'react';
-import TableGrid from '../../components/adminComponents/tables/TableGrid';
-import TableSidebar from '../../components/adminComponents/Tables/TableSidebar'
-import TableHeader from '../../components/adminComponents/tables/TableHeader';
-
+import TableSidebar from '../../components/adminComponents/Tables/TableSidebar';
+import TableGrid from '../../components/adminComponents/Tables/TableGrid';
+import TableHeader from '../../components/adminComponents/Tables/TableHeader';
 /**
  * Main Tables Management Page
  * Layout: Header + (Main Canvas + Right Sidebar)
