@@ -1,6 +1,6 @@
 import React from 'react';
-import OrderTable from '../../components/adminComponents/orders/OrderTable';
-import OrderFilters from '../../components/adminComponents/orders/OrderFilters';
+import OrderFilters from '../../components/adminComponents/Orders/OrderFilters';
+import OrderTable from '../../components/adminComponents/Orders/OrderTable';
 
 export default function OrdersPage() {
   return (
