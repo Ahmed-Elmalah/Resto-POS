@@ -10,6 +10,7 @@ import MenuPage from "./pages/adminPage/MenuPage";
 import LoginPage from "./pages/loginPage/LoginPage";
 import Register from "./pages/signUpPage/Register";
 import LandingPage from "./pages/userPage/LandingPage"; // استيراد اللاندنج بيدج
+import OrdersPage from "./pages/adminPage/OrdersPage";
 
 export default function App() {
   return (
@@ -36,7 +37,7 @@ export default function App() {
         >
           <Route index element={<Dashboard />} />
           <Route path="menu" element={<MenuPage />} />
-          <Route path="orders" element={<h1>orders page</h1>} />
+          <Route path="orders" element={<OrdersPage/>} />
           <Route path="tables" element={<h1>tables page</h1>} />
           <Route path="staff" element={<h1>staff page</h1>} />
           <Route path="promotions" element={<h1>promotions page</h1>} />
