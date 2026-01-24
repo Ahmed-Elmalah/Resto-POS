@@ -38,6 +38,7 @@ export default function useLogin() {
       .then((res) => {
         let jwt = res.data.jwt;
         sessionStorage.setItem("jwt-token", jwt);
+        console.log(res);
         checkToken(jwt);
       })
       .catch((err) => {
@@ -45,27 +46,31 @@ export default function useLogin() {
       });
   };
 
-  const checkToken = (jwtfromparam = null) => {
+const checkToken = (jwtfromparam = null) => {
     const jwt = jwtfromparam || sessionStorage.getItem("jwt-token") || localStorage.getItem("jwt-token");
     
     if (jwt) {
       loginRepo.check_token(jwt).then((res) => {
-        const role = res.data.role?.name.toLowerCase();
         const userInfo = res.data;
         sessionStorage.setItem("user-info", JSON.stringify(userInfo));
 
-        if (from) {
-          navigate(from, { replace: true });
-        } else {
-          if (role === "admin") {
-            navigate("/admin");
-          } else if (role === "cashier") {
-            navigate("/casher");
+        const role = res.data.role?.name ? res.data.role.name.toLowerCase().trim() : "";
+
+        if (role === "admin") {
+          navigate("/admin", { replace: true });
+        } 
+        else if (role === "cashier" || role === "casher") {
+          navigate("/casher", { replace: true });
+        } 
+        else {
+          if (from && from !== "/login") {
+            navigate(from, { replace: true });
           } else {
-            navigate("/"); 
+            navigate("/", { replace: true }); 
           }
         }
       }).catch((err) => {
+        console.error(err);
         logOut();
       });
     }

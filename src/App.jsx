@@ -45,7 +45,7 @@ export default function App() {
           <Route
             path="/casher"
             element={
-              <ProtectedRoute allowedRole="cashier">
+              <ProtectedRoute allowedRole="casher">
                 <CasherHomePage />
               </ProtectedRoute>
             }
