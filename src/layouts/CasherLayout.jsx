@@ -1,44 +1,29 @@
-import React, { useState } from "react";
-import OrderSidebar from "../sections/casherSections/OrderSidebar";
+import React from 'react';
+import Header from '../components/casherComponents/Header';
+import CategoryTabs from '../components/casherComponents/CategoryTabs';
+import OrderSidebar from '../sections/casherSections/OrderSidebar';
 
 export default function CasherLayout({ children }) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
   return (
-    <div className="flex flex-col lg:flex-row h-screen w-full bg-background-soft dark:bg-background-dark transition-colors duration-300 overflow-hidden text-gray-900 dark:text-white relative font-sans">
+    <div className="flex flex-col lg:flex-row h-screen w-full bg-background-soft dark:bg-background-dark transition-colors duration-300 overflow-hidden text-gray-900 dark:text-white relative">
+      
       <main className="flex-1 flex flex-col min-w-0 relative overflow-hidden">
-        {children}
+        <header className="flex flex-col gap-4 p-4 md:p-6 pb-2 bg-background-soft/90 dark:bg-background-dark/95 backdrop-blur-md z-30 sticky top-0 transition-all">
+          <Header />
+          <CategoryTabs />
+        </header>
+
+        {/* Children (المنتجات) */}
+        <div className="flex-1 overflow-y-auto p-4 md:p-6 no-scrollbar">
+          {children}
+        </div>
       </main>
 
-      <div
-        className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity lg:hidden ${isSidebarOpen ? "opacity-100 visible" : "opacity-0 invisible"}`}
-        onClick={() => setIsSidebarOpen(false)}
-      />
-
-      <div
-        className={`fixed inset-y-0 right-0 z-50 w-[85%] max-w-100 bg-white dark:bg-card-dark shadow-2xl transition-transform duration-500 lg:relative lg:translate-x-0 lg:w-100 lg:border-l lg:border-gray-200 lg:dark:border-border-dark ${isSidebarOpen ? "translate-x-0" : "translate-x-full"}`}
-      >
-        {isSidebarOpen && (
-          <button
-            onClick={() => setIsSidebarOpen(false)}
-            className="lg:hidden absolute -left-11.25 top-4 size-10 bg-primary rounded-l-full flex items-center justify-center text-white"
-          >
-            <span className="material-symbols-outlined">close</span>
-          </button>
-        )}
+      {/*(Order Details) */}
+      <aside className="hidden lg:block w-[400px] border-l border-gray-200 dark:border-border-dark bg-white dark:bg-card-dark overflow-hidden">
         <OrderSidebar />
-      </div>
+      </aside>
 
-      {!isSidebarOpen && (
-        <button
-          onClick={() => setIsSidebarOpen(true)}
-          className="lg:hidden fixed bottom-6 right-6 z-30 size-16 bg-primary rounded-full shadow-lg flex items-center justify-center text-white"
-        >
-          <span className="material-symbols-outlined text-3xl">
-            shopping_cart
-          </span>
-        </button>
-      )}
     </div>
   );
 }

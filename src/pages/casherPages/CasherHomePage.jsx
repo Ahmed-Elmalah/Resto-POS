@@ -1,6 +1,5 @@
 import React from 'react';
 import CasherLayout from '../../layouts/CasherLayout';
-import MenuHeaderSection from "../../sections/casherSections/MenuHeaderSection"
 import ProductCard from "../../components/casherComponents/ProductCard";
 
 const PRODUCTS = [
@@ -10,14 +9,13 @@ const PRODUCTS = [
     { id: 4, name: "Cola", price: 3.0, desc: "Refreshing beverage", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=500" },
 ];
 
-export default function UserHomePage() {
+export default function CasherHomePage() {
     return (
         <CasherLayout>
-            <MenuHeaderSection />
-            <div className="flex-1 overflow-y-auto p-6 pt-2 no-scrollbar">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-                    {PRODUCTS.map((p) => <ProductCard key={p.id} product={p} />)}
-                </div>  
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+                {PRODUCTS.map((p) => (
+                    <ProductCard key={p.id} product={p} />
+                ))}
             </div>
         </CasherLayout>
     );

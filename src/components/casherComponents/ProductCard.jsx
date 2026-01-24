@@ -1,8 +1,14 @@
+import useOrderStore from "../../store/useOrderStore";
+
 export default function ProductCard({ product }) {
+  const addToCart = useOrderStore((state) => state.addToCart);
+
   return (
-    <button className="group flex flex-col bg-gray-50 dark:bg-card-dark rounded-2xl overflow-hidden border border-gray-200 dark:border-border-dark hover:border-primary transition-all active:scale-95 text-left shadow-sm hover:shadow-md">
-      {/* صورة المنتج */}
-      <div className="aspect-[4/3] w-full bg-cover bg-center" style={{ backgroundImage: `url(${product.image})` }} />
+    <button 
+      onClick={() => addToCart(product)} 
+      className="group flex flex-col bg-white dark:bg-card-dark rounded-2xl overflow-hidden border border-gray-100 dark:border-border-dark hover:border-primary transition-all active:scale-95 text-left"
+    >
+       <div className="aspect-[4/3] w-full bg-cover bg-center" style={{ backgroundImage: `url(${product.image})` }} />
       
       <div className="p-4 flex flex-col gap-2">
         <div>
@@ -13,7 +19,6 @@ export default function ProductCard({ product }) {
             {product.desc}
           </p>
         </div>
-        {/* السعر دايماً باللون الأساسي (البرتقالي/الأحمر) */}
         <span className="font-black text-primary text-xl">${product.price.toFixed(2)}</span>
       </div>
     </button>
