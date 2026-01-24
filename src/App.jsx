@@ -9,7 +9,7 @@ import CasherHomePage from "./pages/casherPages/CasherHomePage";
 import Dashboard from "./pages/adminPage/Dashboard";
 import MenuPage from "./pages/adminPage/MenuPage";
 import LoginPage from "./pages/loginPage/LoginPage";
-import SignUpPage from "./pages/signUpPage/signUpPage";
+import Register from "./pages/signUpPage/Register";
 
 export default function App() {
   return (
@@ -21,7 +21,7 @@ export default function App() {
           <Route path="/" element={<UserLayout />} />
 
           <Route path="login" element={<LoginPage />} />
-          <Route path="signup" element={<SignUpPage />} />
+          <Route path="signup" element={<Register />} />
 
           {/* Admin Routes */}
           <Route

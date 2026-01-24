@@ -2,7 +2,7 @@ import React from "react";
 import { MdRestaurant } from "react-icons/md";
 import SignUpForm from "../../components/signUpComponents/SignUpForm";
 
-export default function SignUpPage() {
+export default function Register() {
   return (
     <div className="min-h-[100vh] w-full flex items-center justify-center relative bg-[#101922] font-display">
       {/* Background Overlay */}
