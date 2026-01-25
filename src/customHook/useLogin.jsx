@@ -1,7 +1,9 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import loginRepo from "./LoginRepo";
+import { useAuthuser } from "../store";
 
 export default function useLogin() {
+  const {syncUser} = useAuthuser();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -54,6 +56,8 @@ const checkToken = (jwtfromparam = null) => {
         const userInfo = res.data;
         sessionStorage.setItem("user-info", JSON.stringify(userInfo));
 
+        syncUser();
+
         const role = res.data.role?.name ? res.data.role.name.toLowerCase().trim() : "";
 
         if (role === "admin") {
@@ -79,7 +83,8 @@ const checkToken = (jwtfromparam = null) => {
   const logOut = () => {
     sessionStorage.clear();
     localStorage.clear();
-    navigate("/login");
+    syncUser();
+    // navigate("/login");
   };
 
   return { login, checkToken, logOut , signup};
