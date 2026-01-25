@@ -12,20 +12,17 @@ export default function ActionsBtns() {
   return (
     <div>
       {user ? (
-        // التعديل هنا: قللنا المسافات في الموبايل (gap-1) وكبرناها في الشاشات الأكبر (md:gap-3)
         <div className="flex items-center gap-1 md:gap-3">
-          
           {/* Theme Toggle */}
-          <div className="scale-90 md:scale-100"> 
-             <ThemeToggle/>
+          <div className="scale-90 md:scale-100">
+            <ThemeToggle />
           </div>
 
           {/* Person Button */}
-          {/* التعديل: الحجم size-8 في الموبايل و size-10 في الديسك توب */}
           <button className="group flex items-center justify-center size-8 md:size-10 rounded-lg hover:bg-primary/10 transition-colors">
             <MdPerson
               className="text-text-main dark:text-white group-hover:text-primary transition-colors"
-              size={20} // أيقونة أصغر شوية للموبايل (ممكن تخليها ريسبونسيف لو حبيت بس 20 مناسبة للكل)
+              size={20}
             />
           </button>
 
@@ -35,7 +32,6 @@ export default function ActionsBtns() {
               className="text-text-main dark:text-white group-hover:text-primary transition-colors"
               size={20}
             />
-            {/* تصغير النقطة الحمراء شوية */}
             <span className="absolute top-1.5 right-1.5 md:top-2 md:right-2 size-1.5 md:size-2 bg-primary rounded-full ring-1 md:ring-2 ring-white dark:ring-background-dark"></span>
           </button>
 
@@ -45,11 +41,13 @@ export default function ActionsBtns() {
             className="group flex items-center justify-center size-8 md:size-10 rounded-lg hover:bg-primary/10 transition-colors"
             title="Logout"
           >
-            <MdLogout size={18} className="text-text-main dark:text-white group-hover:text-primary transition-colors md:w-[20px] md:h-[20px]" />
+            <MdLogout
+              size={18}
+              className="text-text-main dark:text-white group-hover:text-primary transition-colors md:w-5 md:h-5"
+            />
           </button>
         </div>
       ) : (
-        // الجزء الخاص باللي مش مسجل دخول (Login/Signup)
         <div className="flex items-center gap-2 sm:gap-4 shrink-0">
           <Link
             to="/login"

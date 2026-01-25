@@ -11,7 +11,7 @@ import {
 export default function ReservationWidget() {
   return (
     <section className="relative z-20 px-4 -mt-16 mb-16">
-      <div className="max-w-[1100px] bg-white dark:bg-background-dark mx-auto bg-surface-light dark:bg-surface-dark rounded-xl shadow-2xl border border-gray-100 dark:border-white/5 p-6 md:p-8">
+      <div className="max-w-275 bg-white dark:bg-background-dark mx-auto bg-surface-light dark:bg-surface-dark rounded-xl shadow-2xl border border-gray-100 dark:border-white/5 p-6 md:p-8">
         <h3 className="text-xl font-bold text-text-main dark:text-white flex items-center gap-2 mb-6">
           <MdCalendarMonth className="text-primary" size={24} />
           Make a Reservation
