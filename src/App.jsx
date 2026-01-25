@@ -13,15 +13,18 @@ import LandingPage from "./pages/userPage/LandingPage"; // استيراد الل
 import OrdersPage from "./pages/adminPage/OrdersPage";
 import TablesPage from "./pages/adminPage/TablesPage";
 import StaffPage from "./pages/adminPage/StaffPage";
+import UserMenuPage from "./pages/userPage/UserMenuPage";
+import ReservationsPage from "./pages/userPage/ReservationsPage";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* --- User Routes (Modified) --- */}
+        {/* --- User Routes --- */}
         <Route path="/" element={<UserLayout />}>
           <Route index element={<LandingPage />} />
-          {/* كدة اللاندنج هتظهر جوه الـ Outlet بتاع الـ UserLayout */}
+          <Route path="menu" element={<UserMenuPage />} />
+          <Route path="reservations" element={<ReservationsPage />} />
         </Route>
 
         {/* --- Auth Routes --- */}
