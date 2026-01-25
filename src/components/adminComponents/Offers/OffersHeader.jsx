@@ -3,15 +3,7 @@ import React from 'react';
 export default function OffersHeader({ onOpenModal }) {
   return (
     <div className="flex flex-col gap-6">
-      {/* Breadcrumbs - للشاشات الكبيرة */}
-      <div className="hidden lg:flex items-center gap-2 text-sm text-[#617589] dark:text-[#9ca3af]">
-        <a className="hover:text-primary transition-colors cursor-pointer">Dashboard</a>
-        <span className="material-symbols-outlined text-[16px]">chevron_right</span>
-        <a className="hover:text-primary transition-colors cursor-pointer">Marketing</a>
-        <span className="material-symbols-outlined text-[16px]">chevron_right</span>
-        <span className="text-[#111418] dark:text-white font-medium">Offers</span>
-      </div>
-
+    
       {/* Page Title & Action Button */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
