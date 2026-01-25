@@ -3,12 +3,7 @@ import React from 'react';
 export default function StaffHeader() {
   return (
     <div className="px-6 py-6 md:px-10">
-      {/* Breadcrumbs */}
-      <div className="flex items-center gap-2 text-sm text-[#617589] mb-4">
-        <span className="hover:text-primary cursor-pointer">Dashboard</span>
-        <span>/</span>
-        <span className="text-[#111418] dark:text-white font-medium">Staff & Roles</span>
-      </div>
+      
 
       {/* Title & Action */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
