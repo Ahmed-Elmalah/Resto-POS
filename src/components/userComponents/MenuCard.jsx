@@ -1,10 +1,9 @@
-import React from "react";
 import { MdArrowRightAlt } from "react-icons/md";
 
 export default function MenuCard({ title, desc, price, img }) {
   return (
     <div className="group bg-surface-light dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-primary/10">
-      <div className="aspect-[4/3] w-full overflow-hidden relative">
+      <div className="aspect-4/3 w-full overflow-hidden relative">
         <img
           alt={title}
           className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
