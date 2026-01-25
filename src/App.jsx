@@ -12,6 +12,7 @@ import Register from "./pages/signUpPage/Register";
 import LandingPage from "./pages/userPage/LandingPage"; // استيراد اللاندنج بيدج
 import OrdersPage from "./pages/adminPage/OrdersPage";
 import TablesPage from "./pages/adminPage/TablesPage";
+import StaffPage from "./pages/adminPage/StaffPage";
 
 export default function App() {
   return (
@@ -40,7 +41,7 @@ export default function App() {
           <Route path="menu" element={<MenuPage />} />
           <Route path="orders" element={<OrdersPage/>} />
           <Route path="tables" element={<TablesPage/>} />
-          <Route path="staff" element={<h1>staff page</h1>} />
+          <Route path="staff" element={<StaffPage/>} />
           <Route path="promotions" element={<h1>promotions page</h1>} />
           <Route path="settings" element={<h1>settings page</h1>} />
         </Route>
