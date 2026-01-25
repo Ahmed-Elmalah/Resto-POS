@@ -15,6 +15,7 @@ import TablesPage from "./pages/adminPage/TablesPage";
 import StaffPage from "./pages/adminPage/StaffPage";
 import UserMenuPage from "./pages/userPage/UserMenuPage";
 import ReservationsPage from "./pages/userPage/ReservationsPage";
+import OffersPage from "./pages/adminPage/OffersPage";
 
 export default function App() {
   return (
@@ -45,7 +46,7 @@ export default function App() {
           <Route path="orders" element={<OrdersPage/>} />
           <Route path="tables" element={<TablesPage/>} />
           <Route path="staff" element={<StaffPage/>} />
-          <Route path="promotions" element={<h1>promotions page</h1>} />
+          <Route path="promotions" element={<OffersPage/>} />
           <Route path="settings" element={<h1>settings page</h1>} />
         </Route>
 
