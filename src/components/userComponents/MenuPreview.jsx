@@ -23,7 +23,7 @@ export default function MenuPreview() {
   ];
 
   return (
-    <section className="py-12 px-4 max-w-[1280px] mx-auto w-full mb-12" id="Offers">
+    <section className="py-12 px-4 max-w-7xl dark:bg-background-dark mx-auto w-full mb-12" id="Offers">
       <div className="text-center mb-12">
         <span className="text-primary font-bold text-sm uppercase tracking-widest mb-2 block">
           Special Deals

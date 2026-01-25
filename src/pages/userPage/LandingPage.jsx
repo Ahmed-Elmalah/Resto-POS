@@ -13,7 +13,7 @@ export default function LandingPage() {
 
       </section>
 
-      <section id="offers" className="py-16 bg-slate-50 dark:bg-[#151b23]">        
+      <section id="offers" className="py-16 bg-slate-50 dark:dark:bg-background-dark">        
          <MenuPreview isOfferSection={true} /> 
       </section>
 
