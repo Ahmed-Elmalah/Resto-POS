@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import OffersHeader from '../../components/adminComponents/offers/OffersHeader';
+import OffersHeader from '../../components/adminComponents/Offers/OffersHeader';
 import OffersStats from '../../components/adminComponents/Offers/OffersStates';
-import OffersGrid from '../../components/adminComponents/offers/OffersGrid';
-import CreateOfferModal from '../../components/adminComponents/offers/CreateOfferModal';
+import OffersGrid from '../../components/adminComponents/Offers/OffersGrid';
+import CreateOfferModal from '../../components/adminComponents/Offers/CreateOfferModal';
 
 export default function OffersPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
