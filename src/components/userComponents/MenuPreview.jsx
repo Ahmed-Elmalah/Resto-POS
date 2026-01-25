@@ -23,13 +23,13 @@ export default function MenuPreview() {
   ];
 
   return (
-    <section className="py-12 px-4 max-w-[1280px] mx-auto w-full mb-12">
+    <section className="py-12 px-4 max-w-[1280px] mx-auto w-full mb-12" id="Offers">
       <div className="text-center mb-12">
         <span className="text-primary font-bold text-sm uppercase tracking-widest mb-2 block">
-          Our Menu
+          Special Deals
         </span>
         <h2 className="text-3xl md:text-4xl font-bold text-text-main dark:text-white">
-          Signature Dishes
+          Todays Best Offers
         </h2>
         <p className="mt-4 text-text-muted dark:text-gray-400 max-w-2xl mx-auto text-sm">
           Hand-picked by our master chefs, these dishes represent the pinnacle
