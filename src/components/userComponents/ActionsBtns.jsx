@@ -48,7 +48,10 @@ export default function ActionsBtns() {
           </button>
         </div>
       ) : (
-        <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+        <div className="flex items-center gap-1 sm:gap-4 shrink-0">
+          <div className="scale-80 md:scale-100">
+            <ThemeToggle />
+          </div>
           <Link
             to="/login"
             className="px-2 sm:px-3 py-2 text-xs sm:text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors whitespace-nowrap"
