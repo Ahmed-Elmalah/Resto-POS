@@ -10,7 +10,8 @@ import {
   MdLocalOffer, 
   MdSettings, 
   MdLogout,
-  MdClose
+  MdClose,
+  MdPerson2
 } from 'react-icons/md';
 import ThemeToggle from '../ThemeToggle';
 
@@ -23,6 +24,7 @@ const LINKS = [
   { path: "/admin/staff", label: "Staff", icon: <MdGroup size={24} /> },
   { path: "/admin/promotions", label: "Offers", icon: <MdLocalOffer size={24} /> },
   { path: "/admin/settings", label: "Settings", icon: <MdSettings size={24} /> },
+  { path: "/admin/profile", label: "profile", icon: <MdPerson2 size={24} /> },
 ];
 
 // --- Sub-Component: Sidebar Link ---

@@ -19,12 +19,15 @@ export default function ActionsBtns() {
           </div>
 
           {/* Person Button */}
-          <button className="group flex items-center justify-center size-8 md:size-10 rounded-lg hover:bg-primary/10 transition-colors">
+          <Link
+            to="/profile" 
+            className="group flex items-center justify-center size-8 md:size-10 rounded-lg hover:bg-primary/10 transition-colors"
+          >
             <MdPerson
               className="text-text-main dark:text-white group-hover:text-primary transition-colors"
               size={20}
             />
-          </button>
+          </Link>
 
           {/* Cart Button */}
           <button className="relative group flex items-center justify-center size-8 md:size-10 rounded-lg hover:bg-primary/10 transition-colors">
