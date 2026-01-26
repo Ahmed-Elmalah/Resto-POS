@@ -17,6 +17,7 @@ import UserMenuPage from "./pages/userPage/UserMenuPage";
 import ReservationsPage from "./pages/userPage/ReservationsPage";
 import OffersPage from "./pages/adminPage/OffersPage";
 import SettingsPage from "./pages/adminPage/SettingsPage";
+import ProfilePage from "./pages/ProfilePage";
 
 export default function App() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
           <Route index element={<LandingPage />} />
           <Route path="menu" element={<UserMenuPage />} />
           <Route path="reservations" element={<ReservationsPage />} />
+          <Route path="profile" element={<ProfilePage/>}/>
         </Route>
 
         {/* --- Auth Routes --- */}
@@ -49,6 +51,7 @@ export default function App() {
           <Route path="staff" element={<StaffPage/>} />
           <Route path="promotions" element={<OffersPage/>} />
           <Route path="settings" element={<SettingsPage/>} />
+          <Route path="profile" element={<ProfilePage/>}/>
         </Route>
 
         {/* --- Cashier Routes --- */}

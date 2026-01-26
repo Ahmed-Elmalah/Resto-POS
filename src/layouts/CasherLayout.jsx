@@ -29,13 +29,13 @@ export default function CasherLayout({ children }) {
       <div className="lg:hidden fixed bottom-8 right-6 z-[100]">
         <button 
           onClick={() => setIsOpen(true)}
-          className="relative size-16 bg-[#FF4500] text-white rounded-2xl shadow-lg flex items-center justify-center active:scale-90 transition-all border-2 border-white animate-bounce"
+          className="relative size-16 bg-[#FF4500] text-white rounded-2xl shadow-lg flex items-center justify-center active:scale-90 transition-all border-2 border-white "
         >
           <span className="material-symbols-outlined text-3xl">shopping_cart</span>
           
           {/* المربع (Badge) بوردر أبيض حاد */}
           {totalItems > 0 && (
-            <span className="absolute -top-1 -right-1 flex min-w-[24px] h-[24px] px-1 items-center justify-center rounded-md bg-[#FF4500] text-white text-[12px] font-black border-2 border-white shadow-md animate-bounce">
+            <span className="absolute -top-1 -right-1 flex min-w-[24px] h-[24px] px-1 items-center justify-center rounded-md bg-[#FF4500] text-white text-[12px] font-black border-2 border-white shadow-md ">
               {totalItems}
             </span>
           )}
