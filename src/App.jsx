@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import UserLayout from "./layouts/UserLayout";
 import AdminLayout from "./layouts/AdminLayout";
-import CasherLayout from "./layouts/CasherLayout";
+
 import ProtectedRoute from "./components/ProtectedRoute";
 import CasherHomePage from "./pages/casherPages/CasherHomePage";
 import Dashboard from "./pages/adminPage/Dashboard";
