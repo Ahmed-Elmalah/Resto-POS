@@ -7,7 +7,7 @@ import ThemeToggle from "../ThemeToggle";
 
 export default function ActionsBtns() {
   const { user } = useAuthuser();
-  const { logOut } = useLogin();
+  const { logOutForUser } = useLogin();
 
   return (
     <div>
@@ -40,7 +40,7 @@ export default function ActionsBtns() {
 
           {/* Logout Button */}
           <button
-            onClick={logOut}
+            onClick={logOutForUser}
             className="group flex items-center justify-center size-8 md:size-10 rounded-lg hover:bg-primary/10 transition-colors"
             title="Logout"
           >

@@ -84,8 +84,15 @@ const checkToken = (jwtfromparam = null) => {
     sessionStorage.clear();
     localStorage.clear();
     syncUser();
-    // navigate("/login");
+    navigate("/login");
   };
 
-  return { login, checkToken, logOut , signup};
+  const logOutForUser =  () => {
+    sessionStorage.clear();
+    localStorage.clear();
+    syncUser();
+  };
+
+
+  return { login, checkToken, logOut , signup , logOutForUser};
 }

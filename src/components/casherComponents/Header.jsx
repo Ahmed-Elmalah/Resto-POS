@@ -1,33 +1,16 @@
-import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import useLogin from '../../customHook/useLogin';
+import ThemeToggle from '../ThemeToggle';
 
-function ThemeToggleInline() {
-  const [isDark, setIsDark] = useState(localStorage.getItem('theme') !== 'light');
-  useEffect(() => {
-    const root = window.document.documentElement;
-    if (isDark) { root.classList.add('dark'); localStorage.setItem('theme', 'dark'); }
-    else { root.classList.remove('dark'); localStorage.setItem('theme', 'light'); }
-  }, [isDark]);
-
-  return (
-    <button onClick={() => setIsDark(!isDark)} className="p-2.5 rounded-xl bg-white dark:bg-[#2A1C1A] border border-gray-200 dark:border-white/5 text-[#FF4500] shadow-sm hover:scale-105 transition-all">
-      <span className="material-symbols-outlined text-[22px]">
-        {isDark ? 'light_mode' : 'dark_mode'}
-      </span>
-    </button>
-  );
-}
 
 export default function Header() {
-  const navigate = useNavigate();
+  const {logOut} = useLogin();
 
   return (
-    // استخدام flex-wrap و justify-between
     <div className="flex flex-wrap items-center justify-between gap-y-4 gap-x-4 w-full">
       
-      {/* 1. اللوجو والـ Toggle (Order 1 في كل الشاشات) */}
       <div className="flex items-center gap-4">
-        <ThemeToggleInline />
+        <ThemeToggle/>
         
         <div className="flex items-center gap-3 border-l border-gray-200 dark:border-border-dark pl-4">
           <div className="size-10 bg-primary rounded-xl sm:flex items-center justify-center text-white shrink-0 shadow-lg shadow-primary/20 hidden ">
@@ -40,10 +23,9 @@ export default function Header() {
         </div>
       </div>
 
-      {/* 2. زرار اللوج أوت (في الموبايل Order 2 عشان يفضل فوق يمين) */}
       <div className="flex items-center gap-3 order-2 md:order-3">
         <button 
-          onClick={() => navigate('/login')}
+          onClick={logOut}
           className="flex items-center justify-center size-10 md:w-auto md:px-4 md:py-2.5 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-500 border border-red-100 dark:border-red-500/20 font-bold text-sm hover:bg-red-600 hover:text-white transition-all active:scale-95"
         >
           <span className="material-symbols-outlined text-xl">logout</span>

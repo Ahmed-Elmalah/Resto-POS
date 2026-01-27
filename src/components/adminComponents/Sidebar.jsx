@@ -12,6 +12,7 @@ import {
   MdClose,
 } from 'react-icons/md';
 import ThemeToggle from '../ThemeToggle';
+import useLogin from '../../customHook/useLogin';
 
 const LINKS = [
   { path: "/admin", label: "Dashboard", icon: <MdDashboard size={24} />, end: true },
@@ -43,11 +44,11 @@ const SidebarLink = ({ path, label, icon, end, onClick }) => (
 );
 
 export default function Sidebar({ isOpen, closeMobileMenu }) {
-  const navigate = useNavigate(); // تعريف الـ navigate
+  const navigate = useNavigate(); 
+  const {logOut} = useLogin();
 
-  // دالة للذهاب للبروفايل وإغلاق منيو الموبايل بالمرة
   const goToProfile = () => {
-    navigate('/admin/profile'); // تأكد من صحة المسار لديك
+    navigate('/admin/profile'); 
     closeMobileMenu();
   };
 
@@ -96,12 +97,12 @@ export default function Sidebar({ isOpen, closeMobileMenu }) {
         <div className="p-4 border-t border-slate-200 dark:border-slate-800">
           <div className="flex flex-col gap-4">
              
-             {/* Profile Row - قابل للضغط الآن */}
+             {/* Profile Row*/}
              <div className="flex items-center gap-3 p-2 rounded-lg bg-slate-50 dark:bg-slate-800/50 md:justify-center lg:justify-between group/user transition-colors hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
                 
                 {/* User Info (Mobile/Desktop) */}
                 <div 
-                  onClick={goToProfile} // الضغط هنا يذهب للبروفايل
+                  onClick={goToProfile} 
                   className="flex items-center gap-3 md:hidden lg:flex min-w-0 flex-1"
                 >
                     <div 
@@ -123,7 +124,7 @@ export default function Sidebar({ isOpen, closeMobileMenu }) {
                 {/* Actions */}
                 <div className="flex items-center gap-1 md:hidden lg:flex">
                     <div className="scale-75 origin-center"><ThemeToggle /></div>
-                    <button className="p-1 text-slate-400 hover:text-red-500 transition-colors"><MdLogout size={18} /></button>
+                    <button onClick={logOut} className="p-1 text-slate-400 hover:text-red-500 transition-colors"><MdLogout size={18} /></button>
                 </div>
              </div>
              
