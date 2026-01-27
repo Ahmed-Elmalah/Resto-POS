@@ -7,7 +7,6 @@ export default function AdminLayout() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    // 1. h-screen + overflow-hidden: عشان الصفحة متطولش عن الشاشة
     <div className="theme-admin bg-background-light dark:bg-background-dark h-screen w-full flex text-slate-900 dark:text-white font-sans overflow-hidden">
       
       <Sidebar 
@@ -15,9 +14,6 @@ export default function AdminLayout() {
         closeMobileMenu={() => setSidebarOpen(false)} 
       />
 
-      {/* 2. Main Content Wrapper */}
-      {/* w-full: عشان نضمن انه مياخدش عرض زيادة */}
-      {/* relative: عشان لو في عناصر مطلقة جواه */}
       <main className="flex-1 flex flex-col h-full w-full md:ml-20 lg:ml-64 transition-all duration-300 relative">
         
         {/* Mobile Header */}
@@ -34,7 +30,6 @@ export default function AdminLayout() {
         </div>
 
         {/* Outlet Container */}
-        {/* overflow-hidden: عشان الصفحات اللي جوه هي اللي تحدد السكرول بتاعها */}
         <div className="flex-1 overflow-hidden w-full relative">
             <Outlet />
         </div>
