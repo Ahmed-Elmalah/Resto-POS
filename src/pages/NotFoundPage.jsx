@@ -12,7 +12,7 @@ export default function NotFoundPage() {
           <MdRestaurantMenu className="text-6xl text-primary opacity-80" />
         </div>
         {/* Question mark badge */}
-        <div className="absolute -top-2 -right-2 bg-white dark:bg-[#261613] rounded-full p-2 shadow-lg border border-gray-100 dark:border-[#3d241f]">
+        <div className="absolute -top-2 -right-2 bg-white dark:bg-card-dark rounded-full p-2 shadow-lg border border-gray-100 dark:border-border-dark">
           <MdSearch className="text-2xl text-primary" />
         </div>
       </div>
@@ -26,7 +26,7 @@ export default function NotFoundPage() {
         <h2 className="text-2xl md:text-3xl font-bold text-[#181211] dark:text-white mb-3">
           Oops! This item is off the menu.
         </h2>
-        <p className="text-[#a6847e] dark:text-[#a6847e] max-w-md mx-auto text-base md:text-lg leading-relaxed">
+        <p className="text-text-muted dark:text-text-muted max-w-md mx-auto text-base md:text-lg leading-relaxed">
           We looked everywhere, even inside the oven, but we couldn't find the page you're looking for.
         </p>
       </div>
@@ -35,7 +35,7 @@ export default function NotFoundPage() {
       <div className="flex flex-col sm:flex-row gap-4 mt-4 w-full sm:w-auto">
         <Link
           to="/"
-          className="flex items-center justify-center gap-2 px-8 py-3 bg-primary hover:bg-[#d43212] text-white rounded-full font-bold shadow-lg shadow-primary/25 transition-all transform hover:-translate-y-1 active:scale-95"
+          className="flex items-center justify-center gap-2 px-8 py-3 bg-primary hover:bg-primary-hover text-white rounded-full font-bold shadow-lg shadow-primary/25 transition-all transform hover:-translate-y-1 active:scale-95"
         >
           <MdHome className="text-xl" />
           Back to Home
@@ -43,7 +43,7 @@ export default function NotFoundPage() {
         
         <Link
           to="/menu"
-          className="flex items-center justify-center gap-2 px-8 py-3 bg-white dark:bg-transparent border-2 border-gray-200 dark:border-[#3d241f] text-[#181211] dark:text-white rounded-full font-bold hover:bg-gray-50 dark:hover:bg-[#3a2520] transition-all"
+          className="flex items-center justify-center gap-2 px-8 py-3 bg-white dark:bg-transparent border-2 border-gray-200 dark:border-border-dark text-[#181211] dark:text-white rounded-full font-bold hover:bg-gray-50 dark:hover:bg-[#3a2520] transition-all"
         >
           <MdRestaurantMenu className="text-xl" />
           View Menu
