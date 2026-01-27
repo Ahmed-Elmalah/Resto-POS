@@ -1,21 +1,18 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom'; // أضفنا useNavigate
 import { 
   MdDashboard, 
   MdRestaurantMenu, 
   MdHistory, 
   MdTableRestaurant, 
   MdGroup, 
-  MdBarChart, 
   MdLocalOffer, 
   MdSettings, 
   MdLogout,
   MdClose,
-  MdPerson2
 } from 'react-icons/md';
 import ThemeToggle from '../ThemeToggle';
 
-// --- Configuration ---
 const LINKS = [
   { path: "/admin", label: "Dashboard", icon: <MdDashboard size={24} />, end: true },
   { path: "/admin/menu", label: "Menu", icon: <MdRestaurantMenu size={24} /> },
@@ -24,10 +21,8 @@ const LINKS = [
   { path: "/admin/staff", label: "Staff", icon: <MdGroup size={24} /> },
   { path: "/admin/promotions", label: "Offers", icon: <MdLocalOffer size={24} /> },
   { path: "/admin/settings", label: "Settings", icon: <MdSettings size={24} /> },
-  { path: "/admin/profile", label: "profile", icon: <MdPerson2 size={24} /> },
 ];
 
-// --- Sub-Component: Sidebar Link ---
 const SidebarLink = ({ path, label, icon, end, onClick }) => (
   <NavLink
     to={path}
@@ -43,16 +38,21 @@ const SidebarLink = ({ path, label, icon, end, onClick }) => (
     }
   >
     <span className="shrink-0">{icon}</span>
-    {/* Label hidden on tablet, visible on mobile/desktop */}
     <span className="text-sm font-medium md:hidden lg:block">{label}</span>
   </NavLink>
 );
 
-// --- Main Component ---
 export default function Sidebar({ isOpen, closeMobileMenu }) {
+  const navigate = useNavigate(); // تعريف الـ navigate
+
+  // دالة للذهاب للبروفايل وإغلاق منيو الموبايل بالمرة
+  const goToProfile = () => {
+    navigate('/admin/profile'); // تأكد من صحة المسار لديك
+    closeMobileMenu();
+  };
+
   return (
     <>
-      {/* Mobile Overlay */}
       {isOpen && (
         <div 
           onClick={closeMobileMenu}
@@ -60,7 +60,6 @@ export default function Sidebar({ isOpen, closeMobileMenu }) {
         />
       )}
 
-      {/* Sidebar Container */}
       <aside 
         className={`
           fixed inset-y-0 left-0 z-50 h-full bg-white dark:bg-[#1a2632] border-r border-slate-200 dark:border-slate-800 flex flex-col transition-all duration-300
@@ -68,7 +67,6 @@ export default function Sidebar({ isOpen, closeMobileMenu }) {
           md:translate-x-0 md:w-20 lg:w-64
         `}
       >
-        {/* Header: Logo & Mobile Close */}
         <div className="flex items-center justify-between gap-3 px-4 py-6 border-b border-slate-100 dark:border-slate-800 h-20">
           <div className="flex items-center gap-3">
             <div className="bg-primary/10 text-primary p-2 rounded-lg shrink-0">
@@ -84,7 +82,6 @@ export default function Sidebar({ isOpen, closeMobileMenu }) {
           </button>
         </div>
 
-        {/* Navigation Links */}
         <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-2 no-scrollbar">
           {LINKS.map((link) => (
             <SidebarLink 
@@ -98,37 +95,42 @@ export default function Sidebar({ isOpen, closeMobileMenu }) {
         {/* Footer: User Profile & Actions */}
         <div className="p-4 border-t border-slate-200 dark:border-slate-800">
           <div className="flex flex-col gap-4">
-             {/* Profile Row */}
-             <div className="flex items-center gap-3 p-2 rounded-lg bg-slate-50 dark:bg-slate-800/50 md:justify-center lg:justify-between">
+             
+             {/* Profile Row - قابل للضغط الآن */}
+             <div className="flex items-center gap-3 p-2 rounded-lg bg-slate-50 dark:bg-slate-800/50 md:justify-center lg:justify-between group/user transition-colors hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
                 
                 {/* User Info (Mobile/Desktop) */}
-                <div className="flex items-center gap-3 md:hidden lg:flex min-w-0">
+                <div 
+                  onClick={goToProfile} // الضغط هنا يذهب للبروفايل
+                  className="flex items-center gap-3 md:hidden lg:flex min-w-0 flex-1"
+                >
                     <div 
-                        className="w-8 h-8 rounded-full bg-slate-200 bg-cover bg-center shrink-0" 
-                        style={{ backgroundImage: "url('https://i.pravatar.cc/150?img=32')" }}
+                        className="w-8 h-8 rounded-full bg-slate-200 bg-cover bg-center shrink-0 border border-transparent group-hover/user:border-primary transition-all" 
+                        style={{ backgroundImage: "url('https://api.dicebear.com/7.x/avataaars/svg?seed=John')" }}
                     />
                     <div className="overflow-hidden">
-                        <p className="text-sm font-medium text-slate-900 dark:text-white truncate">Ahmed</p>
+                        <p className="text-sm font-medium text-slate-900 dark:text-white truncate group-hover/user:text-primary transition-colors">Ahmed</p>
                     </div>
                 </div>
 
                 {/* Avatar Only (Tablet) */}
                 <div 
-                    className="hidden md:block lg:hidden w-8 h-8 rounded-full bg-slate-200 bg-cover bg-center shrink-0" 
-                    style={{ backgroundImage: "url('https://i.pravatar.cc/150?img=32')" }}
+                    onClick={goToProfile}
+                    className="hidden md:block lg:hidden w-8 h-8 rounded-full bg-slate-200 bg-cover bg-center shrink-0 cursor-pointer border border-transparent hover:border-primary transition-all" 
+                    style={{ backgroundImage: "url('https://api.dicebear.com/7.x/avataaars/svg?seed=John')" }}
                 />
 
-                {/* Actions (Mobile/Desktop) */}
+                {/* Actions */}
                 <div className="flex items-center gap-1 md:hidden lg:flex">
                     <div className="scale-75 origin-center"><ThemeToggle /></div>
-                    <button className="p-1 text-slate-400 hover:text-red-500"><MdLogout size={18} /></button>
+                    <button className="p-1 text-slate-400 hover:text-red-500 transition-colors"><MdLogout size={18} /></button>
                 </div>
              </div>
              
-             {/* Actions (Tablet Only - Vertical) */}
+             {/* Actions (Tablet Only) */}
              <div className="hidden md:flex lg:hidden flex-col items-center gap-3">
                  <div className="scale-75"><ThemeToggle /></div>
-                 <button className="text-slate-400 hover:text-red-500"><MdLogout size={20} /></button>
+                 <button className="text-slate-400 hover:text-red-500 transition-colors"><MdLogout size={20} /></button>
              </div>
 
           </div>
