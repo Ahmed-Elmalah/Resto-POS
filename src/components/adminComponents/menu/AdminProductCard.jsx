@@ -6,7 +6,7 @@ export default function AdminProductCard({ product }) {
 
   const token = localStorage.getItem('jwt-token') || sessionStorage.getItem('jwt-token'); 
 
-  const domain = 'http://82.112.241.233:2010';
+  const domain = '';
 
   const { 
     id, 

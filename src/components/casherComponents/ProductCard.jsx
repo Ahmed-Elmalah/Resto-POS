@@ -4,7 +4,7 @@ import useOrderStore from "../../store/useOrderStore";
 export default function ProductCard({ product }) {
   const addToCart = useOrderStore((state) => state.addToCart);
   
-  const domain = 'http://82.112.241.233:2010';
+  const domain = '';
   const isAvailable = product.isAvailable !== false;
 
   const imageUrl = product.image?.url 
