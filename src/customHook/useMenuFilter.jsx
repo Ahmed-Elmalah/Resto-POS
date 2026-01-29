@@ -1,0 +1,76 @@
+import { useEffect, useMemo, useRef } from "react";
+import { useMenuStore } from "../store";
+
+export default function useMenuFilter() {
+  const { products, categories, fetchMenuData, isLoading, error } =
+    useMenuStore();
+
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortOrder, setSortOrder] = useState("default");
+
+  const searchInputRef = useRef(null);
+
+  useEffect(() => {
+    fetchMenuData();
+  }, []);
+
+  const filteredProducts = useMemo(() => {
+    let result = [...products];
+
+    // category filter
+    if (activeCategory !== "All") {
+      result = result.filter((item) => {
+        const catName = item.category?.name;
+        return catName === activeCategory;
+      });
+    }
+
+    // search filter
+    if (searchQuery.trim() !== "") {
+      const query = searchQuery.toLowerCase();
+      result = result.filter((item) =>
+        item.name.toLowerCase().includes(query),
+      );
+    }
+
+    // sorting
+    if (sortOrder === "low-high") {
+      result.sort((a, b) => a.attributes.price - b.attributes.price);
+    } else if (sortOrder === "high-low") {
+      result.sort((a, b) => b.attributes.price - a.attributes.price);
+    }
+
+    return result;
+
+  }, [products, activeCategory, searchQuery, sortOrder]);
+
+  const clearSearch = () => {
+    setSearchQuery("");
+    if (searchInputRef.current) {
+      searchInputRef.current.focus(); // نرجع التركيز للإنبوت
+    }
+  };
+
+  return {
+    // Data
+    categories,
+    products : filteredProducts,
+    totalCount : filteredProducts.length,
+    isLoading,
+    error,
+
+    //logic
+    activeCategory,
+    setActiveCategory,
+
+    searchQuery,
+    setSearchQuery,
+    searchInputRef,
+    clearSearch,
+
+    sortOrder,
+    setSortOrder,
+
+};
+}
