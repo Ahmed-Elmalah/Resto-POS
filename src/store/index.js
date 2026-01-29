@@ -41,10 +41,6 @@ export const useMenuStore = create((set , get)=>({
         MenuRepo.getAllCategories(),
       ]);
 
-      console.log("✅ Data received from API:");
-      console.log("Categories Response:", categoriesRes.data);
-      console.log("Products Response:", productsRes.data);
-
       const rawProducts = productsRes.data.data || [];
       const rawCategories = categoriesRes.data.data || [];
 
@@ -66,5 +62,21 @@ export const useMenuStore = create((set , get)=>({
     set({isFetched : false});
     await get().fetchMenuData();
   },
+
+  silentRefresh: async () => {
+    try {
+      const [productsRes, categoriesRes] = await Promise.all([
+        MenuRepo.getAllProducts(),
+        MenuRepo.getAllCategories(),
+      ]);
+
+      set({
+        categories: categoriesRes.data.data || [],
+        products: productsRes.data.data || [],
+      });
+    } catch (err) {
+      console.error("Silent refresh failed:", err);
+    }
+  }
 
 }));

@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { MdEdit } from 'react-icons/md';
 import MenuRepo from '../../../customHook/MenuRepo'; 
+import { useNavigate } from 'react-router-dom';
 
 export default function AdminProductCard({ product }) {
+  const navigate = useNavigate();
 
   const token = localStorage.getItem('jwt-token') || sessionStorage.getItem('jwt-token'); 
 
@@ -81,7 +83,7 @@ export default function AdminProductCard({ product }) {
 
         {/* Edit Button */}
         <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-          <button className="bg-black/50 hover:bg-black/70 backdrop-blur-sm text-white p-2 rounded-lg transition-colors">
+          <button onClick={()=> navigate(`/admin/menu/edit/${documentId || id}`)} className="bg-black/50 hover:bg-black/70 backdrop-blur-sm text-white p-2 rounded-lg transition-colors">
             <MdEdit size={18} />
           </button>
         </div>

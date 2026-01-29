@@ -19,6 +19,7 @@ import OffersPage from "./pages/adminPage/OffersPage";
 import SettingsPage from "./pages/adminPage/SettingsPage";
 import ProfilePage from "./pages/ProfilePage";
 import NotFoundPage from "./pages/NotFoundPage";
+import ProductFormPage from "./pages/adminPage/ProductFormPage";
 
 export default function App() {
   return (
@@ -47,6 +48,8 @@ export default function App() {
         >
           <Route index element={<Dashboard />} />
           <Route path="menu" element={<MenuPage />} />
+          <Route path="menu/add" element={<ProductFormPage />} />
+          <Route path="menu/edit/:id" element={<ProductFormPage />} />
           <Route path="orders" element={<OrdersPage/>} />
           <Route path="tables" element={<TablesPage/>} />
           <Route path="staff" element={<StaffPage/>} />
