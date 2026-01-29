@@ -46,7 +46,7 @@ export default function CasherLayout({
       </main>
 
       {/* --- زرار FAB --- */}
-      <div className="lg:hidden fixed bottom-8 right-6 z-[100]">
+      <div className="lg:hidden fixed bottom-8 right-6 z-100">
         <button
           onClick={() => setIsOpen(true)}
           className="relative size-16 bg-[#FF4500] text-white rounded-2xl shadow-lg flex items-center justify-center active:scale-90 transition-all border-2 border-white "
@@ -56,7 +56,7 @@ export default function CasherLayout({
           </span>
 
           {totalItems > 0 && (
-            <span className="absolute -top-1 -right-1 flex min-w-[24px] h-[24px] px-1 items-center justify-center rounded-md bg-[#FF4500] text-white text-[12px] font-black border-2 border-white shadow-md ">
+            <span className="absolute -top-1 -right-1 flex min-w-6 h-6 px-1 items-center justify-center rounded-md bg-[#FF4500] text-white text-[12px] font-black border-2 border-white shadow-md ">
               {totalItems}
             </span>
           )}
@@ -66,15 +66,15 @@ export default function CasherLayout({
       {/* SideBar */}
       <aside
         className={`
-        fixed inset-y-0 right-0 z-[110] w-[85%] sm:w-[400px] bg-white dark:bg-[#1A1110] border-l border-gray-200 dark:border-white/5 shadow-2xl transition-transform duration-500
-        lg:relative lg:translate-x-0 lg:w-[400px] lg:block
+        fixed inset-y-0 right-0 z-110 w-[85%] sm:w-100 bg-white dark:bg-[#1A1110] border-l border-gray-200 dark:border-white/5 shadow-2xl transition-transform duration-500
+        lg:relative lg:translate-x-0 lg:w-100 lg:block
         ${isOpen ? "translate-x-0" : "translate-x-full"}
       `}
       >
         {isOpen && (
           <button
             onClick={() => setIsOpen(false)}
-            className="lg:hidden absolute left-[-44px] top-10 size-11 bg-white dark:bg-[#1A1110] border-l border-t border-b border-gray-200 dark:border-white/10 rounded-l-xl flex items-center justify-center text-[#FF4500] shadow-md"
+            className="lg:hidden absolute -left-11 top-10 size-11 bg-white dark:bg-[#1A1110] border-l border-t border-b border-gray-200 dark:border-white/10 rounded-l-xl flex items-center justify-center text-[#FF4500] shadow-md"
           >
             <span className="material-symbols-outlined text-2xl font-bold">
               close
@@ -88,7 +88,7 @@ export default function CasherLayout({
       {/* Overlay */}
       {isOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-[105]"
+          className="lg:hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-105"
           onClick={() => setIsOpen(false)}
         />
       )}
