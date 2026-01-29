@@ -1,7 +1,7 @@
 import { MdAdd } from "react-icons/md";
 
 export default function ProductCard({ item }) {
-  const domain = "http://82.112.241.233:2010";
+  const domain = "";
   const isAvailable = item.isAvailable !== false;
 
   return (
