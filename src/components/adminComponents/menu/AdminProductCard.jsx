@@ -1,40 +1,76 @@
 import React, { useState } from 'react';
 import { MdEdit } from 'react-icons/md';
+import MenuRepo from '../../../customHook/MenuRepo'; 
 
 export default function AdminProductCard({ product }) {
-  // داتا افتراضية
+
+  const token = localStorage.getItem('jwt-token') || sessionStorage.getItem('jwt-token'); 
+
+  const domain = 'http://82.112.241.233:2010';
+
   const { 
-    name = "Spicy Beef Ramen", 
-    description = "Slow-cooked beef broth...", 
-    price = 18.00, 
-    category = "Main Course",
-    image = "https://images.unsplash.com/photo-1569718212165-3a8278d5f624",
-    inStock: initialStock = true, // الاسم هنا عشان نفرق بين البروب والستيت
-    categoryColor = "bg-primary"
-  } = product || {};
+    id, 
+    documentId,
+    name, 
+    desc, 
+    price, 
+    category,
+    image,
+    isAvailable 
+  } = product;
 
-  // 1. حالة الستوك (State)
-  const [inStock, setInStock] = useState(initialStock);
+  const [inStock, setInStock] = useState(isAvailable);
+  const [isUpdating, setIsUpdating] = useState(false); // عشان نمنع التكرار (Debounce)
 
-  // دالة تغيير الحالة
-  const toggleStock = () => {
-    setInStock(!inStock);
-    // هنا المفروض نبعت للباك اند مستقبلاً
-    console.log(`Product ${name} stock changed to: ${!inStock}`);
+  const toggleStock = async () => {
+    if (!token) {
+      alert("You are not authorized! Please login again.");
+      return;
+    }
+
+    if (isUpdating) return; 
+    setIsUpdating(true);
+    
+    const newStatus = !inStock;
+    
+    setInStock(newStatus);
+
+    try {
+      const targetId = documentId || id;
+      
+      await MenuRepo.updateProduct(targetId, { isAvailable: newStatus }, token);
+      console.log(`✅ Product ${name} updated successfully`);
+
+    } catch (error) {
+      console.error("❌ Failed to update stock:", error);
+      setInStock(!newStatus);
+      alert("Failed to update status. Check console for details.");
+    } finally {
+      setIsUpdating(false);
+    }
   };
+
+  const imageUrl = image?.url 
+    ? `${domain}${image.url}` 
+    : "https://placehold.co/400x300?text=No+Image";
 
   return (
     <div className={`group bg-white dark:bg-[#1a2632] rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden hover:shadow-xl hover:shadow-primary/5 hover:border-primary/50 transition-all duration-300 flex flex-col ${!inStock ? 'opacity-90' : ''}`}>
       
       {/* Image Section */}
-      <div className="relative aspect-[4/3] overflow-hidden">
-        {/* الصورة بتتحول لرمادي لو out of stock */}
-        <div 
-          className={`absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110 ${!inStock ? 'grayscale' : ''}`}
-          style={{ backgroundImage: `url('${image}')` }}
-        ></div>
+      <div className="relative aspect-4/3 overflow-hidden bg-gray-100">
+        <img 
+            src={imageUrl} 
+            alt={name}
+            className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 ${!inStock ? 'grayscale' : ''}`}
+            referrerPolicy="no-referrer"
+            onError={(e) => {
+                e.target.onerror = null; 
+                e.target.src = "https://placehold.co/400x300?text=Error";
+            }}
+        />
         
-        {/* Out of Stock Overlay - بيظهر بس لما الحالة تكون false */}
+        {/* Out of Stock Overlay */}
         {!inStock && (
             <div className="absolute inset-0 bg-black/50 flex items-center justify-center backdrop-blur-[1px]">
                 <span className="bg-red-500 text-white px-3 py-1 rounded-lg font-bold text-sm shadow-lg border border-white/20 transform rotate-[-5deg]">
@@ -51,9 +87,9 @@ export default function AdminProductCard({ product }) {
         </div>
 
         {/* Category Badge */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
-          <span className={`${categoryColor} text-white text-xs font-bold px-2 py-1 rounded backdrop-blur-sm`}>
-            {category}
+        <div className="absolute bottom-0 left-0 right-0 p-4 bg-linear-to-t from-black/80 to-transparent">
+          <span className="bg-primary text-white text-xs font-bold px-2 py-1 rounded backdrop-blur-sm">
+            {category?.name || "General"}
           </span>
         </div>
       </div>
@@ -61,27 +97,31 @@ export default function AdminProductCard({ product }) {
       {/* Content Section */}
       <div className="p-4 flex flex-col flex-1">
         <div className="flex justify-between items-start gap-2 mb-2">
-          <h3 className="text-slate-900 dark:text-white font-bold text-lg leading-tight group-hover:text-primary transition-colors">
+          <h3 className="text-slate-900 dark:text-white font-bold text-lg leading-tight group-hover:text-primary transition-colors line-clamp-1">
             {name}
           </h3>
         </div>
         <p className="text-slate-500 dark:text-slate-400 text-sm line-clamp-2 mb-4">
-          {description}
+          {desc || "No description"}
         </p>
 
         {/* Footer (Price & Toggle) */}
         <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-700">
-          <span className="text-slate-900 dark:text-white font-bold text-lg">${price.toFixed(2)}</span>
+          <span className="text-slate-900 dark:text-white font-bold text-lg">${Number(price).toFixed(2)}</span>
           
           <div className="flex items-center gap-3">
             <span className={`text-xs font-medium ${inStock ? 'text-green-600' : 'text-red-500'}`}>
                 {inStock ? 'In Stock' : 'Out Stock'}
             </span>
             
-            {/* 2. زرار التوغل الشغال */}
+            {/* toggle btn*/}
             <button 
                 onClick={toggleStock}
-                className={`w-10 h-6 rounded-full relative transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary ${inStock ? 'bg-primary' : 'bg-slate-300 dark:bg-slate-600'}`}
+                disabled={isUpdating}
+                className={`w-10 h-6 rounded-full relative transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary 
+                  ${inStock ? 'bg-primary' : 'bg-slate-300 dark:bg-slate-600'} 
+                  ${isUpdating ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+                `}
             >
                 <div className={`absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform duration-300 shadow-sm ${inStock ? 'translate-x-4' : ''}`}></div>
             </button>
