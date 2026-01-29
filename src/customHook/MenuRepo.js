@@ -43,6 +43,10 @@ const MenuRepo = {
     return axios.post(`${domain}/api/upload`, formData, {
       headers: { Authorization: `Bearer ${token}` }
     });
+  },
+
+  getProductById: (id) => {
+    return axios.get(`${domain}/api/products/${id}?populate=*`);
   }
 };
 

@@ -1,9 +1,15 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useMenuStore } from "../store";
 
-export default function useMenuFilter() {
-  const { products, categories, fetchMenuData, isLoading, error } =
-    useMenuStore();
+export default function useMenuFilter(enablePolling = false) {
+  const {
+    products,
+    categories,
+    fetchMenuData,
+    silentRefresh,
+    isLoading,
+    error,
+  } = useMenuStore();
 
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
@@ -14,6 +20,16 @@ export default function useMenuFilter() {
   useEffect(() => {
     fetchMenuData();
   }, []);
+
+  useEffect(() => {
+    if (!enablePolling) return;
+
+    const interval = setInterval(() => {
+      silentRefresh();
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, [enablePolling, silentRefresh]);
 
   const filteredProducts = useMemo(() => {
     let result = Array.isArray(products) ? [...products] : [];
@@ -29,10 +45,10 @@ export default function useMenuFilter() {
     // search filter
     if (searchQuery.trim() !== "") {
       const query = searchQuery.toLowerCase();
-      result = result.filter((item) =>
-        item.name && item.name.toLowerCase().includes(query)
+      result = result.filter(
+        (item) => item.name && item.name.toLowerCase().includes(query),
       );
-    };
+    }
 
     // sorting
     if (sortOrder === "low-high") {

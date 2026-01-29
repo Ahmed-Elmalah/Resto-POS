@@ -4,7 +4,6 @@ import ProductCard from "../../components/casherComponents/ProductCard";
 import useMenuFilter from "../../customHook/useMenuFilter"; // استدعاء الهوك
 
 export default function CasherHomePage() {
-  // 1. جلب البيانات واللوجيك من الهوك
   const {
     products,
     categories,
@@ -16,7 +15,7 @@ export default function CasherHomePage() {
     searchInputRef,
     clearSearch,
     error,
-  } = useMenuFilter();
+  } = useMenuFilter(true);
 
   return (
     // 2. تمرير الداتا للـ Layout عشان التابات تشتغل

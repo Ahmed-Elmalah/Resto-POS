@@ -1,5 +1,6 @@
 import React from "react";
 import { MdSearch, MdSort, MdAdd } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 export default function MenuFilters({
   categories = [],
@@ -10,6 +11,7 @@ export default function MenuFilters({
   sortBy,
   setSortBy,
 }) {
+  const navigate = useNavigate();
 
   const tabs = [
     { id: "all", name: "All", icon: "star" },
@@ -83,7 +85,7 @@ export default function MenuFilters({
             </select>
           </div>
 
-          <button className="flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-white px-4 py-2.5 rounded-xl font-bold shadow-lg shadow-primary/20 transition-transform active:scale-95 whitespace-nowrap text-sm shrink-0">
+          <button onClick={()=> navigate('/admin/menu/add')} className="flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-white px-4 py-2.5 rounded-xl font-bold shadow-lg shadow-primary/20 transition-transform active:scale-95 whitespace-nowrap text-sm shrink-0">
             <MdAdd size={20} />
             <span className="hidden sm:inline">Add Item</span>
             <span className="sm:hidden">Add</span>
