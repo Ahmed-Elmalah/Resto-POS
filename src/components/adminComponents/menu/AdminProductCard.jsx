@@ -58,7 +58,7 @@ export default function AdminProductCard({ product }) {
     <div className={`group bg-white dark:bg-[#1a2632] rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden hover:shadow-xl hover:shadow-primary/5 hover:border-primary/50 transition-all duration-300 flex flex-col ${!inStock ? 'opacity-90' : ''}`}>
       
       {/* Image Section */}
-      <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
+      <div className="relative aspect-4/3 overflow-hidden bg-gray-100">
         <img 
             src={imageUrl} 
             alt={name}
@@ -87,7 +87,7 @@ export default function AdminProductCard({ product }) {
         </div>
 
         {/* Category Badge */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+        <div className="absolute bottom-0 left-0 right-0 p-4 bg-linear-to-t from-black/80 to-transparent">
           <span className="bg-primary text-white text-xs font-bold px-2 py-1 rounded backdrop-blur-sm">
             {category?.name || "General"}
           </span>

@@ -2,6 +2,7 @@ import { MdAdd } from "react-icons/md";
 
 export default function ProductCard({ item }) {
   const domain = "http://82.112.241.233:2010";
+  const isAvailable = item.isAvailable !== false;
 
   return (
     <div className="group flex flex-col bg-white dark:bg-background-dark rounded-xl transition-all duration-300 overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-1 border border-transparent dark:border-[#3a2520]">
@@ -21,6 +22,14 @@ export default function ProductCard({ item }) {
             e.target.src = "https://placehold.co/400x300?text=Error";
           }}
         />
+
+        {!isAvailable && (
+            <div className="absolute inset-0 cursor-not-allowed bg-black/50 flex items-center justify-center z-10">
+                <span className="bg-red-600 text-white font-bold px-3 py-1 rounded-lg shadow-lg border border-white/20 transform -rotate-6">
+                    Sold Out
+                </span>
+            </div>
+        )}
       </div>
 
       {/* باقي المحتوى */}

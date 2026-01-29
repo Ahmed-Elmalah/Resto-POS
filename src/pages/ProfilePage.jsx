@@ -29,10 +29,10 @@ export default function ProfilePage() {
     /* الحاوية الرئيسية: خلفية بيضاء في اللايت مود وداكنة في الدارك مود */
     <div className="w-full h-full min-h-screen bg-[#F9FAFB] dark:bg-transparent overflow-y-auto custom-scrollbar transition-colors duration-300">
       
-      <main className="max-w-[850px] mx-auto px-4 md:px-8 py-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <main className="max-w-212.5 mx-auto px-4 md:px-8 py-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
         
         {/* الكارت الرئيسي: أبيض في اللايت مود وداكن في الدارك مود */}
-        <div className="bg-white dark:bg-[#1A2632] rounded-[32px] border border-gray-200 dark:border-white/5 shadow-2xl overflow-hidden transition-colors duration-300">
+        <div className="bg-white dark:bg-[#1A2632] rounded-4xl border border-gray-200 dark:border-white/5 shadow-2xl overflow-hidden transition-colors duration-300">
           
           {/* خلفية تجميلية علوية */}
           <div className="h-24  from-[#FF4500]/10 to-transparent"></div>
