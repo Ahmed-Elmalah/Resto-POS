@@ -20,17 +20,28 @@ import SettingsPage from "./pages/adminPage/SettingsPage";
 import ProfilePage from "./pages/ProfilePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProductFormPage from "./pages/adminPage/ProductFormPage";
+import { Toaster } from "react-hot-toast";
 
 export default function App() {
   return (
     <BrowserRouter>
+      <Toaster
+        position="top-center" 
+        reverseOrder={false}
+        toastOptions={{
+          style: {
+            background: "#333",
+            color: "#fff",
+          },
+        }}
+      />
       <Routes>
         {/* --- User Routes --- */}
         <Route path="/" element={<UserLayout />}>
           <Route index element={<LandingPage />} />
           <Route path="menu" element={<UserMenuPage />} />
           <Route path="reservations" element={<ReservationsPage />} />
-          <Route path="profile" element={<ProfilePage/>}/>
+          <Route path="profile" element={<ProfilePage />} />
         </Route>
 
         {/* --- Auth Routes --- */}
@@ -50,12 +61,12 @@ export default function App() {
           <Route path="menu" element={<MenuPage />} />
           <Route path="menu/add" element={<ProductFormPage />} />
           <Route path="menu/edit/:id" element={<ProductFormPage />} />
-          <Route path="orders" element={<OrdersPage/>} />
-          <Route path="tables" element={<TablesPage/>} />
-          <Route path="staff" element={<StaffPage/>} />
-          <Route path="promotions" element={<OffersPage/>} />
-          <Route path="settings" element={<SettingsPage/>} />
-          <Route path="profile" element={<ProfilePage/>}/>
+          <Route path="orders" element={<OrdersPage />} />
+          <Route path="tables" element={<TablesPage />} />
+          <Route path="staff" element={<StaffPage />} />
+          <Route path="promotions" element={<OffersPage />} />
+          <Route path="settings" element={<SettingsPage />} />
+          <Route path="profile" element={<ProfilePage />} />
         </Route>
 
         {/* --- Cashier Routes --- */}
@@ -68,7 +79,7 @@ export default function App() {
           }
         />
 
-        <Route path="*" element={<NotFoundPage/>} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   );
