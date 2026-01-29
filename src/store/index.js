@@ -36,17 +36,21 @@ export const useMenuStore = create((set , get)=>({
 
     try {
       
-      const [productsRes , categoriesRes] = Promise.all([
+      const [productsRes , categoriesRes] = await Promise.all([
+        MenuRepo.getAllProducts(),
         MenuRepo.getAllCategories(),
-        MenuRepo.getAllProducts()
       ]);
+
+      console.log("✅ Data received from API:");
+      console.log("Categories Response:", categoriesRes.data);
+      console.log("Products Response:", productsRes.data);
 
       const rawProducts = productsRes.data.data || [];
       const rawCategories = categoriesRes.data.data || [];
 
       set({
-        products : rawProducts,
         categories : rawCategories ,
+        products : rawProducts,
         isLoading : false , 
         isFetched : true
       })

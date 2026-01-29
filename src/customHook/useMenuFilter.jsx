@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useMenuStore } from "../store";
 
 export default function useMenuFilter() {
@@ -16,7 +16,7 @@ export default function useMenuFilter() {
   }, []);
 
   const filteredProducts = useMemo(() => {
-    let result = [...products];
+    let result = Array.isArray(products) ? [...products] : [];
 
     // category filter
     if (activeCategory !== "All") {
@@ -30,19 +30,18 @@ export default function useMenuFilter() {
     if (searchQuery.trim() !== "") {
       const query = searchQuery.toLowerCase();
       result = result.filter((item) =>
-        item.name.toLowerCase().includes(query),
+        item.name && item.name.toLowerCase().includes(query)
       );
-    }
+    };
 
     // sorting
     if (sortOrder === "low-high") {
-      result.sort((a, b) => a.attributes.price - b.attributes.price);
+      result.sort((a, b) => a.price - b.price);
     } else if (sortOrder === "high-low") {
-      result.sort((a, b) => b.attributes.price - a.attributes.price);
+      result.sort((a, b) => b.price - a.price);
     }
 
     return result;
-
   }, [products, activeCategory, searchQuery, sortOrder]);
 
   const clearSearch = () => {
@@ -55,8 +54,8 @@ export default function useMenuFilter() {
   return {
     // Data
     categories,
-    products : filteredProducts,
-    totalCount : filteredProducts.length,
+    products: filteredProducts,
+    totalCount: filteredProducts.length,
     isLoading,
     error,
 
@@ -71,6 +70,5 @@ export default function useMenuFilter() {
 
     sortOrder,
     setSortOrder,
-
-};
+  };
 }
