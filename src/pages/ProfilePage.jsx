@@ -1,21 +1,25 @@
 import React, { useState, useEffect } from 'react';
+import useLogin from '../customHook/useLogin'; // تأكد من المسار الصحيح للهوك عندك
 
 export default function ProfilePage() {
+  const { UpdateData , updatePassword} = useLogin();
   const [isDark, setIsDark] = useState(localStorage.getItem('theme') !== 'light');
 
   const [profile, setProfile] = useState({
+    id: "",
     name: "",
     email: "",
     phone: "",
     bio: ""
   });
 
-  
+  // 1. تحميل البيانات عند فتح الصفحة
   useEffect(() => {
     const savedUserData = sessionStorage.getItem('user-info');
     if (savedUserData) {
       const user = JSON.parse(savedUserData);
       setProfile({
+        id: user.id || "",
         name: user.username || "",
         email: user.email || "",
         phone: user.phone_number || "",
@@ -44,8 +48,55 @@ export default function ProfilePage() {
     }));
   };
 
+  // 3. دالة الحفظ
+  const handleSave = async () => {
+    if (!profile.id) {
+      alert("عفواً، لم يتم العثور على معرف المستخدم.");
+      return;
+    }
+
+    const result = await UpdateData(profile.id, {
+      username: profile.name,
+      phone_number: profile.phone,
+      bio: profile.bio
+    });
+
+    if (result.success) {
+      alert("Updated Successfuly");
+    } else {
+      alert("Updated Failed , Try again");
+    }
+
+  };
+
+  // 1. State جديدة للباسوردات
+  const [passwords, setPasswords] = useState({
+    current: "",
+    new: "",
+    confirm: ""
+  });
+
+  // 2. دالة التعامل مع الريكويست
+  const handlePasswordUpdate = async () => {
+    if (passwords.new !== passwords.confirm) {
+      return alert("Password Not Match");
+    }
+
+    const res = await updatePassword(passwords.current, passwords.new, passwords.confirm);
+
+    if (res.success) {
+      alert("Password Changed ✅");
+      setPasswords({ current: "", new: "", confirm: "" }); 
+    } else {
+      alert(res.error);
+    }
+  };
 
   
+
+
+
+
 
   return (
     <div className="w-full h-full min-h-screen bg-[#F9FAFB] dark:bg-transparent overflow-y-auto custom-scrollbar transition-colors duration-300 text-left">
@@ -76,7 +127,7 @@ export default function ProfilePage() {
                   className="block mx-auto text-3xl font-black text-center bg-transparent text-gray-900 dark:text-white outline-none focus:text-[#FF4500] w-full transition-colors"
                 />
                 <span className="mt-2 inline-flex items-center px-4 py-1 rounded-full bg-[#FF4500]/10 border border-[#FF4500]/20 text-[#FF4500] text-[10px] font-black uppercase tracking-widest">
-                  Administrator
+                  User  
                 </span>
               </div>
             </div>
@@ -107,8 +158,11 @@ export default function ProfilePage() {
                   <input
                     name="phone"
                     value={profile.phone}
-                    readOnly 
-                    className="w-full bg-transparent text-gray-400 dark:text-gray-500 font-medium py-2 border-b border-gray-100 dark:border-white/5 outline-none cursor-not-allowed"
+                    onChange={handleChange}
+
+                    readOnly={profile.phone !== "" && profile.phone !== null}
+                    className={`w-full bg-transparent font-medium py-2 border-b border-gray-100 dark:border-white/5 outline-none transition-all ${profile.phone !== "" ? "text-gray-400 cursor-not-allowed" : "text-gray-900 dark:text-white focus:border-[#FF4500]"
+                      }`}
                   />
                 </div>
                 <div className="md:col-span-2 space-y-2">
@@ -123,7 +177,10 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              <button className="bg-[#FF4500] text-white px-8 py-3 rounded-xl font-black text-sm shadow-lg shadow-[#FF4500]/20 hover:scale-105 active:scale-95 transition-all">
+              <button
+                onClick={handleSave}
+                className="bg-[#FF4500] text-white px-8 py-3 rounded-xl font-black text-sm shadow-lg shadow-[#FF4500]/20 hover:scale-105 active:scale-95 transition-all"
+              >
                 Save Changes
               </button>
             </div>
@@ -131,27 +188,43 @@ export default function ProfilePage() {
 
           {/* Security Section */}
           <div className="p-8 md:p-12 bg-gray-50 dark:bg-black/20 border-t border-gray-100 dark:border-white/5">
-            <h3 className="text-sm font-black text-gray-800 dark:text-white mb-8 flex items-center gap-2 uppercase tracking-widest opacity-80">
-              <span className="material-symbols-outlined text-[#FF4500] text-lg">lock</span>
-              Security Settings
-            </h3>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl">
               <div className="md:col-span-2 space-y-2">
-                <label className="text-xs font-bold text-gray-500 dark:text-gray-400">Current Password</label>
-                <input type="password" placeholder="••••••••" className="w-full p-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#101922] focus:border-[#FF4500] outline-none transition-all text-gray-900 dark:text-white" />
+                <label className="text-xs font-bold text-gray-500">Current Password</label>
+                <input
+                  type="password"
+                  value={passwords.current}
+                  onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
+                  placeholder="••••••••"
+                  className="w-full p-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#101922] outline-none text-gray-900 dark:text-white"
+                />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-500 dark:text-gray-400">New Password</label>
-                <input type="password" placeholder="••••••••" className="w-full p-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#101922] focus:border-[#FF4500] outline-none transition-all text-gray-900 dark:text-white" />
+                <label className="text-xs font-bold text-gray-500">New Password</label>
+                <input
+                  type="password"
+                  value={passwords.new}
+                  onChange={(e) => setPasswords({ ...passwords, new: e.target.value })}
+                  placeholder="••••••••"
+                  className="w-full p-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#101922] outline-none text-gray-900 dark:text-white"
+                />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-500 dark:text-gray-400">Confirm Password</label>
-                <input type="password" placeholder="••••••••" className="w-full p-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#101922] focus:border-[#FF4500] outline-none transition-all text-gray-900 dark:text-white" />
+                <label className="text-xs font-bold text-gray-500">Confirm Password</label>
+                <input
+                  type="password"
+                  value={passwords.confirm}
+                  onChange={(e) => setPasswords({ ...passwords, confirm: e.target.value })}
+                  placeholder="••••••••"
+                  className="w-full p-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#101922] outline-none text-gray-900 dark:text-white"
+                />
               </div>
             </div>
 
-            <button className="mt-8 px-8 py-3 bg-gray-100 dark:bg-white/5 text-[#FF4500] border border-transparent dark:border-[#FF4500]/20 rounded-xl font-black text-sm hover:bg-[#FF4500] hover:text-white transition-all">
+            <button
+              onClick={handlePasswordUpdate}
+              className="mt-8 px-8 py-3 bg-gray-100 dark:bg-white/5 text-[#FF4500] border border-transparent dark:border-[#FF4500]/20 rounded-xl font-black text-sm hover:bg-[#FF4500] hover:text-white transition-all"
+            >
               Update Password
             </button>
           </div>
