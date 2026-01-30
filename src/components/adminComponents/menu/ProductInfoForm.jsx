@@ -1,5 +1,4 @@
-import React from 'react';
-import { MdSave } from 'react-icons/md';
+import { MdDelete, MdSave } from 'react-icons/md';
 
 export default function ProductInfoForm({ 
   formData, 
@@ -8,8 +7,9 @@ export default function ProductInfoForm({
   categories, 
   loading, 
   fetchingCats,
-  isEditMode, // عشان نغير اسم الزرار
-  onCancel 
+  isEditMode, 
+  onCancel ,
+  onDelete
 }) {
   return (
     <div className="bg-white dark:bg-[#1a2632] p-6 md:p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
@@ -91,28 +91,43 @@ export default function ProductInfoForm({
         </div>
       </div>
 
-      {/* Action Buttons */}
-      <div className="flex justify-end gap-4 mt-8 pt-6 border-t border-slate-100 dark:border-slate-700">
-        <button 
-          type="button"
-          onClick={onCancel}
-          className="px-6 py-3 rounded-xl font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-        >
-          Cancel
-        </button>
+      {/* --- Action Buttons --- */}
+      <div className={`flex items-center mt-8 pt-6 border-t border-slate-100 dark:border-slate-700 ${isEditMode ? 'justify-between' : 'justify-end'}`}>
         
-        <button 
-          type="submit"
-          disabled={loading}
-          className="flex items-center gap-2 px-8 py-3 rounded-xl font-bold text-white bg-primary hover:bg-primary-hover shadow-lg shadow-primary/25 active:scale-95 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
-        >
-          {loading ? 'Saving...' : (
-            <>
-              <MdSave size={20} />
-              {isEditMode ? 'Update Product' : 'Save Product'}
-            </>
-          )}
-        </button>
+        {/* 🔥 Delete Button (Shows only in Edit Mode) */}
+        {isEditMode && (
+          <button 
+            type="button"
+            onClick={onDelete}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 border border-transparent hover:border-red-200 dark:hover:border-red-800 transition-all"
+          >
+            <MdDelete size={20} />
+            <span className="hidden sm:inline">Delete Product</span>
+          </button>
+        )}
+
+        <div className="flex gap-4">
+            <button 
+            type="button"
+            onClick={onCancel}
+            className="px-6 py-2 rounded-xl font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            >
+            Cancel
+            </button>
+            
+            <button 
+            type="submit"
+            disabled={loading}
+            className="flex items-center gap-2 px-8 py-2 rounded-xl font-bold text-white bg-primary hover:bg-primary-hover shadow-lg shadow-primary/25 active:scale-95 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+            {loading ? 'Saving...' : (
+                <>
+                <MdSave size={20} />
+                {isEditMode ? 'Update' : 'Save'}
+                </>
+            )}
+            </button>
+        </div>
       </div>
     </div>
   );

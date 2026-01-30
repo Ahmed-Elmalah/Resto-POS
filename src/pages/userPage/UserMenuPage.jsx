@@ -1,28 +1,24 @@
-import React from "react";
-// Icons for UI
 import { MdSearch, MdSort } from "react-icons/md";
 
-// Components
 import CategoryTabs from "../../components/userComponents/menu/CategoryTabs";
 import ProductCard from "../../components/userComponents/menu/ProductCard";
 import FloatingCart from "../../components/userComponents/menu/FloatingCart";
 
-// The Hook that contains all logic (Fetch, Search, Filter, Sort)
 import useMenuFilter from "../../customHook/useMenuFilter";
 
 export default function UserMenuPage() {
   
   // 1. Destructure data and control functions from our custom hook
   const { 
-    products,       // The final list of products (filtered & sorted)
-    categories,     // List of categories from API
-    activeCategory, // Current selected category
-    setActiveCategory, // Function to change category
-    searchQuery,    // Current search text
-    setSearchQuery, // Function to update search text
-    setSortOrder,   // Function to update sort order
-    isLoading,      // Loading state
-    error           // Error state
+    products,       
+    categories,     
+    activeCategory, 
+    setActiveCategory,
+    searchQuery,  
+    setSearchQuery, 
+    setSortOrder,   
+    isLoading,   
+    error       
   } = useMenuFilter();
 
   return (
@@ -32,7 +28,6 @@ export default function UserMenuPage() {
       <main className="flex-1 w-full max-w-300 mt-15 mx-auto px-4 md:px-8 py-6 pb-24">
         
         {/* 2. Category Tabs (Dynamic) */}
-        {/* We pass the data and the handler to the child component */}
         <CategoryTabs 
           categories={categories} 
           activeCategory={activeCategory} 
@@ -96,7 +91,6 @@ export default function UserMenuPage() {
                 ))}
               </div>
             ) : (
-              // Empty State (if search/filter yields no results)
               <div className="text-center py-20">
                 <p className="text-gray-500 text-lg">No items found matching your selection 😔</p>
                 <button 
@@ -113,7 +107,7 @@ export default function UserMenuPage() {
       </main>
 
       {/* Floating Cart (Static for now) */}
-      <FloatingCart />
+      {/* <FloatingCart /> */}
       
     </div>
   );

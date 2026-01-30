@@ -45,13 +45,10 @@ export default function ProductCard({ item }) {
         </p>
 
         <div className="mt-auto flex items-center justify-between">
-          <span className="text-lg font-bold text-[#181211] dark:text-white">
+          <span className="text-lg font-bold text-primary">
             ${Number(item.price).toFixed(2)}
           </span>
 
-          <button className="flex items-center justify-center size-9 rounded-full bg-[#f4f1f0] dark:bg-[#3a2520] text-primary hover:bg-primary hover:text-white transition-colors">
-            <MdAdd className="text-[20px]" />
-          </button>
         </div>
       </div>
     </div>

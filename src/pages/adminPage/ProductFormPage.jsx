@@ -3,8 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { MdArrowBack } from "react-icons/md";
 import MenuRepo from "../../customHook/MenuRepo";
 import { domain, useMenuStore } from "../../store";
+import Swal from 'sweetalert2';
 
-// استدعاء الكومبوننتس الجديدة
 import ImageUploader from "../../components/adminComponents/menu/ImageUploader";
 import ProductInfoForm from "../../components/adminComponents/menu/ProductInfoForm";
 import toast from "react-hot-toast";
@@ -116,9 +116,9 @@ export default function ProductFormPage() {
     setLoading(true);
 
     try {
-      let imageId = null; // Strapi ID للصورة
+      let imageId = null; 
 
-      // 1. لو رفعنا صورة جديدة (سواء في الإضافة أو التعديل)
+      //  uplode new img
       if (imageFile) {
         const imageFormData = new FormData();
         imageFormData.append("files", imageFile);
@@ -128,7 +128,7 @@ export default function ProductFormPage() {
         }
       }
 
-      // 2. تجهيز البيانات
+      // ready data
       const productPayload = {
         name: formData.name,
         desc: formData.desc,
@@ -137,15 +137,13 @@ export default function ProductFormPage() {
         isAvailable: formData.isAvailable,
       };
 
-      // لو رفعنا صورة جديدة، نحدثها. لو لا، منبعتش image field عشان القديمة متتمسحش (في التعديل)
       if (imageId) {
         productPayload.image = imageId;
       }
 
-      // 3. القرار: إضافة ولا تعديل؟
+      // to see add or update
       if (isEditMode) {
         // --- Update ---
-        // بنستخدم documentId لو متاح أو id (حسب Strapi version)
         await MenuRepo.updateProduct(id, productPayload, token);
         toast.success("Product updated successfully! ", { id: loadingToast });
       } else {
@@ -163,6 +161,39 @@ export default function ProductFormPage() {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Handle Delete 
+  const handleDelete = async () => {
+    // 1. Show Confirmation Alert
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      theme: 'dark',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    });
+
+    // 2. If confirmed, proceed
+    if (result.isConfirmed) {
+      const loadingToast = toast.loading('Deleting product...');
+      try {
+        // 3. Call Repo to delete
+        await MenuRepo.deleteProduct(id, token);
+        
+        // 4. Success handling
+        toast.success('Product deleted successfully!', { id: loadingToast });
+        await refreshMenu();
+        navigate('/admin/menu');
+        
+      } catch (error) {
+        console.error("Delete failed:", error);
+        toast.error('Failed to delete product', { id: loadingToast });
+      }
     }
   };
 
@@ -215,6 +246,7 @@ export default function ProductFormPage() {
             fetchingCats={fetchingCats}
             isEditMode={isEditMode}
             onCancel={() => navigate("/admin/menu")}
+            onDelete={handleDelete}
           />
         </div>
       </form>
