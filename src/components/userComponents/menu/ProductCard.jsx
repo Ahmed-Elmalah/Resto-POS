@@ -32,7 +32,6 @@ export default function ProductCard({ item }) {
         )}
       </div>
 
-      {/* باقي المحتوى */}
       <div className="flex flex-col flex-1 p-4">
         <div className="flex justify-between items-start mb-1">
           <h3 className="text-lg font-bold text-[#181211] dark:text-white line-clamp-1">

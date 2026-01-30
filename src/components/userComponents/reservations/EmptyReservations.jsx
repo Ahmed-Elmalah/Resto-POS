@@ -1,5 +1,4 @@
-import React from "react";
-import { MdCalendarToday } from "react-icons/md";
+ import { MdCalendarToday } from "react-icons/md";
 
 export default function EmptyReservations() {
   return (

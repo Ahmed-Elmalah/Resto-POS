@@ -1,5 +1,4 @@
-import React from "react";
-import { MdVerified, MdRestaurantMenu, MdGroups } from "react-icons/md";
+ import { MdVerified, MdRestaurantMenu, MdGroups } from "react-icons/md";
 import { Link } from "react-router-dom";
 
 export default function AboutSection() {

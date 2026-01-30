@@ -1,5 +1,4 @@
-import React from "react";
-import { MdSearch, MdSort, MdAdd } from "react-icons/md";
+ import { MdSearch, MdSort, MdAdd } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 
 export default function MenuFilters({

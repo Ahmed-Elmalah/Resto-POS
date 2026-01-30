@@ -1,5 +1,4 @@
-import React from "react";
-
+ 
 // We receive the categories list and the function to change the active tab as props
 export default function CategoryTabs({ categories  = [], activeCategory, onSelectCategory }) {
   

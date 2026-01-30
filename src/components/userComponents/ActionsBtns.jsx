@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useAuthuser } from "../../store";
 import { MdLogout, MdPerson, MdShoppingCart } from "react-icons/md";
 import useLogin from "../../customHook/useLogin";
@@ -30,13 +29,13 @@ export default function ActionsBtns() {
           </Link>
 
           {/* Cart Button */}
-          <button className="relative group flex items-center justify-center size-8 md:size-10 rounded-lg hover:bg-primary/10 transition-colors">
+          {/* <button className="relative group flex items-center justify-center size-8 md:size-10 rounded-lg hover:bg-primary/10 transition-colors">
             <MdShoppingCart
               className="text-text-main dark:text-white group-hover:text-primary transition-colors"
               size={20}
             />
             <span className="absolute top-1.5 right-1.5 md:top-2 md:right-2 size-1.5 md:size-2 bg-primary rounded-full ring-1 md:ring-2 ring-white dark:ring-background-dark"></span>
-          </button>
+          </button> */}
 
           {/* Logout Button */}
           <button

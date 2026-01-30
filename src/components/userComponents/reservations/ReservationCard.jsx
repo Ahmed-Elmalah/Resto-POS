@@ -1,5 +1,4 @@
-import React from "react";
-import {
+ import {
   MdSchedule,
   MdGroup,
   MdChair,
