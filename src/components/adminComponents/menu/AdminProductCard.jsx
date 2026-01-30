@@ -60,6 +60,7 @@ export default function AdminProductCard({ product }) {
       {/* Image Section */}
       <div className="relative aspect-4/3 overflow-hidden bg-gray-100">
         <img
+          onClick={() => navigate(`/admin/menu/edit/${documentId || id}`)}
           src={imageUrl}
           alt={name}
           className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 ${!inStock ? "grayscale" : ""}`}
