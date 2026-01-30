@@ -29,6 +29,12 @@ const loginRepo = {
                 Authorization : `Bearer ${jwt}`
             }
         })
+    },
+
+    change_password: (data, jwt) => {
+        return axios.post(`${domain}/api/auth/change-password`, data, {
+            headers: { Authorization: `Bearer ${jwt}` }
+        });
     }
 }
 
