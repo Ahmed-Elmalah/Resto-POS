@@ -47,7 +47,7 @@ export default function LoginPage() {
           {["Support", "Privacy", "Terms"].map((link) => (
             <a
               key={link}
-              href="#"
+              href="/"
               className="text-[#9dabb9] hover:text-white text-sm font-medium transition-colors"
             >
               {link}
