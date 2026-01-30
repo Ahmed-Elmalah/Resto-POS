@@ -1,5 +1,4 @@
-import React from "react";
-import { MdRestaurant } from "react-icons/md";
+ import { MdRestaurant } from "react-icons/md";
 import SignUpForm from "../../components/signUpComponents/SignUpForm";
 
 export default function Register() {

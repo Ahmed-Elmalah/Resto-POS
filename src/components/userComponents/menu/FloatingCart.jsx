@@ -1,5 +1,4 @@
-import React from "react";
-import { MdShoppingCart } from "react-icons/md";
+ import { MdShoppingCart } from "react-icons/md";
 
 export default function FloatingCart() {
   return (

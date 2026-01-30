@@ -1,5 +1,4 @@
-import React from "react";
-import { MdAdd } from "react-icons/md";
+ import { MdAdd } from "react-icons/md";
 
 // Header component for the Reservations page
 export default function ReservationsHeader() {

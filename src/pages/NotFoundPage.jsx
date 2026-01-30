@@ -1,5 +1,4 @@
-import React from "react";
-import { Link } from "react-router-dom";
+ import { Link } from "react-router-dom";
 import { MdRestaurantMenu, MdHome, MdSearch } from "react-icons/md";
 
 export default function NotFoundPage() {

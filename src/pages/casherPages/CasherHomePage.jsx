@@ -1,5 +1,4 @@
-import React from "react";
-import CasherLayout from "../../layouts/CasherLayout";
+ import CasherLayout from "../../layouts/CasherLayout";
 import ProductCard from "../../components/casherComponents/ProductCard";
 import useMenuFilter from "../../customHook/useMenuFilter"; // استدعاء الهوك
 

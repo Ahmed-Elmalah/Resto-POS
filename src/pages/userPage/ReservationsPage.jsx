@@ -1,5 +1,4 @@
-import React from "react";
-import ReservationsHeader from "../../components/userComponents/reservations/ReservationsHeader";
+ import ReservationsHeader from "../../components/userComponents/reservations/ReservationsHeader";
 import ReservationTabs from "../../components/userComponents/reservations/ReservationTabs";
 import ReservationCard from "../../components/userComponents/reservations/ReservationCard";
 import EmptyReservations from "../../components/userComponents/reservations/EmptyReservations";

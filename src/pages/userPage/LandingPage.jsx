@@ -1,5 +1,4 @@
-import React from "react";
-import Hero from "../../components/userComponents/Hero";
+ import Hero from "../../components/userComponents/Hero";
 import ReservationWidget from "../../components/userComponents/ReservationWidget";
 import MenuPreview from "../../components/userComponents/MenuPreview";
 import AboutSection from "../../components/userComponents/AboutSection";

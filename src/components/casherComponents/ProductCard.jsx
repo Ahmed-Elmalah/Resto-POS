@@ -1,5 +1,4 @@
-import React from "react";
-import useOrderStore from "../../store/useOrderStore";
+ import useOrderStore from "../../store/useOrderStore";
 
 export default function ProductCard({ product }) {
   const addToCart = useOrderStore((state) => state.addToCart);
@@ -22,7 +21,6 @@ export default function ProductCard({ product }) {
         }
       `}
     >
-      {/* Container للصورة */}
       <div style={{ width: '100%', height: '160px', backgroundColor: '#f3f4f6', position: 'relative' }}>
         <img 
             src={imageUrl} 

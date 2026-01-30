@@ -1,5 +1,4 @@
-import React from "react";
-
+ 
 // Tabs for switching between Upcoming and Past reservations
 export default function ReservationTabs() {
   return (

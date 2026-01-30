@@ -1,5 +1,4 @@
-import React from "react";
-import { MdRestaurant } from "react-icons/md";
+ import { MdRestaurant } from "react-icons/md";
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
 
 import LoginForm from "../../components/loginComponents/LoginForm";
