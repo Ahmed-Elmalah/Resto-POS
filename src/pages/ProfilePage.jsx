@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import useLogin from '../customHook/useLogin'; // تأكد من المسار الصحيح للهوك عندك
+import useLogin from '../customHook/useLogin'; 
 
 export default function ProfilePage() {
   const { UpdateData , updatePassword} = useLogin();
@@ -10,10 +10,11 @@ export default function ProfilePage() {
     name: "",
     email: "",
     phone: "",
-    bio: ""
+    bio: "",
+    role: "User" // Default value
   });
 
-  // 1. تحميل البيانات عند فتح الصفحة
+  // 1. Load data when the page opens
   useEffect(() => {
     const savedUserData = sessionStorage.getItem('user-info');
     if (savedUserData) {
@@ -23,12 +24,14 @@ export default function ProfilePage() {
         name: user.username || "",
         email: user.email || "",
         phone: user.phone_number || "",
-        bio: user.bio || ""
+        bio: user.bio || "",
+        // Get the role name dynamically from the user object
+        role: user.role?.name || "User" 
       });
     }
   }, []);
 
-  // 2. التحكم في الـ Dark Mode
+  // 2. Control Dark Mode
   useEffect(() => {
     const root = window.document.documentElement;
     if (isDark) {
@@ -48,10 +51,10 @@ export default function ProfilePage() {
     }));
   };
 
-  // 3. دالة الحفظ
+  // 3. Save function
   const handleSave = async () => {
     if (!profile.id) {
-      alert("عفواً، لم يتم العثور على معرف المستخدم.");
+      alert("Sorry, user ID not found.");
       return;
     }
 
@@ -62,21 +65,20 @@ export default function ProfilePage() {
     });
 
     if (result.success) {
-      alert("Updated Successfuly");
+      alert("Updated Successfully");
     } else {
-      alert("Updated Failed , Try again");
+      alert("Update Failed, Try again");
     }
-
   };
 
-  // 1. State جديدة للباسوردات
+  // 1. New State for passwords
   const [passwords, setPasswords] = useState({
     current: "",
     new: "",
     confirm: ""
   });
 
-  // 2. دالة التعامل مع الريكويست
+  // 2. Handle request function
   const handlePasswordUpdate = async () => {
     if (passwords.new !== passwords.confirm) {
       return alert("Password Not Match");
@@ -92,19 +94,13 @@ export default function ProfilePage() {
     }
   };
 
-  
-
-
-
-
-
   return (
     <div className="w-full h-full min-h-screen bg-[#F9FAFB] dark:bg-transparent overflow-y-auto custom-scrollbar transition-colors duration-300 text-left">
       <main className="max-w-212.5 mx-auto px-4 md:px-8 py-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
 
         <div className="bg-white dark:bg-[#1A2632] rounded-4xl border border-gray-200 dark:border-white/5 shadow-2xl overflow-hidden transition-colors duration-300">
 
-          <div className="h-24  from-[#FF4500]/10 to-transparent"></div>
+          <div className="h-24 from-[#FF4500]/10 to-transparent"></div>
 
           <div className="px-6 md:px-12 pb-12 -mt-12">
 
@@ -126,8 +122,9 @@ export default function ProfilePage() {
                   onChange={handleChange}
                   className="block mx-auto text-3xl font-black text-center bg-transparent text-gray-900 dark:text-white outline-none focus:text-[#FF4500] w-full transition-colors"
                 />
+                {/* Dynamic Role Badge */}
                 <span className="mt-2 inline-flex items-center px-4 py-1 rounded-full bg-[#FF4500]/10 border border-[#FF4500]/20 text-[#FF4500] text-[10px] font-black uppercase tracking-widest">
-                  User  
+                  {profile.role} 
                 </span>
               </div>
             </div>
@@ -159,7 +156,6 @@ export default function ProfilePage() {
                     name="phone"
                     value={profile.phone}
                     onChange={handleChange}
-
                     readOnly={profile.phone !== "" && profile.phone !== null}
                     className={`w-full bg-transparent font-medium py-2 border-b border-gray-100 dark:border-white/5 outline-none transition-all ${profile.phone !== "" ? "text-gray-400 cursor-not-allowed" : "text-gray-900 dark:text-white focus:border-[#FF4500]"
                       }`}
