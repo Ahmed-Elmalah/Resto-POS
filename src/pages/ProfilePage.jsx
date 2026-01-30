@@ -2,14 +2,29 @@ import React, { useState, useEffect } from 'react';
 
 export default function ProfilePage() {
   const [isDark, setIsDark] = useState(localStorage.getItem('theme') !== 'light');
-  
+
   const [profile, setProfile] = useState({
-    name: "John Doe",
-    email: "john.doe@restaurant.com",
-    phone: "+1 (555) 123-4567",
-    bio: "Full access to all restaurant settings, menu management, and staff accounts."
+    name: "",
+    email: "",
+    phone: "",
+    bio: ""
   });
 
+  
+  useEffect(() => {
+    const savedUserData = sessionStorage.getItem('user-info');
+    if (savedUserData) {
+      const user = JSON.parse(savedUserData);
+      setProfile({
+        name: user.username || "",
+        email: user.email || "",
+        phone: user.phone_number || "",
+        bio: user.bio || ""
+      });
+    }
+  }, []);
+
+  // 2. التحكم في الـ Dark Mode
   useEffect(() => {
     const root = window.document.documentElement;
     if (isDark) {
@@ -21,38 +36,40 @@ export default function ProfilePage() {
     }
   }, [isDark]);
 
-  const handleChange = (e) => {
-    setProfile({ ...profile, [e.target.name]: e.target.value });
+  const handleChange = (el) => {
+    const { name, value } = el.target;
+    setProfile(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
+
+  
+
   return (
-    /* الحاوية الرئيسية: خلفية بيضاء في اللايت مود وداكنة في الدارك مود */
-    <div className="w-full h-full min-h-screen bg-[#F9FAFB] dark:bg-transparent overflow-y-auto custom-scrollbar transition-colors duration-300">
-      
+    <div className="w-full h-full min-h-screen bg-[#F9FAFB] dark:bg-transparent overflow-y-auto custom-scrollbar transition-colors duration-300 text-left">
       <main className="max-w-212.5 mx-auto px-4 md:px-8 py-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-        
-        {/* الكارت الرئيسي: أبيض في اللايت مود وداكن في الدارك مود */}
+
         <div className="bg-white dark:bg-[#1A2632] rounded-4xl border border-gray-200 dark:border-white/5 shadow-2xl overflow-hidden transition-colors duration-300">
-          
-          {/* خلفية تجميلية علوية */}
+
           <div className="h-24  from-[#FF4500]/10 to-transparent"></div>
 
           <div className="px-6 md:px-12 pb-12 -mt-12">
-            
-            {/* قسم الصورة الشخصية والاسم */}
+
             <div className="flex flex-col items-center text-center mb-10">
               <div className="relative group">
-                <div 
-                  className="size-32 md:size-36 rounded-full border-4 border-white dark:border-[#1A2632] shadow-2xl bg-cover bg-center" 
-                  style={{backgroundImage: 'url("https://api.dicebear.com/7.x/avataaars/svg?seed=John")'}}
+                <div
+                  className="size-32 md:size-36 rounded-full border-4 border-white dark:border-[#1A2632] shadow-2xl bg-cover bg-center"
+                  style={{ backgroundImage: 'url("https://api.dicebear.com/7.x/avataaars/svg?seed=John")' }}
                 ></div>
                 <button className="absolute bottom-1 right-1 bg-[#FF4500] text-white p-2 rounded-full border-4 border-white dark:border-[#1A2632] hover:scale-110 transition-transform">
                   <span className="material-symbols-outlined text-lg">photo_camera</span>
                 </button>
               </div>
-              
+
               <div className="mt-4 w-full">
-                <input 
+                <input
                   name="name"
                   value={profile.name}
                   onChange={handleChange}
@@ -65,34 +82,38 @@ export default function ProfilePage() {
             </div>
 
             {/* Account Details */}
-            <div className="space-y-8 text-left">
+            <div className="space-y-8">
               <h3 className="text-sm font-black text-gray-800 dark:text-white flex items-center gap-2 uppercase tracking-widest opacity-80">
                 <span className="size-1.5 bg-[#FF4500] rounded-full"></span>
                 Account Details
               </h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Email Address</label>
-                  <input 
+                  <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+                    Email Address
+                  </label>
+                  <input
                     name="email"
                     value={profile.email}
-                    onChange={handleChange}
-                    className="w-full bg-transparent text-gray-700 dark:text-gray-200 font-medium py-2 border-b border-gray-200 dark:border-white/10 focus:border-[#FF4500] outline-none transition-all"
+                    readOnly
+                    className="w-full bg-transparent text-gray-400 dark:text-gray-500 font-medium py-2 border-b border-gray-100 dark:border-white/5 outline-none cursor-not-allowed"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Phone Number</label>
-                  <input 
+                  <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+                    Phone Number
+                  </label>
+                  <input
                     name="phone"
                     value={profile.phone}
-                    onChange={handleChange}
-                    className="w-full bg-transparent text-gray-700 dark:text-gray-200 font-medium py-2 border-b border-gray-200 dark:border-white/10 focus:border-[#FF4500] outline-none transition-all"
+                    readOnly 
+                    className="w-full bg-transparent text-gray-400 dark:text-gray-500 font-medium py-2 border-b border-gray-100 dark:border-white/5 outline-none cursor-not-allowed"
                   />
                 </div>
                 <div className="md:col-span-2 space-y-2">
                   <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Bio / Role Description</label>
-                  <textarea 
+                  <textarea
                     name="bio"
                     value={profile.bio}
                     onChange={handleChange}
@@ -109,12 +130,12 @@ export default function ProfilePage() {
           </div>
 
           {/* Security Section */}
-          <div className="p-8 md:p-12 bg-gray-50 dark:bg-black/20 border-t border-gray-100 dark:border-white/5 text-left">
+          <div className="p-8 md:p-12 bg-gray-50 dark:bg-black/20 border-t border-gray-100 dark:border-white/5">
             <h3 className="text-sm font-black text-gray-800 dark:text-white mb-8 flex items-center gap-2 uppercase tracking-widest opacity-80">
               <span className="material-symbols-outlined text-[#FF4500] text-lg">lock</span>
               Security Settings
             </h3>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl">
               <div className="md:col-span-2 space-y-2">
                 <label className="text-xs font-bold text-gray-500 dark:text-gray-400">Current Password</label>
