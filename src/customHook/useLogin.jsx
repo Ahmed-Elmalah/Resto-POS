@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import loginRepo from "./LoginRepo";
 import { useAuthuser } from "../store";
+
 export default function useLogin() {
   const { syncUser } = useAuthuser();
   const navigate = useNavigate();
@@ -91,11 +92,12 @@ export default function useLogin() {
     localStorage.clear();
     syncUser();
   };
+
   const UpdateData = async (id, data) => {
     const jwt = sessionStorage.getItem("jwt-token");
     try {
       await loginRepo.update_user(id, data, jwt);
-      // تحديث البيانات محلياً بعد نجاح السيرفر
+      // Update local data after successful server update
       await checkToken(jwt);
       return { success: true };
     } catch (err) {
@@ -118,12 +120,9 @@ export default function useLogin() {
       return { success: true };
     } catch (err) {
       console.error("Password update error:", err.response?.data || err);
-      return { success: false, error: err.response?.data?.error?.message || "فشل تحديث كلمة المرور" };
+      return { success: false, error: err.response?.data?.error?.message || "Password update failed" };
     }
   };
 
- 
-
-
-  return { login, checkToken, logOut, signup, logOutForUser, UpdateData, updatePassword,  };
+  return { login, checkToken, logOut, signup, logOutForUser, UpdateData, updatePassword };
 }
