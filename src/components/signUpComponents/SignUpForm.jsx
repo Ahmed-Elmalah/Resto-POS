@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import useLogin from "../../customHook/useLogin";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 export default function SignUpForm() {
   const [isShow, setIsShow] = useState(false);
@@ -41,9 +42,14 @@ export default function SignUpForm() {
       .matches(/[0-9]/, "Need one number")
       .matches(/[!@#$%^&*(),.?":{}|<>]/, "Need one special character"),
   });
-  const handleSubmit = (values) => {
-    console.log("Signup Data:", values);
-    signup(values);
+
+  const handleSubmit = async (values) => {
+    try {
+      await signup(values);
+      toast.success("SinUp Successfully");
+    } catch (err) {
+      toast.error("Something went Wrong");
+    }
   };
 
   return (
