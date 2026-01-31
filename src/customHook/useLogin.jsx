@@ -9,74 +9,122 @@ export default function useLogin() {
 
   const from = location.state?.from?.pathname;
 
-  const signup = (values) => {
-    loginRepo.auth_signup(values)
-      .then((res) => {
-        const { jwt, user } = res.data;
-        const extraData = {
-          gender: values.gender,
-          phone_number: values.phone_number
-        };
+  // const signup = (values) => {
+  //   loginRepo
+  //     .auth_signup(values)
+  //     .then((res) => {
+  //       const { jwt, user } = res.data;
+  //       const extraData = {
+  //         gender: values.gender,
+  //         phone_number: values.phone_number,
+  //       };
 
-        loginRepo.update_user(user.id, extraData, jwt)
-          .then(() => {
-            sessionStorage.setItem("jwt-token", jwt);
-            checkToken(jwt);
-          })
-          .catch((err) => {
-            console.error("Error updating extra profile data", err);
-            sessionStorage.setItem("jwt-token", jwt);
-            checkToken(jwt);
-          });
-      })
-      .catch((err) => {
-        console.log("Error in initial signup", err);
-      });
+  //       loginRepo
+  //         .update_user(user.id, extraData, jwt)
+  //         .then(() => {
+  //           sessionStorage.setItem("jwt-token", jwt);
+  //           checkToken(jwt);
+  //         })
+  //         .catch((err) => {
+  //           console.error("Error updating extra profile data", err);
+  //           sessionStorage.setItem("jwt-token", jwt);
+  //           checkToken(jwt);
+  //         });
+  //     })
+  //     .catch((err) => {
+  //       console.log("Error in initial signup", err);
+  //       throw err;
+  //     });
+  // };
+
+  const signup = async (values) => {
+    try {
+      const res = await loginRepo.auth_signup(values);
+
+      const { jwt, user } = res.data;
+      const extraData = {
+        gender: values.gender,
+        phone_number: values.phone_number,
+      };
+
+      try {
+        await loginRepo.update_user(user.id, extraData, jwt);
+      } catch (updateErr) {
+        console.error("Error updating extra profile data");
+      }
+      sessionStorage.setItem("jwt-token", jwt);
+      checkToken(jwt);
+
+      return res.data;
+    } catch (err) {
+      throw err;
+    }
   };
 
+  // const login = (values) => {
+  //   loginRepo
+  //     .auth_login(values)
+  //     .then((res) => {
+  //       let jwt = res.data.jwt;
+  //       sessionStorage.setItem("jwt-token", jwt);
+  //       console.log(res);
+  //       checkToken(jwt);
+  //     })
+  //     .catch((err) => {
+  //       console.error("Login failed:", err);
+  //     });
+  // };
+
   const login = (values) => {
-    loginRepo
+    return loginRepo
       .auth_login(values)
       .then((res) => {
         let jwt = res.data.jwt;
         sessionStorage.setItem("jwt-token", jwt);
-        console.log(res);
         checkToken(jwt);
+        return res.data;
       })
       .catch((err) => {
-        console.error("Login failed:", err);
+        console.error("Login failed");
+        throw err;
       });
   };
 
   const checkToken = (jwtfromparam = null) => {
-    const jwt = jwtfromparam || sessionStorage.getItem("jwt-token") || localStorage.getItem("jwt-token");
+    const jwt =
+      jwtfromparam ||
+      sessionStorage.getItem("jwt-token") ||
+      localStorage.getItem("jwt-token");
 
     if (jwt) {
-      loginRepo.check_token(jwt).then((res) => {
-        const userInfo = res.data;
-        sessionStorage.setItem("user-info", JSON.stringify(userInfo));
+      loginRepo
+        .check_token(jwt)
+        .then((res) => {
+          const userInfo = res.data;
+          sessionStorage.setItem("user-info", JSON.stringify(userInfo));
 
-        syncUser();
+          syncUser();
 
-        const role = res.data.role?.name ? res.data.role.name.toLowerCase().trim() : "";
+          const role = res.data.role?.name
+            ? res.data.role.name.toLowerCase().trim()
+            : "";
 
-        if (role === "admin") {
-          navigate("/admin", { replace: true });
-        }
-        else if (role === "cashier" || role === "casher") {
-          navigate("/casher", { replace: true });
-        }
-        else {
-          if (from && from !== "/login") {
-            navigate(from, { replace: true });
+          if (role === "admin") {
+            navigate("/admin", { replace: true });
+          } else if (role === "cashier" || role === "casher") {
+            navigate("/casher", { replace: true });
           } else {
-            navigate("/", { replace: true });
+            if (from && from !== "/login") {
+              navigate(from, { replace: true });
+            } else {
+              navigate("/", { replace: true });
+            }
           }
-        }
-      }).catch((err) => {
-        console.error(err);
-        logOut();
-      });
+        })
+        .catch((err) => {
+          console.error(err);
+          logOut();
+        });
     }
   };
 
@@ -106,23 +154,38 @@ export default function useLogin() {
     }
   };
 
-  const updatePassword = async (currentPassword, newPassword, confirmPassword) => {
+  const updatePassword = async (
+    currentPassword,
+    newPassword,
+    confirmPassword,
+  ) => {
     const jwt = sessionStorage.getItem("jwt-token");
 
     try {
       const data = {
         currentPassword: currentPassword,
         password: newPassword,
-        passwordConfirmation: confirmPassword
+        passwordConfirmation: confirmPassword,
       };
 
       await loginRepo.change_password(data, jwt);
       return { success: true };
     } catch (err) {
       console.error("Password update error:", err.response?.data || err);
-      return { success: false, error: err.response?.data?.error?.message || "Password update failed" };
+      return {
+        success: false,
+        error: err.response?.data?.error?.message || "Password update failed",
+      };
     }
   };
 
-  return { login, checkToken, logOut, signup, logOutForUser, UpdateData, updatePassword };
+  return {
+    login,
+    checkToken,
+    logOut,
+    signup,
+    logOutForUser,
+    UpdateData,
+    updatePassword,
+  };
 }

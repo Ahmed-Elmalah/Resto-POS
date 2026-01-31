@@ -9,35 +9,28 @@ import {
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import useLogin from "../../customHook/useLogin";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 export default function LoginForm() {
   const [isShow, setIsShow] = useState(false);
-
   const navigate = useNavigate();
   const { login } = useLogin();
 
   const initialValues = { email: "", password: "", rememberMe: false };
 
   const validationSchema = Yup.object({
-    email: Yup.string()
-      .required("Email is required")
-      .email("Invalid email format"),
-
-    password: Yup.string()
-      .required("Password is required")
-      .min(6, "Password must be at least 6 characters")
-      .matches(/[A-Z]/, "Must contain at least one uppercase letter")
-      .matches(/[0-9]/, "Must contain at least one number")
-      .matches(
-        /[!@#$%^&*(),.?":{}|<>]/,
-        "Must contain at least one special character",
-      ),
+    email: Yup.string().required(),
+    password: Yup.string().required(),
   });
 
-  const handleSubmit = (values) => {
-    console.log("Login Data:", values);
-    login(values);
+  const handleSubmit = async (values) => {
+    try {
+      await login(values);
+      toast.success("Login Successfully");
+    } catch (err) {
+      toast.error("Wrong Email or Password");
+    }
   };
 
   return (
