@@ -7,11 +7,7 @@ const useAdminStore = create((set) => ({
   setFilters: (newFilters) => set((state) => ({ 
     filters: { ...state.filters, ...newFilters } 
   })),
-
-  // هنا ممكن تربط مع API مستقبلاً
   fetchOrders: async () => {
-    // const res = await axios.get('/api/orders');
-    // set({ orders: res.data });
   }
 }));
 
