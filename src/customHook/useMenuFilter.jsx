@@ -34,7 +34,6 @@ export default function useMenuFilter(enablePolling = false) {
   const filteredProducts = useMemo(() => {
     let result = Array.isArray(products) ? [...products] : [];
 
-    // category filter
     if (activeCategory !== "All") {
       result = result.filter((item) => {
         const catName = item.category?.name;
@@ -42,7 +41,6 @@ export default function useMenuFilter(enablePolling = false) {
       });
     }
 
-    // search filter
     if (searchQuery.trim() !== "") {
       const query = searchQuery.toLowerCase();
       result = result.filter(
@@ -50,7 +48,6 @@ export default function useMenuFilter(enablePolling = false) {
       );
     }
 
-    // sorting
     if (sortOrder === "low-high") {
       result.sort((a, b) => a.price - b.price);
     } else if (sortOrder === "high-low") {
@@ -63,19 +60,17 @@ export default function useMenuFilter(enablePolling = false) {
   const clearSearch = () => {
     setSearchQuery("");
     if (searchInputRef.current) {
-      searchInputRef.current.focus(); // نرجع التركيز للإنبوت
+      searchInputRef.current.focus(); 
     }
   };
 
   return {
-    // Data
     categories,
     products: filteredProducts,
     totalCount: filteredProducts.length,
     isLoading,
     error,
 
-    //logic
     activeCategory,
     setActiveCategory,
 
