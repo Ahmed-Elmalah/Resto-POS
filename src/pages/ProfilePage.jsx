@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import useLogin from '../customHook/useLogin'; 
-
+import useLogin from '../customHook/useLogin';
+import toast from 'react-hot-toast';
 export default function ProfilePage() {
-  const { UpdateData , updatePassword} = useLogin();
+  const { UpdateData, updatePassword } = useLogin();
   const [isDark, setIsDark] = useState(localStorage.getItem('theme') !== 'light');
 
   const [profile, setProfile] = useState({
@@ -26,7 +26,7 @@ export default function ProfilePage() {
         phone: user.phone_number || "",
         bio: user.bio || "",
         // Get the role name dynamically from the user object
-        role: user.role?.name || "User" 
+        role: user.role?.name || "User"
       });
     }
   }, []);
@@ -54,7 +54,7 @@ export default function ProfilePage() {
   // 3. Save function
   const handleSave = async () => {
     if (!profile.id) {
-      alert("Sorry, user ID not found.");
+      toast.error("Sorry, user ID not found.");
       return;
     }
 
@@ -65,9 +65,9 @@ export default function ProfilePage() {
     });
 
     if (result.success) {
-      alert("Updated Successfully");
+      toast.success("Updated Successfully");
     } else {
-      alert("Update Failed, Try again");
+      toast.error("Update Failed, Try again");
     }
   };
 
@@ -81,16 +81,16 @@ export default function ProfilePage() {
   // 2. Handle request function
   const handlePasswordUpdate = async () => {
     if (passwords.new !== passwords.confirm) {
-      return alert("Password Not Match");
+      return toast.error("Password Not Match");
     }
 
     const res = await updatePassword(passwords.current, passwords.new, passwords.confirm);
 
     if (res.success) {
-      alert("Password Changed ✅");
-      setPasswords({ current: "", new: "", confirm: "" }); 
+      toast.success("Password Changed ✅");
+      setPasswords({ current: "", new: "", confirm: "" });
     } else {
-      alert(res.error);
+      toast.error(res.error);
     }
   };
 
@@ -115,16 +115,24 @@ export default function ProfilePage() {
                 </button>
               </div>
 
-              <div className="mt-4 w-full">
-                <input
-                  name="name"
-                  value={profile.name}
-                  onChange={handleChange}
-                  className="block mx-auto text-3xl font-black text-center bg-transparent text-gray-900 dark:text-white outline-none focus:text-[#FF4500] w-full transition-colors"
-                />
-                {/* Dynamic Role Badge */}
+              <div className="mt-4 w-full flex flex-col items-center">
+
+                <div className="relative inline-flex items-center group">
+                  <span className="invisible h-0 text-3xl font-black whitespace-pre px-1">
+                    {profile.name || "Name"}
+                  </span>
+                  <input
+                    name="name"
+                    value={profile.name}
+                    onChange={handleChange}
+                    className="absolute inset-0 bg-transparent text-3xl font-black text-center text-gray-900 dark:text-white outline-none focus:text-[#FF4500] transition-colors w-full "
+                  />
+                  <span className="material-symbols-outlined text-gray-400 group-hover:text-[#FF4500] transition-colors text-xl select-none ml-1 pl-6">
+                    edit
+                  </span>
+                </div>
                 <span className="mt-2 inline-flex items-center px-4 py-1 rounded-full bg-[#FF4500]/10 border border-[#FF4500]/20 text-[#FF4500] text-[10px] font-black uppercase tracking-widest">
-                  {profile.role} 
+                  {profile.role === "Authenticated" ? "User" : profile.role}
                 </span>
               </div>
             </div>
@@ -183,7 +191,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Security Section */}
-          <div className="p-8 md:p-12 bg-gray-50 dark:bg-black/20 border-t border-gray-100 dark:border-white/5">
+          <div className="p-8 md:p-12 bg-gray-50 dark:bg-black/20 border-t border-gray-100 dark:border-white/5 ">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl">
               <div className="md:col-span-2 space-y-2">
                 <label className="text-xs font-bold text-gray-500">Current Password</label>
@@ -224,8 +232,16 @@ export default function ProfilePage() {
               Update Password
             </button>
           </div>
+
         </div>
       </main>
+      {profile.role == "Admin" ? <footer className="bg-white dark:bg-background-dark border-t border-gray-100 dark:border-white/5 py-8">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-sm text-text-muted dark:text-gray-500">
+            © 2026 SavoryBites Restaurant. All rights reserved.
+          </p>
+        </div>
+      </footer> : null}
     </div>
   );
 }
