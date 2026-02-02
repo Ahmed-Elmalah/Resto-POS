@@ -37,7 +37,9 @@ export default function useMenuFilter(enablePolling = false) {
     // category filter
     if (activeCategory !== "All") {
       result = result.filter((item) => {
-        const catName = item.category?.name;
+        const data = item?.attributes || item;
+        const catName =
+          data?.category?.data?.attributes?.name || data?.category?.name;
         return catName === activeCategory;
       });
     }
@@ -45,16 +47,26 @@ export default function useMenuFilter(enablePolling = false) {
     // search filter
     if (searchQuery.trim() !== "") {
       const query = searchQuery.toLowerCase();
-      result = result.filter(
-        (item) => item.name && item.name.toLowerCase().includes(query),
-      );
+      result = result.filter((item) => {
+        const data = item?.attributes || item;
+        const name = data?.name || "";
+        return name.toLowerCase().includes(query);
+      });
     }
 
     // sorting
     if (sortOrder === "low-high") {
-      result.sort((a, b) => a.price - b.price);
+      result.sort((a, b) => {
+        const priceA = a?.attributes?.price || a?.price || 0;
+        const priceB = b?.attributes?.price || b?.price || 0;
+        return priceA - priceB;
+      });
     } else if (sortOrder === "high-low") {
-      result.sort((a, b) => b.price - a.price);
+      result.sort((a, b) => {
+        const priceA = a?.attributes?.price || a?.price || 0;
+        const priceB = b?.attributes?.price || b?.price || 0;
+        return priceB - priceA;
+      });
     }
 
     return result;
