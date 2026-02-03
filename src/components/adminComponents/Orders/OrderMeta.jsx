@@ -34,7 +34,7 @@ export default function OrderMeta({ order = {} }) {
   ];
 
   return (
-    <div className="bg-white dark:bg-[#1c2127]/60 border border-slate-200 dark:border-[#283039] rounded-[32px] p-6 space-y-8 shadow-sm">
+    <div className="bg-white dark:bg-[#1c2127]/60 border border-slate-200 dark:border-[#283039] rounded-4xl p-6 space-y-8 shadow-sm">
       <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
         Order Information
       </h3>
@@ -60,7 +60,7 @@ export default function OrderMeta({ order = {} }) {
       </div>
 
       {order.note && (
-        <div className="p-4 rounded-2xl bg-primary/5 border border-primary/10 italic text-xs text-primary font-medium text-center">
+        <div className="p-4 rounded-2xl bg-primary/5 border border-primary/10 italic text-[13px] font-bold dark:text-white text-black text-center">
           "{order.note}"
         </div>
       )}

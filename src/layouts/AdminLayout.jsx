@@ -26,7 +26,7 @@ export default function AdminLayout() {
           </div>
         </div>
 
-        <div className="flex-1 no-scrollbar w-full relative">
+        <div className="flex-1 no-scrollbar min-h-screen w-full relative">
           <Outlet />
         </div>
       </main>
