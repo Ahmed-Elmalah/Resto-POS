@@ -90,7 +90,7 @@ export default function OrderTable() {
           {filteredData.map((el) => (
             <tr
               key={el.id}
-              onDoubleClick={() => navigate(`/admin/orders/${el.documentId}`)}
+              onClick={() => navigate(`/admin/orders/${el.documentId}`)}
               className="hover:bg-slate-100/50 cursor-pointer dark:hover:bg-[#283039]/20 transition-colors"
             >
               <td className="px-6 py-4 font-mono font-bold text-primary">

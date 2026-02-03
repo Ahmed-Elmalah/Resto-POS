@@ -28,7 +28,7 @@ export default function OrderDetails() {
     );
 
   return (
-    <div className="max-w-[1100px] h-dvh mx-auto p-4 md:p-8 animate-in fade-in duration-700">
+    <div className="max-w-275 h-fit lg:h-dvh mx-auto p-4 md:p-8 animate-in fade-in duration-700">
       <div className="flex items-center justify-between mb-10">
         <button
           onClick={() => navigate(-1)}
