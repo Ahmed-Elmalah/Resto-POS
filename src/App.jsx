@@ -21,12 +21,13 @@ import ProfilePage from "./pages/ProfilePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProductFormPage from "./pages/adminPage/ProductFormPage";
 import { Toaster } from "react-hot-toast";
+import OrderDetails from "./pages/adminPage/OrderDetails";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Toaster
-        position="top-center" 
+        position="top-center"
         reverseOrder={false}
         toastOptions={{
           style: {
@@ -61,7 +62,10 @@ export default function App() {
           <Route path="menu" element={<MenuPage />} />
           <Route path="menu/add" element={<ProductFormPage />} />
           <Route path="menu/edit/:id" element={<ProductFormPage />} />
-          <Route path="orders" element={<OrdersPage />} />
+          <Route path="orders">
+            <Route index element={<OrdersPage />} />
+            <Route path=":orderId" element={<OrderDetails />} />
+          </Route>
           <Route path="tables" element={<TablesPage />} />
           <Route path="staff" element={<StaffPage />} />
           <Route path="promotions" element={<OffersPage />} />
