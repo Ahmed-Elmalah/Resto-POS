@@ -1,40 +1,47 @@
 import React from 'react';
 
-export default function TableSidebar() {
+export default function TableSidebar({ activeTable }) {
+  if (!activeTable) {
+    return (
+      <aside className="w-[340px] hidden lg:flex flex-col items-center justify-center bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800 shadow-xl z-20 font-bold text-slate-400">
+       Choose Table
+      </aside>
+    );
+  }
+
+  const item = activeTable.attributes || activeTable;
+  
+  const statusConfig = {
+    Available: "bg-emerald-100 text-emerald-700 border-emerald-200",
+    Busy: "bg-rose-100 text-rose-700 border-rose-200",
+    Reserved: "bg-amber-100 text-amber-700 border-amber-200"
+  };
+
   return (
     <aside className="w-[340px] hidden lg:flex flex-col bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800 shadow-xl z-20">
-      {/* Table Status Header */}
       <div className="p-6 border-b dark:border-slate-800">
         <div className="flex justify-between items-center mb-2">
-          <h3 className="text-xl font-bold dark:text-white">Table T-1</h3>
-          <span className="px-2 py-1 rounded-full bg-rose-100 text-rose-700 text-[10px] font-bold uppercase border border-rose-200">Occupied</span>
+          <h3 className="text-xl font-bold dark:text-white">Table T-{item.table_number}</h3>
+          <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase border ${statusConfig[item.table_status]}`}>
+            {item.table_status}
+          </span>
         </div>
-        <p className="text-xs text-slate-500">45m elapsed • Waiter: Sarah M.</p>
+        <p className="text-xs text-slate-500">Capacity: {item.capacity} People</p>
       </div>
 
-      {/* Order Summary Scroll Area */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-4">
-        <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Current Order</h4>
-        <OrderItem count="2x" name="Grilled Salmon" price="$42.00" />
-        <OrderItem count="1x" name="Caesar Salad" price="$14.50" />
+      <div className="flex-1 p-6">
+         <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Current Order</h4>
+         {/* Placeholder for orders */}
+         <div className="text-center py-10 text-slate-400 italic text-sm">
+            {item.table_status === 'Available' ? 'No active orders' : 'Fetching order details...'}
+         </div>
       </div>
 
-      {/* Quick Actions Footer */}
-      <div className="p-4 bg-slate-50 dark:bg-slate-950 border-t dark:border-slate-800 grid grid-cols-1 gap-3">
+      <div className="p-4 bg-slate-50 dark:bg-slate-950 border-t dark:border-slate-800">
         <button className="w-full py-3 bg-primary text-white font-bold rounded-lg shadow-lg hover:bg-blue-600 transition-colors">
-          Proceed to Checkout
+          {item.table_status === 'Available' ? 'Open New Order' : 'Proceed to Checkout'}
         </button>
       </div>
     </aside>
   );
 }
-
-const OrderItem = ({ count, name, price }) => (
-  <div className="flex justify-between text-sm">
-    <div className="flex gap-2">
-      <span className="text-xs bg-slate-100 dark:bg-slate-800 px-1 rounded">{count}</span>
-      <span className="dark:text-slate-300">{name}</span>
-    </div>
-    <span className="font-bold dark:text-white">{price}</span>
-  </div>
-);
