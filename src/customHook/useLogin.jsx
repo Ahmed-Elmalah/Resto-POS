@@ -33,7 +33,6 @@ export default function useLogin() {
     }
   };
 
-
   const login = (values) => {
     return loginRepo
       .auth_login(values)
@@ -97,6 +96,7 @@ export default function useLogin() {
   const logOutForUser = () => {
     sessionStorage.clear();
     localStorage.clear();
+    navigate("/");
     syncUser();
   };
 
@@ -138,6 +138,37 @@ export default function useLogin() {
     }
   };
 
+  const createStaffAccount = async (values, extraData, roleId) => {
+    const adminToken = sessionStorage.getItem("jwt-token");
+
+    try {
+      const res = await loginRepo.auth_signup(values);
+      const newUser = res.data.user;
+      const newUserToken = res.data.jwt;
+
+      if (extraData) {
+        try {
+          await loginRepo.update_user(newUser.id, extraData, newUserToken);
+        } catch (updateErr) {
+          console.error("Failed to update extra data:", updateErr);
+        }
+      }
+
+      if (roleId) {
+        try {
+          await loginRepo.update_user(newUser.id, { role: roleId }, adminToken);
+        } catch (roleErr) {
+          console.error("Failed to assign role:", roleErr);
+          throw new Error("User created but failed to assign role");
+        }
+      }
+
+      return res.data;
+    } catch (err) {
+      throw err;
+    }
+  };
+
   return {
     login,
     checkToken,
@@ -146,5 +177,6 @@ export default function useLogin() {
     logOutForUser,
     UpdateData,
     updatePassword,
+    createStaffAccount,
   };
 }
