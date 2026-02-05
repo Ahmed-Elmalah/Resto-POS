@@ -33,13 +33,20 @@ export default function OrderTable() {
       filters.cashier === "All" ||
       el.cashier?.username === filters.cashier;
 
-    const orderDate = new Date(el.time).toDateString();
-    const today = new Date().toDateString();
-    const matchesDate =
-      filters.dateRange === "All" ||
-      filters.dateRange === "Last 30 Days" ||
-      (filters.dateRange === "Today" && orderDate === today);
+    const orderDate = new Date(el.time);
+    const start = filters.startDate
+      ? new Date(filters.startDate).setHours(0, 0, 0, 0)
+      : null;
+    const end = filters.endDate
+      ? new Date(filters.endDate).setHours(23, 59, 59, 999)
+      : null;
 
+    let matchesDate = true;
+    if (start && end) {
+      matchesDate = orderDate >= start && orderDate <= end;
+    } else if (start) {
+      matchesDate = orderDate >= start;
+    }
     const matchesSearch =
       el.id.toString().includes(search) ||
       (el.cashier?.username || "").toLowerCase().includes(search);

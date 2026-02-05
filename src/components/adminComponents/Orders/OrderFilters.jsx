@@ -1,6 +1,8 @@
 import React from "react";
-import { FiSearch } from "react-icons/fi";
+import { FiCalendar, FiSearch } from "react-icons/fi";
 import useAdminStore from "../../../store/useAdminStore";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export default function OrderFilters() {
   const { filters, setFilters, setSearchTerm } = useAdminStore();
@@ -10,32 +12,25 @@ export default function OrderFilters() {
     { label: "Last 30 Days", value: "Last 30 Days" },
     { label: "All Time", value: "All" },
   ];
+  const handleDateChange = (dates) => {
+    const [start, end] = dates;
+    setFilters({ startDate: start, endDate: end });
+  };
 
   return (
     <div className="p-4 flex flex-wrap lg:flex-nowrap items-center justify-between gap-4 border-b border-slate-200 dark:border-[#283039]">
-      <div className="flex flex-wrap gap-3">
+      <div className="flex  gap-3">
         <div className="relative flex items-center gap-2 px-3 py-2 rounded-lg bg-white dark:bg-[#283039] border border-slate-200 dark:border-[#283039] text-sm font-medium hover:border-primary transition-all shadow-sm">
-          <span className="material-symbols-outlined text-lg text-slate-400">
-            calendar_today
-          </span>
-          <select
-            value={filters.dateRange || "Last 30 Days"}
-            onChange={(e) => setFilters({ dateRange: e.target.value })}
-            className="bg-transparent outline-none cursor-pointer appearance-none pr-6 dark:text-white font-bold"
-          >
-            {dateOptions.map((opt) => (
-              <option
-                key={opt.value}
-                value={opt.value}
-                className="bg-white dark:bg-[#1c2127] text-slate-700 dark:text-slate-200 py-2 px-4 font-medium"
-              >
-                {opt.label}
-              </option>
-            ))}
-          </select>
-          <span className="material-symbols-outlined text-lg absolute right-1 pointer-events-none text-slate-400">
-            expand_more
-          </span>
+          <FiCalendar className="text-primary text-lg" />
+          <DatePicker
+            selectsRange={true}
+            startDate={filters.startDate}
+            endDate={filters.endDate}
+            onChange={handleDateChange}
+            isClearable={true}
+            placeholderText="Select Date Range"
+            className="bg-transparent outline-none cursor-pointer dark:text-white font-bold w-[210px]"
+          />
         </div>
 
         <div className="relative flex items-center gap-2 px-3 py-2 rounded-lg bg-white dark:bg-[#283039] border border-slate-200 dark:border-[#283039] text-sm font-medium hover:border-primary transition-all shadow-sm">

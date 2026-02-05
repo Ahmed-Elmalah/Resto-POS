@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-
 @theme {
   /* ألوان الـ Dark */
   --color-primary: #ec3713;
@@ -8,7 +7,6 @@
 
   --color-blue-brand: #137fec;
   --color-blue-brand-hover: #0f61b8;
-
 
   --color-background-dark: #1a0f0d;
   --color-card-dark: #261613;
@@ -23,7 +21,7 @@
 
 /* عشان الأيقونات تظهر صح */
 .material-symbols-outlined {
-  font-family: 'Material Symbols Outlined';
+  font-family: "Material Symbols Outlined";
   display: inline-block;
   line-height: 1;
 }
@@ -31,7 +29,9 @@
 @utility no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
-  &::-webkit-scrollbar { display: none; }
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 @variant dark (&:where(.dark, .dark *));
@@ -39,4 +39,58 @@
 .theme-admin {
   --color-primary: var(--color-blue-brand);
   --color-primary-hover: var(--color-blue-brand-hover);
+}
+
+/* تنسيق مكتبة react-datepicker لتناسب الـ Dark Mode */
+
+/* 1. الحاوية الرئيسية */
+.react-datepicker {
+  background-color: var(--color-card-dark) !important;
+  border: 1px solid var(--color-border-dark) !important;
+  color: white !important;
+  font-family: inherit !important;
+  border-radius: 12px !important;
+}
+
+/* 2. الهيدر (الشهر والسنة) */
+.react-datepicker__header {
+  background-color: var(--color-background-dark) !important;
+  border-bottom: 1px solid var(--color-border-dark) !important;
+}
+
+.react-datepicker__current-month,
+.react-datepicker__day-name {
+  color: white !important;
+}
+
+/* 3. الأيام */
+.react-datepicker__day {
+  color: var(--color-text-muted) !important;
+}
+
+.react-datepicker__day:hover {
+  background-color: var(--color-primary) !important;
+  color: white !important;
+}
+
+/* 4. الأيام المختارة (الـ Range) */
+.react-datepicker__day--selected,
+.react-datepicker__day--in-range,
+.react-datepicker__day--in-selecting-range {
+  background-color: var(--color-primary) !important;
+  color: white !important;
+}
+
+/* 5. أيقونة المثلث الصغير */
+.react-datepicker__popper[data-placement^="bottom"]
+  .react-datepicker__tether-element-attached-top
+  .react-datepicker__triangle,
+.react-datepicker__triangle {
+  display: none !important; /* بنخفي المثلث عشان بيبقى شكله قديم */
+}
+
+/* تحسين شكل الـ Input اللي شايل التاريخ */
+.react-datepicker-wrapper input {
+  width: 100%;
+  background: transparent;
 }
