@@ -9,20 +9,25 @@ export default function TablesPage() {
 
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-slate-50 dark:bg-slate-950">
-      <TableHeader 
-        isEditMode={isEditMode} 
-        onToggleEdit={() => setIsEditMode(!isEditMode)} 
+      <TableHeader
+        isEditMode={isEditMode}
+        onToggleEdit={() => setIsEditMode(!isEditMode)}
       />
 
       <div className="flex flex-1 overflow-hidden relative">
-        <main className="flex-1 overflow-auto bg-grid-pattern p-8 no-scrollbar">
-          <TableGrid 
-            onSelect={(table) => setSelectedTable(table)} 
+        <main className="flex-1 overflow-auto bg-grid-pattern p-4 lg:p-8 no-scrollbar">
+          <TableGrid
+            onSelect={(table) => setSelectedTable(table)}
             selectedId={selectedTable?.id}
             isEditMode={isEditMode}
           />
         </main>
-        <TableSidebar activeTable={selectedTable} />
+
+        
+        <TableSidebar
+          activeTable={selectedTable}
+          onClose={() => setSelectedTable(null)}
+        />
       </div>
     </div>
   );
