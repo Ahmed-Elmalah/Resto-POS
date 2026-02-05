@@ -4,7 +4,7 @@ export default function TableHeader({ isEditMode, onToggleEdit }) {
   const areas = ["Main Hall", "Patio", "Bar Area", "VIP Room"];
 
   return (
-    <div className="px-8 py-5 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm z-10">
+    <div className="px-8 py-5 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm ">
       <div className="flex flex-wrap justify-between items-end gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Table Management</h1>
