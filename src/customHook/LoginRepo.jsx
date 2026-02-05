@@ -35,7 +35,31 @@ const loginRepo = {
         return axios.post(`${domain}/api/auth/change-password`, data, {
             headers: { Authorization: `Bearer ${jwt}` }
         });
-    }
+    },
+
+    getAllUsers: (jwt) => {
+        return axios.get(`${domain}/api/users?populate=role`, {
+            headers: { Authorization: `Bearer ${jwt}` }
+        });
+    },
+
+    deleteUser: (id, jwt) => {
+        return axios.delete(`${domain}/api/users/${id}`, {
+            headers: { Authorization: `Bearer ${jwt}` }
+        });
+    },
+    
+    getUserById: (id, jwt) => {
+        return axios.get(`${domain}/api/users/${id}?populate=role`, {
+            headers: { Authorization: `Bearer ${jwt}` }
+        });
+    },
+
+    getCashierOrders: (userId, token) => {
+        return axios.get(`${domain}/api/orders?filters[cashier][id][$eq]=${userId}&fields[0]=total`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+    },
 }
 
 export default loginRepo;
