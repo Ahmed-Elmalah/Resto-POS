@@ -8,7 +8,7 @@ export default function TablesPage() {
   const [isEditMode, setIsEditMode] = useState(false); // Global edit state
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden bg-slate-50 dark:bg-slate-950">
+    <div className="flex flex-col   lg:h-screen  sm:h-full overflow-hidden bg-slate-50 dark:bg-slate-950">
       <TableHeader
         isEditMode={isEditMode}
         onToggleEdit={() => setIsEditMode(!isEditMode)}
