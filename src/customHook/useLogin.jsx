@@ -9,34 +9,6 @@ export default function useLogin() {
 
   const from = location.state?.from?.pathname;
 
-  // const signup = (values) => {
-  //   loginRepo
-  //     .auth_signup(values)
-  //     .then((res) => {
-  //       const { jwt, user } = res.data;
-  //       const extraData = {
-  //         gender: values.gender,
-  //         phone_number: values.phone_number,
-  //       };
-
-  //       loginRepo
-  //         .update_user(user.id, extraData, jwt)
-  //         .then(() => {
-  //           sessionStorage.setItem("jwt-token", jwt);
-  //           checkToken(jwt);
-  //         })
-  //         .catch((err) => {
-  //           console.error("Error updating extra profile data", err);
-  //           sessionStorage.setItem("jwt-token", jwt);
-  //           checkToken(jwt);
-  //         });
-  //     })
-  //     .catch((err) => {
-  //       console.log("Error in initial signup", err);
-  //       throw err;
-  //     });
-  // };
-
   const signup = async (values) => {
     try {
       const res = await loginRepo.auth_signup(values);
@@ -61,19 +33,6 @@ export default function useLogin() {
     }
   };
 
-  // const login = (values) => {
-  //   loginRepo
-  //     .auth_login(values)
-  //     .then((res) => {
-  //       let jwt = res.data.jwt;
-  //       sessionStorage.setItem("jwt-token", jwt);
-  //       console.log(res);
-  //       checkToken(jwt);
-  //     })
-  //     .catch((err) => {
-  //       console.error("Login failed:", err);
-  //     });
-  // };
 
   const login = (values) => {
     return loginRepo

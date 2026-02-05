@@ -1,6 +1,7 @@
-
+import { useNavigate } from "react-router-dom";
 import MenuCard from "./MenuCard";
 export default function MenuPreview() {
+  const navigate = useNavigate();
   const dishes = [
     {
       title: "Green Harvest Bowl",
@@ -42,7 +43,7 @@ export default function MenuPreview() {
         ))}
       </div>
       <div className="flex justify-center">
-        <button className="h-12 px-8 rounded-lg border-2 border-primary text-primary hover:bg-primary hover:text-white font-bold transition-all">
+        <button onClick={()=> navigate("/menu")} className="h-12 px-8 rounded-lg border-2 border-primary text-primary hover:bg-primary hover:text-white font-bold transition-all">
           View Full Digital Menu
         </button>
       </div>
