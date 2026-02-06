@@ -15,6 +15,8 @@ export default function CasherLayout({
   setSearchQuery,
   searchInputRef,
   clearSearch,
+  viewMode,
+  onToggleView,
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const { cart } = useOrderStore();
@@ -37,6 +39,8 @@ export default function CasherLayout({
             categories={categories}
             activeCategory={activeCategory}
             onSelectCategory={onSelectCategory}
+            viewMode={viewMode}
+            onToggleView={onToggleView}
           />
         </header>
 

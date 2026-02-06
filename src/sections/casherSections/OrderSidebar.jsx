@@ -43,7 +43,6 @@ export default function OrderSidebar() {
       cashier: user?.documentId || user?.id,
       time: new Date().toISOString(),
     };
-    console.log("🚀 Payload being sent to Strapi:", finalOrderDetails);
     const result = await submitOrder(finalOrderDetails);
 
     if (result.success) {

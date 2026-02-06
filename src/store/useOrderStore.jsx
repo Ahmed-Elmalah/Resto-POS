@@ -68,8 +68,6 @@ const useOrderStore = create((set, get) => ({
         },
       };
 
-      console.log("Final Payload to Strapi:", payload);
-
       const response = await axios.post(`${domain}/api/orders`, payload);
       if (response.status === 200 || response.status === 201) {
         set({ cart: [] });
