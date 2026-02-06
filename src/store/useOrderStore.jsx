@@ -58,10 +58,13 @@ const useOrderStore = create((set, get) => ({
             ),
           ),
           pay_by: orderDetails.pay_by,
-          order_place: orderDetails.order_place,
+          order_place:
+            orderDetails.order_place === "hall"
+              ? "table"
+              : orderDetails.order_place,
           note: orderDetails.note || "",
 
-          cashier: orderDetails.cashier, 
+          cashier: orderDetails.cashier,
           time: orderDetails.time,
 
           table: orderDetails.table || null,
@@ -70,6 +73,11 @@ const useOrderStore = create((set, get) => ({
 
       const response = await axios.post(`${domain}/api/orders`, payload);
       if (response.status === 200 || response.status === 201) {
+        if (orderDetails.table) {
+          await axios.put(`${domain}/api/tables/${orderDetails.table}`, {
+            data: { table_status: "Busy" },
+          });
+        }
         set({ cart: [] });
         return { success: true };
       }
