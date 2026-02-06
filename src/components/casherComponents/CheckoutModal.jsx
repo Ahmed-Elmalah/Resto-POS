@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { domain } from "../../store";
+import { LuChevronDown } from "react-icons/lu";
 
 export default function CheckoutModal({
   isOpen,
@@ -12,8 +13,11 @@ export default function CheckoutModal({
   const [paymentMethod, setPaymentMethod] = useState("cash");
   const [amountPaid, setAmountPaid] = useState("");
   const [tables, setTables] = useState([]);
+  const [availableTables, setAvailableTables] = useState([]);
+  const [reservedTables, setReservedTablesTables] = useState([]);
   const [selectedTable, setSelectedTable] = useState("");
 
+  // تصفير المدخلات عند إغلاق المودال
   useEffect(() => {
     if (!isOpen) {
       setAmountPaid("");
@@ -24,14 +28,32 @@ export default function CheckoutModal({
   }, [isOpen]);
 
   useEffect(() => {
-    if (isOpen && orderType === "table") {
+    if (isOpen && orderType === "hall") {
+      const query = `populate=*`;
       axios
-        .get(`${domain}/api/tables?filters[table_status][$eq]=Available`)
+        .get(`${domain}/api/tables?${query}`)
         .then((res) => {
           setTables(res.data.data || []);
         })
         .catch((err) => {
-          console.error("Error fetching tables:", err);
+          setTables([]);
+        });
+
+      axios
+        .get(`${domain}/api/tables?filters[table_status][$eq]=Available`)
+        .then((res) => {
+          setAvailableTables(res.data.data);
+        })
+        .catch((err) => {
+          setTables([]);
+        });
+
+      axios
+        .get(`${domain}/api/tables?filters[table_status][$eq]=Reserved`)
+        .then((res) => {
+          setReservedTablesTables(res.data.data);
+        })
+        .catch((err) => {
           setTables([]);
         });
     }
@@ -72,7 +94,7 @@ export default function CheckoutModal({
               Order Type
             </label>
             <div className="flex bg-black p-2 rounded-2xl border border-white/5 gap-2">
-              {["table", "takeaway", "delivery"].map((t) => (
+              {["hall", "takeaway", "delivery"].map((t) => (
                 <button
                   key={t}
                   onClick={() => setOrderType(t)}
@@ -88,28 +110,62 @@ export default function CheckoutModal({
             </div>
           </div>
 
-          {orderType === "table" && (
-            <div className="space-y-2 animate-in fade-in slide-in-from-top-4">
-              <label className="text-[10px] font-black text-gray-500 uppercase ml-2 tracking-widest">
-                Select Table
-              </label>
-              <select
-                className="w-full bg-black border border-white/10 text-[#ff4500] p-5 rounded-2xl text-xs font-bold outline-none appearance-none cursor-pointer"
-                value={selectedTable}
-                onChange={(e) => setSelectedTable(e.target.value)}
-              >
-                <option value="">Choose an available table...</option>
-                {tables.map((t) => (
-                  <option
-                    key={t.id}
-                    value={t.documentId}
-                    className="bg-[#121212] text-white"
+          {orderType === "hall" && (
+            <div className="flex w-full">
+              <div className="space-y-2 w-full animate-in fade-in slide-in-from-top-4">
+                <label className="text-[10px] font-black text-gray-500 uppercase ml-2 tracking-widest">
+                  <span>Table Selection</span>
+                </label>
+
+                <div className="relative group w-full">
+                  <select
+                    className="w-full bg-black border border-white/10 text-white p-5 pr-10 rounded-2xl text-sm font-bold outline-none appearance-none cursor-pointer transition-all focus:border-green-500/50 focus:ring-4 focus:ring-green-500/5"
+                    value={selectedTable}
+                    onChange={(e) => setSelectedTable(e.target.value)}
                   >
-                    Table:
-                    {t?.attributes?.table_number || t?.table_number || t.id}
-                  </option>
-                ))}
-              </select>
+                    <option value="" className="text-gray-500">
+                      Pick a table...
+                    </option>
+                    <optgroup
+                      label="- Available"
+                      className="bg-[#121212] text-green-500 text-[21px]"
+                    >
+                      {tables
+                        .filter((t) => t.table_status === "Available")
+                        .sort((a, b) => a.table_number - b.table_number)
+                        .map((t) => (
+                          <option
+                            key={t.id}
+                            value={t.documentId || t.id}
+                            className="text-white bg-[#121212] text-[20px]"
+                          >
+                            T-{t.table_number}
+                          </option>
+                        ))}
+                    </optgroup>
+                    <optgroup
+                      label="- Reserved"
+                      className="bg-[#121212] text-amber-500 text-[21px]"
+                    >
+                      {tables
+                        .filter((t) => t.table_status === "Reserved")
+                        .sort((a, b) => a.table_number - b.table_number)
+                        .map((t) => (
+                          <option
+                            key={t.id}
+                            value={t.documentId || t.id}
+                            className="text-amber-200 bg-[#121212] text-[20px]"
+                          >
+                            T-{t.table_number}
+                          </option>
+                        ))}
+                    </optgroup>
+                  </select>
+                  <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500 group-focus-within:text-[#ff4500] transition-colors">
+                    <LuChevronDown size={20} />
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 
@@ -174,8 +230,7 @@ export default function CheckoutModal({
                 onConfirm({
                   order_place: orderType,
                   pay_by: paymentMethod,
-                  table: selectedTable || null,
-                  amount_paid: Number(amountPaid),
+                  table: selectedTable,
                 })
               }
               disabled={!isSufficient}
