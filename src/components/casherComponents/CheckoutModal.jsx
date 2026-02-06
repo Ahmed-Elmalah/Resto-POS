@@ -14,7 +14,6 @@ export default function CheckoutModal({
   const [tables, setTables] = useState([]);
   const [selectedTable, setSelectedTable] = useState("");
 
-  // تصفير المدخلات عند إغلاق المودال
   useEffect(() => {
     if (!isOpen) {
       setAmountPaid("");
@@ -25,7 +24,7 @@ export default function CheckoutModal({
   }, [isOpen]);
 
   useEffect(() => {
-    if (isOpen && orderType === "hall") {
+    if (isOpen && orderType === "table") {
       axios
         .get(`${domain}/api/tables?filters[table_status][$eq]=Available`)
         .then((res) => {
@@ -73,7 +72,7 @@ export default function CheckoutModal({
               Order Type
             </label>
             <div className="flex bg-black p-2 rounded-2xl border border-white/5 gap-2">
-              {["hall", "takeaway", "delivery"].map((t) => (
+              {["table", "takeaway", "delivery"].map((t) => (
                 <button
                   key={t}
                   onClick={() => setOrderType(t)}
@@ -89,7 +88,7 @@ export default function CheckoutModal({
             </div>
           </div>
 
-          {orderType === "hall" && (
+          {orderType === "table" && (
             <div className="space-y-2 animate-in fade-in slide-in-from-top-4">
               <label className="text-[10px] font-black text-gray-500 uppercase ml-2 tracking-widest">
                 Select Table
@@ -103,10 +102,10 @@ export default function CheckoutModal({
                 {tables.map((t) => (
                   <option
                     key={t.id}
-                    value={t.id}
+                    value={t.documentId}
                     className="bg-[#121212] text-white"
                   >
-                    Table:{" "}
+                    Table:
                     {t?.attributes?.table_number || t?.table_number || t.id}
                   </option>
                 ))}
@@ -175,7 +174,8 @@ export default function CheckoutModal({
                 onConfirm({
                   order_place: orderType,
                   pay_by: paymentMethod,
-                  table: selectedTable,
+                  table: selectedTable || null,
+                  amount_paid: Number(amountPaid),
                 })
               }
               disabled={!isSufficient}

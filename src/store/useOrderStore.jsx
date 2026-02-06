@@ -61,15 +61,14 @@ const useOrderStore = create((set, get) => ({
           order_place: orderDetails.order_place,
           note: orderDetails.note || "",
 
-          // الحقول اللي طلبتها
-          cashier: orderDetails.cashier, // الـ ID رقم 4 هيتبعت هنا
-          time: orderDetails.time, // الوقت والتاريخ
+          cashier: orderDetails.cashier, 
+          time: orderDetails.time,
 
-          table: orderDetails.table ? { id: orderDetails.table } : null,
+          table: orderDetails.table || null,
         },
       };
 
-      console.log("Final Payload to Strapi:", payload); // لمتابعة الـ Cashier في الكونسول
+      console.log("Final Payload to Strapi:", payload);
 
       const response = await axios.post(`${domain}/api/orders`, payload);
       if (response.status === 200 || response.status === 201) {
