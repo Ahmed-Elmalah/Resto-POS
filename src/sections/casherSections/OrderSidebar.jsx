@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import useOrderStore from "../../store/useOrderStore";
-import { useAuthuser } from "../../store"; // استيراد الستور بتاعك
+import { domain, useAuthuser } from "../../store";
 import CheckoutModal from "../../components/casherComponents/CheckoutModal";
 import Swal from "sweetalert2";
 import {
@@ -9,11 +9,12 @@ import {
   HiOutlineCreditCard,
 } from "react-icons/hi";
 import { MdOutlineShoppingBasket, MdDeleteSweep } from "react-icons/md";
+import axios from "axios";
 
 export default function OrderSidebar() {
   const { cart, updateQuantity, removeFromCart, clearCart, submitOrder } =
     useOrderStore();
-  const { user } = useAuthuser(); // جلب المستخدم من الستور بتاعك مباشرة
+  const { user } = useAuthuser();
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [note, setNote] = useState("");
 
@@ -35,17 +36,30 @@ export default function OrderSidebar() {
       },
     });
 
-    // تجهيز البيانات النهائية
     const finalOrderDetails = {
       ...orderDetails,
       note: note,
-      cashier: user?.id || null, // الـ ID من الستور بتاعك
-      time: new Date().toISOString(), // الوقت الحالي
+      table: orderDetails.table,
+      cashier: user?.documentId || user?.id,
+      time: new Date().toISOString(),
     };
-
+    console.log("🚀 Payload being sent to Strapi:", finalOrderDetails);
     const result = await submitOrder(finalOrderDetails);
 
     if (result.success) {
+      if (
+        finalOrderDetails.order_place === "table" &&
+        finalOrderDetails.table
+      ) {
+        try {
+          await axios.put(`${domain}/api/tables/${finalOrderDetails.table}`, {
+            data: { table_status: "Busy" },
+          });
+          console.log("Table is now Busy");
+        } catch (err) {
+          console.error("Failed to update table status:", err);
+        }
+      }
       setIsCheckoutOpen(false);
       setNote("");
       Swal.fire({
