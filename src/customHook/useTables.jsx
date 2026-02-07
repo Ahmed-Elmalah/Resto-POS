@@ -8,9 +8,9 @@ export const useTables = () => {
   const [showModal, setShowModal] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [currentTableId, setCurrentTableId] = useState(null);
-  const [formData, setFormData] = useState({ table_number: '', capacity: 4 });
+  // أضفنا id هنا كقيمة افتراضية
+  const [formData, setFormData] = useState({ id: null, table_number: '', capacity: 4 });
 
-  // Toast Configuration
   const Toast = Swal.mixin({
     toast: true,
     position: 'top',
@@ -36,15 +36,21 @@ export const useTables = () => {
 
   const openAddModal = () => {
     setIsUpdating(false);
-    setFormData({ table_number: '', capacity: 4 });
+    setFormData({ id: null, table_number: '', capacity: 4 });
     setShowModal(true);
   };
 
   const openEditModal = (table) => {
     const item = table.attributes || table;
+    const docId = table.documentId || table.id;
     setIsUpdating(true);
-    setCurrentTableId(table.documentId || table.id);
-    setFormData({ table_number: item.table_number, capacity: item.capacity });
+    setCurrentTableId(docId);
+    // نمرر الـ id داخل الـ formData ليتم استخدامه في الفحص بـ TableGrid
+    setFormData({ 
+      id: docId, 
+      table_number: item.table_number, 
+      capacity: item.capacity 
+    });
     setShowModal(true);
   };
 

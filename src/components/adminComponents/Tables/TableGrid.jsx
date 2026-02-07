@@ -19,34 +19,43 @@ export default function TableGrid({ onSelect, selectedId, isEditMode }) {
     handleDelete
   } = useTables();
 
-  // State to handle local submission loading
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Validate and submit form
   const onFormSubmit = async (e) => {
     e.preventDefault();
     
-    // Check if table number already exists (excluding the current table being edited)
+    // الفحص الذكي: هل الرقم موجود عند طاولة "أخرى" غير التي نعدلها الآن؟
     const isDuplicate = tables.some(table => {
+      // 1. استخراج بيانات الطاولة من المصفوفة
       const item = table.attributes || table;
-      // If updating, don't check against itself
-      if (isUpdating && table.id === formData.id) return false;
+      
+      // 2. استخراج الـ ID للطاولة الحالية في الحلقة (Loop)
+      const currentLoopId = String(table.documentId || table.id);
+      
+      // 3. استخراج الـ ID للطاولة التي يتم تعديلها الآن
+      // سنحاول إيجاده في formData أو نستخدم الـ selectedId الممرر للـ Component
+      const editingId = String(formData.documentId || formData.id || selectedId);
+
+      // المنطق الجوهري: لو الـ ID هو نفسه، تجاهل فحص رقم الطاولة تماماً
+      if (isUpdating && currentLoopId === editingId) {
+        return false; 
+      }
+
+      // إذا كان ID مختلف، تأكد أن رقم الطاولة غير مكرر
       return String(item.table_number) === String(formData.table_number);
     });
 
     if (isDuplicate) {
-      return toast.error(`Table number ${formData.table_number} already exists!`, {
-        style: { borderRadius: '10px', background: '#333', color: '#fff' }
+      return toast.error(`Table number ${formData.table_number} is already in use!`, {
+        id: 'duplicate-toast',
       });
     }
 
     try {
       setIsSubmitting(true);
       await handleFormSubmit(e);
-      // Toast success is usually handled inside handleFormSubmit hook, 
-      // but we ensure loading state is cleared
     } catch (err) {
-      toast.error("Failed to save table");
+      toast.error("An error occurred during update.");
     } finally {
       setIsSubmitting(false);
     }
@@ -63,15 +72,15 @@ export default function TableGrid({ onSelect, selectedId, isEditMode }) {
 
   return (
     <div className="relative">
-      {/* 1. Status Legend */}
+      {/* Legend */}
       <div className="flex justify-center gap-4 mb-12">
         <LegendItem color="bg-emerald-500" label="Available" />
         <LegendItem color="bg-rose-500" label="Busy" />
         <LegendItem color="bg-amber-500" label="Reserved" />
       </div>
 
-      {/* 2. Tables Grid - Responsive columns to prevent stretching */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-6 gap-8 max-w-5xl mx-auto">
+      {/* Tables Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-6 gap-8 max-w-5xl mx-auto">
         {tables.map((table) => {
           const item = table.attributes || table;
           const statusMap = { "Busy": "occupied", "Reserved": "reserved", "Available": "free" };
@@ -91,11 +100,10 @@ export default function TableGrid({ onSelect, selectedId, isEditMode }) {
           );
         })}
 
-        {/* Add Table Placeholder (Edit Mode Only) */}
         {isEditMode && (
           <div 
             onClick={openAddModal} 
-            className="aspect-square rounded-full border-2 border-dashed border-slate-400 dark:border-slate-600 flex flex-col items-center justify-center cursor-pointer hover:border-primary hover:bg-primary/5 transition-all opacity-60 group"
+            className="aspect-square w-full max-w-[140px] rounded-full border-2 border-dashed border-slate-400 dark:border-slate-600 flex flex-col items-center justify-center cursor-pointer hover:border-primary hover:bg-primary/5 transition-all opacity-60 group mx-auto"
           >
             <span className="material-symbols-outlined text-4xl text-slate-500 group-hover:text-primary">add</span>
             <span className="text-[10px] font-bold text-slate-500 group-hover:text-primary uppercase tracking-tighter">New Table</span>
@@ -103,7 +111,7 @@ export default function TableGrid({ onSelect, selectedId, isEditMode }) {
         )}
       </div>
 
-      {/* 3. Table Management Modal */}
+      {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-8 w-full max-w-md shadow-2xl border dark:border-slate-800 animate-in fade-in zoom-in duration-200">
@@ -148,10 +156,10 @@ export default function TableGrid({ onSelect, selectedId, isEditMode }) {
                   className="flex-1 py-3 bg-primary text-white font-bold rounded-lg shadow-lg hover:bg-blue-600 transition-all flex items-center justify-center gap-2 disabled:bg-slate-600"
                 >
                   {isSubmitting ? (
-                    <>
+                    <div className="flex items-center gap-2">
                       <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                      <span>Saving...</span>
-                    </>
+                      <span>Updating...</span>
+                    </div>
                   ) : (
                     isUpdating ? 'Update Table' : 'Save Table'
                   )}
