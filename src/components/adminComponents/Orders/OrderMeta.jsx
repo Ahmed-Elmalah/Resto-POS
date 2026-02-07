@@ -19,7 +19,12 @@ export default function OrderMeta({ order = {} }) {
     },
     {
       label: "Location",
-      val: `${order.table || "No Table"} • ${order.order_place || "Delivery"}`,
+      val:
+        order.order_place === "table" && order.table
+          ? `Table #${order.table.table_number}`
+          : order.order_place === "table"
+            ? "Table (Not Specified)"
+            : order.order_place,
       icon: <FiMapPin size={20} />,
       color: "text-purple-500",
       bg: "bg-purple-500/10",

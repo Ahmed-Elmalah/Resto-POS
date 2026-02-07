@@ -1,4 +1,4 @@
- import { MdRestaurant } from "react-icons/md";
+import { MdRestaurant } from "react-icons/md";
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
 
 import LoginForm from "../../components/loginComponents/LoginForm";
@@ -21,8 +21,9 @@ export default function LoginPage() {
             <div className="bg-primary/10 p-4 rounded-full mb-4 text-primary">
               <MdRestaurant size={40} />
             </div>
-            <h1 className="text-white text-3xl font-bold font-black tracking-tight">
-              Admin Portal
+            <h1 className="text-4xl font-black tracking-[0.05em] flex items-center gap-1.5 cursor-default">
+              <span className="text-white">RESTO</span>
+              <span className="text-[#ff4500]">POS</span>
             </h1>
             <p className="text-[#9dabb9] text-base text-[14px] mt-2">
               Welcome back. Please sign in to manage your restaurant dashboard

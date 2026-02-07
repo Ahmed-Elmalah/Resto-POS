@@ -7,13 +7,13 @@ export default function AdminLayout() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="theme-admin no-scrollbar bg-background-light dark:bg-background-dark w-full flex text-slate-900 dark:text-white font-sans ">
+    <div className="theme-admin overflow-x-hidden no-scrollbar bg-background-light dark:bg-background-dark w-full flex text-slate-900 dark:text-white font-sans ">
       <Sidebar
         isOpen={isSidebarOpen}
         closeMobileMenu={() => setSidebarOpen(false)}
       />
 
-      <main className="flex-1 flex flex-col h-full w-full md:ml-20 lg:ml-64 transition-all duration-300 relative">
+      <main className="flex-1 overflow-hidden min-w-0 flex flex-col h-full w-full md:ml-20 lg:ml-64 transition-all duration-300 relative">
         <div className="md:hidden flex-none bg-white dark:bg-[#1a2632] p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between z-30">
           <div className="flex items-center gap-3">
             <button
@@ -26,7 +26,7 @@ export default function AdminLayout() {
           </div>
         </div>
 
-        <div className="flex-1 no-scrollbar min-h-screen w-full relative">
+        <div className="flex-1 min-w-0 no-scrollbar min-h-screen w-full relative">
           <Outlet />
         </div>
       </main>
