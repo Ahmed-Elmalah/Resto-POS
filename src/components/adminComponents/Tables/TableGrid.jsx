@@ -4,7 +4,6 @@ import TableItem from './TableItem';
 import { useTables } from '../../../customHook/useTables'; 
 
 export default function TableGrid({ onSelect, selectedId, isEditMode }) {
-  
   const {
     tables,
     loading,
@@ -24,24 +23,18 @@ export default function TableGrid({ onSelect, selectedId, isEditMode }) {
   const onFormSubmit = async (e) => {
     e.preventDefault();
     
-    // الفحص الذكي: هل الرقم موجود عند طاولة "أخرى" غير التي نعدلها الآن؟
+    // Validate if the table number exists for a DIFFERENT table
     const isDuplicate = tables.some(table => {
-      // 1. استخراج بيانات الطاولة من المصفوفة
       const item = table.attributes || table;
       
-      // 2. استخراج الـ ID للطاولة الحالية في الحلقة (Loop)
       const currentLoopId = String(table.documentId || table.id);
-      
-      // 3. استخراج الـ ID للطاولة التي يتم تعديلها الآن
-      // سنحاول إيجاده في formData أو نستخدم الـ selectedId الممرر للـ Component
       const editingId = String(formData.documentId || formData.id || selectedId);
 
-      // المنطق الجوهري: لو الـ ID هو نفسه، تجاهل فحص رقم الطاولة تماماً
+      // Skip validation if checking the table currently being edited
       if (isUpdating && currentLoopId === editingId) {
         return false; 
       }
 
-      // إذا كان ID مختلف، تأكد أن رقم الطاولة غير مكرر
       return String(item.table_number) === String(formData.table_number);
     });
 
@@ -72,14 +65,14 @@ export default function TableGrid({ onSelect, selectedId, isEditMode }) {
 
   return (
     <div className="relative">
-      {/* Legend */}
+      {/* Status Legend */}
       <div className="flex justify-center gap-4 mb-12">
         <LegendItem color="bg-emerald-500" label="Available" />
         <LegendItem color="bg-rose-500" label="Busy" />
         <LegendItem color="bg-amber-500" label="Reserved" />
       </div>
 
-      {/* Tables Grid */}
+      {/* Tables Display Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-6 gap-8 max-w-5xl mx-auto">
         {tables.map((table) => {
           const item = table.attributes || table;
@@ -100,6 +93,7 @@ export default function TableGrid({ onSelect, selectedId, isEditMode }) {
           );
         })}
 
+        {/* Add Table Button */}
         {isEditMode && (
           <div 
             onClick={openAddModal} 
@@ -111,7 +105,7 @@ export default function TableGrid({ onSelect, selectedId, isEditMode }) {
         )}
       </div>
 
-      {/* Modal */}
+      {/* Form Modal */}
       {showModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-8 w-full max-w-md shadow-2xl border dark:border-slate-800 animate-in fade-in zoom-in duration-200">
