@@ -66,7 +66,6 @@ const useOrderStore = create((set, get) => ({
 
           cashier: orderDetails.cashier,
           time: orderDetails.time,
-
           table: orderDetails.table || null,
         },
       };

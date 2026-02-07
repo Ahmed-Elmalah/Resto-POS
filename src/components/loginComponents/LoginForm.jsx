@@ -1,5 +1,6 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import {
+  MdCheck,
   MdEmail,
   MdLock,
   MdLogin,
@@ -101,26 +102,46 @@ export default function LoginForm() {
           />
         </div>
 
-        {/* Remember Me */}
-        <div className="py-3">
-          <label className="flex items-center gap-x-3 cursor-pointer group">
-            <Field
-              type="checkbox"
-              name="rememberMe"
-              className="h-5 w-5 rounded border-[#3b4754] border-2 bg-transparent text-primary checked:bg-primary transition-all focus:ring-0 cursor-pointer"
-            />
-            <p className="text-[#9dabb9] group-hover:text-white text-sm font-medium transition-colors">
-              Keep me signed in
-            </p>
+        {/* Remember Me & New Acount */}
+        <div className="flex items-center justify-between py-4 px-1">
+          <label className="flex items-center gap-x-2.5 cursor-pointer group">
+            <div className="relative flex items-center justify-center">
+              <Field
+                type="checkbox"
+                name="rememberMe"
+                className="peer h-5 w-5 appearance-none rounded-md border-2 border-[#3b4754] bg-transparent checked:bg-[#ff4500] checked:border-[#ff4500] transition-all cursor-pointer"
+              />
+              <MdCheck
+                className="absolute text-white opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity duration-200"
+                size={16}
+              />
+            </div>
+            <span className="text-[#9dabb9] group-hover:text-gray-200 text-[13px] font-semibold transition-colors">
+              Remember me
+            </span>
           </label>
+
+          {/* Right Side: Signup Link */}
+          <div className="flex items-center gap-1.5">
+            <span className="text-[#60778a] text-[12px] font-medium">New?</span>
+            <button
+              type="button"
+              onClick={() => navigate("/signup")}
+              className="text-[#ff4500] text-[12px] cursor-pointer font-black tracking-wider hover:text-white transition-all relative group/link"
+            >
+              Create Account
+              {/* خط الانيميشن اللي تحت اللينك */}
+              <span className="absolute -bottom-1 left-0 w-0 h-[1.5px] bg-[#ff4500] transition-all duration-300 group-hover/link:w-full"></span>
+            </button>
+          </div>
         </div>
 
         {/* Submit Button */}
         <button
           type="submit"
-          className="flex w-full items-center justify-center rounded-lg h-13 mt-1 bg-primary text-white text-base font-bold hover:bg-primary/90 transition-all active:scale-[0.98]"
+          className="flex w-full items-center cursor-pointer justify-center rounded-lg h-13 mt-1 bg-primary text-white text-base font-bold hover:bg-primary/90 transition-all active:scale-[0.98]"
         >
-          <span className="pr-2">Sign In</span>
+          <span className="pr-2">Login</span>
           <MdLogin size={22} />
         </button>
       </Form>

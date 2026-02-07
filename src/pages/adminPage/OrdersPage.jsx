@@ -4,7 +4,7 @@ import OrderTable from "../../components/adminComponents/Orders/OrderTable";
 
 export default function OrdersPage() {
   return (
-    <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 min-h-screen animate-in fade-in duration-500">
+    <div className="w-full overflow-hidden px-4 sm:px-6 lg:px-8 py-8 md:py-12 min-h-screen animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
         <div className="space-y-2 text-center md:text-left">
           <h1 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
@@ -21,7 +21,7 @@ export default function OrdersPage() {
         </button>
       </div>
 
-      <div className="bg-white dark:bg-[#1c2127]/50 rounded-[24px] border border-slate-200 dark:border-[#283039] shadow-xl shadow-black/5">
+      <div className="bg-white dark:bg-[#1c2127]/50 overflow-hidden rounded-[24px] border border-slate-200 dark:border-[#283039] shadow-xl shadow-black/5">
         <div className="p-3 md:p-5 lg:p-6">
           <OrderFilters />
 

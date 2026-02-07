@@ -15,6 +15,7 @@ export default function OrderTable() {
       const orders = res.data.data || [];
       const sorted = orders.sort((a, b) => b.id - a.id);
       setData(sorted);
+      console.log(sorted);
 
       const uniqueCashiers = [
         ...new Set(
@@ -82,15 +83,15 @@ export default function OrderTable() {
   };
   return (
     <div className="w-full overflow-auto max-h-500 no-scrollbar">
-      <table className="w-full  text-center border-collapse min-w-[800px]">
+      <table className="w-full text-center border-collapse min-w-[800px]">
         <thead className="bg-slate-100 dark:bg-[#1c2127] text-slate-500 dark:text-[#9dabb9] text-xs uppercase font-bold">
           <tr>
-            <th className="px-6 py-4 ">Order ID</th>
-            <th className="px-6 py-4">Cashier Name</th>
-            <th className="px-6 py-4 ">Total</th>
-            <th className="px-6 py-4">Order Place</th>
-            <th className="px-6 py-4">Pay By</th>
-            <th className="px-1 py-4">Time & Date</th>
+            <th className="px-3 py-4 ">Order ID</th>
+            <th className="px-3 py-4">Cashier Name</th>
+            <th className="px-3 py-4 ">Total</th>
+            <th className="px-3 py-4">Order Place</th>
+            <th className="px-3 py-4">Pay By</th>
+            <th className="px-2 py-4">Time & Date</th>
           </tr>
         </thead>
         <tbody className="divide-y  divide-slate-200 dark:divide-[#283039]">
@@ -100,17 +101,31 @@ export default function OrderTable() {
               onClick={() => navigate(`/admin/orders/${el.documentId}`)}
               className="hover:bg-slate-100/50 cursor-pointer dark:hover:bg-[#283039]/20 transition-colors"
             >
-              <td className="px-6 py-4 font-mono font-bold text-primary">
+              <td className="px-3 py-4 font-mono font-bold text-primary">
                 #{el.id}
               </td>
-              <td className="px-6 py-4">{el.cashier?.username}</td>
+              <td className="px-3 py-4">{el.cashier?.username}</td>
 
-              <td className="px-6 py-4 font-black text-slate-900 dark:text-[#45f5a1]">
+              <td className="px-3 py-4 font-black text-slate-900 dark:text-[#45f5a1]">
                 ${el.total}
               </td>
-              <td className="px-6 py-4">{el.order_place}</td>
-              <td className="px-6 py-4">{el.pay_by}</td>
-              <td className="px-6 py-4">{formatDateTime(el.time)}</td>
+              <td className="px-3 py-4">
+                {el.order_place === "table" ? (
+                  <div className="flex flex-col items-center gap-1">
+                    <div className="flex items-center gap-1 bg-primary/10 text-primary px-3 py-1 rounded-full border border-primary/20">
+                      <span className="font-bold text-sm">
+                        Table {el.table?.table_number || "Not Found"}
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <span className="capitalize font-medium">
+                    {el.order_place}
+                  </span>
+                )}
+              </td>
+              <td className="px-3 py-4">{el.pay_by}</td>
+              <td className="px-2 py-4">{formatDateTime(el.time)}</td>
             </tr>
           ))}
         </tbody>

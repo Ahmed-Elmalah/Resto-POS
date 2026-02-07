@@ -13,7 +13,9 @@ export default function OrderDetails() {
 
   useEffect(() => {
     axios
-      .get(`${domain}/api/orders/${orderId}?populate=*`)
+      .get(
+        `${domain}/api/orders/${orderId}?populate[table][fields][0]=table_number&populate[cashier][fields][0]=username&populate[items]=*`,
+      )
       .then((res) => {
         setOrder(res.data.data);
       })
