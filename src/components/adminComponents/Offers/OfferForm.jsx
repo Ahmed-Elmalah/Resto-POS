@@ -1,7 +1,6 @@
 import React from "react";
 import OfferItemSelector from "./OfferItemSelector";
 
-// This component handles the Inputs, Description, and Product Selection
 export default function OfferForm({
   isEditing,
   handleSave,
@@ -9,7 +8,7 @@ export default function OfferForm({
   setFormData,
   isLoading,
   setIsEditing,
-  offer, // Original data for View Mode
+  offer, // ده بيجي من currentOffer وفيه offerItems
   selectedProducts,
   setSelectedProducts
 }) {
@@ -71,14 +70,14 @@ export default function OfferForm({
               // View Mode: Text Display
               <>
                 <h1 className="text-3xl font-black dark:text-white mb-2">
-                  {offer.name}
+                  {offer?.name}
                 </h1>
                 <div className="flex items-center gap-4 text-gray-500 text-sm">
                   <span className="font-bold text-primary text-xl">
-                    ${offer.price}
+                    ${offer?.price}
                   </span>
                   <span>•</span>
-                  <span>Expires: {offer.expiryDate}</span>
+                  <span>Expires: {offer?.expiryDate}</span>
                 </div>
               </>
             )}
@@ -99,48 +98,57 @@ export default function OfferForm({
             ></textarea>
           ) : (
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-              {offer.description}
+              {offer?.description}
             </p>
           )}
         </div>
 
-        {/* --- Products Section --- */}
+        {/* --- Products Section (التعديل المهم هنا) --- */}
         <div className="border-t dark:border-gray-700 pt-6">
           <h3 className="font-bold dark:text-white mb-3">Included Products</h3>
 
           {isEditing ? (
-            // Edit Mode: Selector Component
+            // Edit Mode: Selector
             <OfferItemSelector
               selectedItems={selectedProducts}
               onUpdateItems={setSelectedProducts}
             />
           ) : (
-            // View Mode: Static List
+            // View Mode: List from offerItems
             <div className="space-y-2">
-              {offer.products?.length > 0 ? (
-                offer.products.map((prod) => (
+              {/* هنا بنقرأ offerItems بدل products */}
+              {offer?.offerItems && offer.offerItems.length > 0 ? (
+                offer.offerItems.map((item) => (
                   <div
-                    key={prod.id}
+                    key={item.id}
                     className="flex items-center justify-between p-3 bg-gray-50 dark:bg-[#101922] rounded-lg"
                   >
-                    <span className="dark:text-white font-medium">
-                      {prod.name}
-                    </span>
-                    <span className="text-primary font-bold">
-                      ${prod.price}
+                    <div className="flex items-center gap-3">
+                      {/* عرض الكمية */}
+                      <span className="bg-primary/10 text-primary text-xs font-bold px-2 py-1 rounded">
+                        x{item.quantity}
+                      </span>
+                      {/* اسم المنتج من جوه الأوبجكت المتداخل */}
+                      <span className="dark:text-white font-medium">
+                        {item.product?.name || "Unknown Product"}
+                      </span>
+                    </div>
+                    {/* السعر */}
+                    <span className="text-gray-500 font-bold text-sm">
+                      ${item.product?.price}
                     </span>
                   </div>
                 ))
               ) : (
                 <p className="text-gray-400 italic">
-                  No specific products linked.
+                  No products linked to this offer.
                 </p>
               )}
             </div>
           )}
         </div>
 
-        {/* --- Actions (Save / Cancel) --- */}
+        {/* --- Actions --- */}
         {isEditing && (
           <div className="flex justify-end gap-3 pt-4 border-t dark:border-gray-700">
             <button
