@@ -16,6 +16,7 @@ export default function OfferItemSelector({ selectedItems, onUpdateItems }) {
       // Add new item with initial qty = 1
       const newItem = {
         id: product.id,
+        documentId: product.documentId,
         name: product.name,
         price: product.price,
         qty: 1,

@@ -24,7 +24,9 @@ const useAdminStore = create((set) => ({
   offers: [],
   isLoadingOffers: false,
 
-  // --- Fetch Offers ---
+  currentOffer: null,
+  isLoadingCurrentOffer: false,
+
   fetchOffers: async () => {
     set({ isLoadingOffers: true });
     try {
@@ -37,7 +39,6 @@ const useAdminStore = create((set) => ({
     }
   },
 
-  // --- 1. Upload Image Function ---
   uploadFile: async (file) => {
     // Create FormData to send file
     const formData = new FormData();
@@ -53,7 +54,6 @@ const useAdminStore = create((set) => ({
     }
   },
 
-  // --- 2. Create Offer Function ---
   createOffer: async (offerData) => {
     try {
       // Wrap data in 'data' object as Strapi expects
@@ -68,6 +68,62 @@ const useAdminStore = create((set) => ({
       return { success: false, error: error.response?.data || error.message };
     }
   },
+
+  deleteOffer: async (documentId) => {
+    try {
+      await axios.delete(`${domain}/api/offers/${documentId}`);
+      
+      // Remove from local state immediately (Optimistic UI)
+      set((state) => ({
+        offers: state.offers.filter((offer) => offer.documentId !== documentId),
+      }));
+      return { success: true };
+    } catch (error) {
+      console.error("Delete Error:", error);
+      return { success: false, error: error.message };
+    }
+  },
+
+  updateOffer: async (documentId, updatedData) => {
+    try {
+      // Strapi expects data wrapped in 'data' object
+      const res = await axios.put(`${domain}/api/offers/${documentId}`, {
+        data: updatedData
+      });
+
+      // Update the specific offer in the local list
+      set((state) => ({
+        offers: state.offers.map((offer) => 
+          offer.documentId === documentId ? res.data.data : offer
+        ),
+      }));
+      
+      return { success: true, data: res.data.data };
+    } catch (error) {
+      console.error("Update Error:", error);
+      return { success: false, error: error.message };
+    }
+  },
+
+  getOfferById: async (documentId) => {
+    set({ isLoadingCurrentOffer: true, currentOffer: null });
+    try {
+      // Fetch single offer using documentId & populate relations
+      const res = await axios.get(`${domain}/api/offers/${documentId}?populate=*`);
+      
+      set({ 
+        currentOffer: res.data.data, 
+        isLoadingCurrentOffer: false 
+      });
+      return { success: true, data: res.data.data };
+    } catch (error) {
+      console.error("Get Offer Error:", error);
+      set({ isLoadingCurrentOffer: false });
+      return { success: false, error: error.message };
+    }
+  },
+
+
 }));
 
 export default useAdminStore;

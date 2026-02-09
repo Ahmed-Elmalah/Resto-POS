@@ -53,10 +53,11 @@ export default function CreateOfferPage() {
     try {
       // Step 1: Upload the image to Strapi
       const uploadedImg = await uploadFile(imageFile);
-      const imageId = uploadedImg.id; // We only need the ID
+      const imageId = uploadedImg.id;
 
       // 2. Extract just IDs for Strapi Relation
-      const productIds = offerItems.map(item => item.id);
+      const productDocumentIds = offerItems.map(item => item.documentId);
+      console.log("Sending Product Document IDs:", productDocumentIds);
 
       // Step 2: Prepare data object
       const offerData = {
@@ -66,7 +67,7 @@ export default function CreateOfferPage() {
         expiryDate: form.expiryDate,
         isAvailable: form.isAvailable,
         image: imageId, 
-        products: productIds,
+        products: productDocumentIds,
       };
 
       // Step 3: Send data to Strapi
