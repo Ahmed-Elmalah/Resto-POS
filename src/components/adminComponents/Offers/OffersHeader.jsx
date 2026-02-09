@@ -1,6 +1,8 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function OffersHeader({ onOpenModal }) {
+  const navigate = useNavigate();
   return (
     <div className="flex flex-col gap-6">
     
@@ -16,7 +18,7 @@ export default function OffersHeader({ onOpenModal }) {
         </div>
         
         <button 
-          onClick={onOpenModal}
+          onClick={()=> navigate('/admin/promotions/new')}
           className="bg-primary hover:bg-blue-600 text-white px-5 py-2.5 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all shadow-md active:scale-95"
         >
           <span className="material-symbols-outlined text-[20px]">add</span>

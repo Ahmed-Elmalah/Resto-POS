@@ -24,6 +24,7 @@ import { Toaster } from "react-hot-toast";
 import OrderDetails from "./pages/adminPage/OrderDetails";
 import AddStaffPage from "./pages/adminPage/AddStaffPage";
 import EditStaffPage from "./pages/adminPage/EditStaffPage";
+import CreateOfferPage from "./pages/adminPage/CreateOfferPage";
 
 export default function App() {
   return (
@@ -75,6 +76,7 @@ export default function App() {
              <Route path="edit/:id" element={<EditStaffPage />} />
           </Route>
           <Route path="promotions" element={<OffersPage />} />
+          <Route path="promotions/new" element={<CreateOfferPage />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="profile" element={<ProfilePage />} />
         </Route>
