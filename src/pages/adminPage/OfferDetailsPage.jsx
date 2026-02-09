@@ -1,4 +1,4 @@
-import  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom"; // Removed useLocation
 import useAdminStore from "../../store/useAdminStore";
 import Swal from "sweetalert2";
@@ -12,16 +12,16 @@ import OfferForm from "../../components/adminComponents/Offers/OfferForm";
 export default function OfferDetailsPage() {
   const navigate = useNavigate();
   // Get ID from URL (Note: in our route config it is :id, but it holds the documentId string)
-  const { id } = useParams(); 
-  
+  const { id } = useParams();
+
   // Get Store Functions & State
-  const { 
-    getOfferById, 
-    currentOffer, 
+  const {
+    getOfferById,
+    currentOffer,
     isLoadingCurrentOffer,
-    deleteOffer, 
-    updateOffer, 
-    uploadFile 
+    deleteOffer,
+    updateOffer,
+    uploadFile,
   } = useAdminStore();
 
   // Local UI States
@@ -53,30 +53,33 @@ export default function OfferDetailsPage() {
         isAvailable: currentOffer.isAvailable,
       });
 
-      // Map Products
-      if (currentOffer.products) {
-        // Strapi v5 sometimes returns array directly or inside .data depending on population depth
-        // Adjust this check based on your actual response
-        const prodList = Array.isArray(currentOffer.products) ? currentOffer.products : currentOffer.products.data || [];
-        
-        const mappedProducts = prodList.map((p) => ({
-          id: p.id, 
-          documentId: p.documentId,
-          name: p.name || p.attributes?.name, 
-          price: p.price || p.attributes?.price,
-          qty: 1, 
-        }));
+      if (currentOffer.offerItems && Array.isArray(currentOffer.offerItems)) {
+        const mappedProducts = currentOffer.offerItems
+          .map((item) => {
+            const productData = item.product;
+
+            if (!productData) return null;
+
+            return {
+              id: productData.id,
+              documentId: productData.documentId, 
+              name: productData.name,
+              price: productData.price,
+              qty: item.quantity,
+            };
+          })
+          .filter(Boolean);
+
         setSelectedProducts(mappedProducts);
       }
     }
   }, [currentOffer]);
 
-
   // Show Loading Spinner while fetching initial data
   if (isLoadingCurrentOffer || !currentOffer) {
     return (
       <div className="flex justify-center items-center h-screen">
-         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -86,11 +89,17 @@ export default function OfferDetailsPage() {
   const statusBadge = isExpired
     ? { text: "Expired", color: "bg-red-100 text-red-600 border-red-200" }
     : currentOffer.isAvailable
-    ? { text: "Active", color: "bg-green-100 text-green-700 border-green-200" }
-    : { text: "Inactive", color: "bg-gray-100 text-gray-600 border-gray-300" };
+      ? {
+          text: "Active",
+          color: "bg-green-100 text-green-700 border-green-200",
+        }
+      : {
+          text: "Inactive",
+          color: "bg-gray-100 text-gray-600 border-gray-300",
+        };
 
   // --- Handlers ---
-  
+
   const handleDelete = () => {
     Swal.fire({
       title: "Are you sure?",
@@ -127,10 +136,15 @@ export default function OfferDetailsPage() {
         imageId = uploaded.id;
       }
 
+      const offerItemsPayload = selectedProducts.map(p => ({
+      product: p.documentId || p.id,
+      quantity: p.qty    
+    }));
+
       const payload = {
         ...formData,
         image: imageId,
-        products: selectedProducts.map(p => p.documentId),
+        offerItems: offerItemsPayload,
       };
 
       const result = await updateOffer(currentOffer.documentId, payload);
@@ -139,7 +153,7 @@ export default function OfferDetailsPage() {
         toast.success("Offer updated!");
         setIsEditing(false);
         // Optional: Refetch to ensure data consistency
-        getOfferById(id); 
+        getOfferById(id);
       } else {
         toast.error("Update failed");
       }
@@ -161,8 +175,7 @@ export default function OfferDetailsPage() {
 
   return (
     <div className="p-6 max-w-5xl mx-auto animate-in fade-in zoom-in-95 duration-300">
-      
-      <OfferDetailsHeader 
+      <OfferDetailsHeader
         navigate={navigate}
         isEditing={isEditing}
         setIsEditing={setIsEditing}
@@ -170,8 +183,7 @@ export default function OfferDetailsPage() {
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        <OfferImageStatus 
+        <OfferImageStatus
           isEditing={isEditing}
           preview={preview}
           offerImage={currentOffer.image?.url}
@@ -183,7 +195,7 @@ export default function OfferDetailsPage() {
           isExpired={isExpired}
         />
 
-        <OfferForm 
+        <OfferForm
           isEditing={isEditing}
           handleSave={handleSave}
           formData={formData}
@@ -194,7 +206,6 @@ export default function OfferDetailsPage() {
           selectedProducts={selectedProducts}
           setSelectedProducts={setSelectedProducts}
         />
-
       </div>
     </div>
   );

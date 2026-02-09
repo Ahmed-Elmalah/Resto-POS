@@ -1,6 +1,6 @@
 import axios from "axios";
 import { create } from "zustand";
-import {domain} from '../store'
+import { domain } from "../store";
 
 const useAdminStore = create((set) => ({
   orders: [],
@@ -30,7 +30,6 @@ const useAdminStore = create((set) => ({
   fetchOffers: async () => {
     set({ isLoadingOffers: true });
     try {
-      // Get offers with image and products populated
       const res = await axios.get(`${domain}/api/offers?populate=*`);
       set({ offers: res.data.data, isLoadingOffers: false });
     } catch (error) {
@@ -59,7 +58,7 @@ const useAdminStore = create((set) => ({
       // Wrap data in 'data' object as Strapi expects
       const payload = { data: offerData };
       const res = await axios.post(`${domain}/api/offers`, payload);
-      
+
       // Update local state with new offer
       set((state) => ({ offers: [...state.offers, res.data.data] }));
       return { success: true };
@@ -72,7 +71,7 @@ const useAdminStore = create((set) => ({
   deleteOffer: async (documentId) => {
     try {
       await axios.delete(`${domain}/api/offers/${documentId}`);
-      
+
       // Remove from local state immediately (Optimistic UI)
       set((state) => ({
         offers: state.offers.filter((offer) => offer.documentId !== documentId),
@@ -88,16 +87,16 @@ const useAdminStore = create((set) => ({
     try {
       // Strapi expects data wrapped in 'data' object
       const res = await axios.put(`${domain}/api/offers/${documentId}`, {
-        data: updatedData
+        data: updatedData,
       });
 
       // Update the specific offer in the local list
       set((state) => ({
-        offers: state.offers.map((offer) => 
-          offer.documentId === documentId ? res.data.data : offer
+        offers: state.offers.map((offer) =>
+          offer.documentId === documentId ? res.data.data : offer,
         ),
       }));
-      
+
       return { success: true, data: res.data.data };
     } catch (error) {
       console.error("Update Error:", error);
@@ -108,12 +107,13 @@ const useAdminStore = create((set) => ({
   getOfferById: async (documentId) => {
     set({ isLoadingCurrentOffer: true, currentOffer: null });
     try {
-      // Fetch single offer using documentId & populate relations
-      const res = await axios.get(`${domain}/api/offers/${documentId}?populate=*`);
-      
-      set({ 
-        currentOffer: res.data.data, 
-        isLoadingCurrentOffer: false 
+      const res = await axios.get(
+        `${domain}/api/offers/${documentId}?populate[image][fields]=url&populate[offerItems][populate][product][fields]=name,price,documentId`
+      );
+
+      set({
+        currentOffer: res.data.data,
+        isLoadingCurrentOffer: false,
       });
       return { success: true, data: res.data.data };
     } catch (error) {
@@ -122,8 +122,6 @@ const useAdminStore = create((set) => ({
       return { success: false, error: error.message };
     }
   },
-
-
 }));
 
 export default useAdminStore;
