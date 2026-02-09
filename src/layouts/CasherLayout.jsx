@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import Header from "../components/casherComponents/Header";
 // بنستخدم تابات اليوزر زي ما طلبت
-import CategoryTabs from "../components/userComponents/menu/CategoryTabs";
 import OrderSidebar from "../sections/casherSections/OrderSidebar";
 import useOrderStore from "../store/useOrderStore";
+import CategoryTabs from "../components/casherComponents/CategoryTabs";
 
 // ضفنا Props جديدة هنا عشان التابات تشتغل
 export default function CasherLayout({
@@ -25,8 +25,8 @@ export default function CasherLayout({
   return (
     <div className="flex h-screen w-full bg-[#f8f9fa] dark:bg-[#1A1110] overflow-hidden text-gray-900 dark:text-white relative transition-colors duration-300">
       {/* المحتوى الرئيسي */}
-      <main className="flex-1 flex flex-col min-w-0 relative overflow-hidden">
-        <header className="flex flex-col gap-4 p-4 md:p-6 pb-2 bg-[#f8f9fa]/80 dark:bg-[#1A1110]/95 backdrop-blur-md z-30 sticky top-0 border-b border-gray-100 dark:border-white/5">
+      <main className="flex-1 flex flex-col min-w-0 relative overflow-y-auto no-scrollbar">
+        <header className="flex flex-col gap-4 p-4 md:p-6 pb-2 bg-[#f8f9fa]/80 dark:bg-[#1A1110]/95 backdrop-blur-md  border-b border-gray-100 dark:border-white/5">
           <Header
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
@@ -44,7 +44,7 @@ export default function CasherLayout({
           />
         </header>
 
-        <div className="flex-1 overflow-y-auto p-4 md:p-6 no-scrollbar">
+        <div className="flex-1 p-4 md:p-6 no-scrollbar">
           {children}
         </div>
       </main>

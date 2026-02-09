@@ -3,8 +3,6 @@ export default function CategoryTabs({
   categories = [],
   activeCategory,
   onSelectCategory,
-  onToggleView,
-  viewMode,
 }) {
   // Create a tabs array that includes "All" + categories from API
   // Note: We use 'id: "all"' for the first tab
@@ -44,16 +42,6 @@ export default function CategoryTabs({
           );
         })}
       </div>
-      <button
-        onClick={onToggleView}
-        className={`${
-          viewMode === "tables"
-            ? "bg-white text-primary border-2 border-primary"
-            : "bg-primary text-white"
-        } shadow-sm flex h-9 shrink-0 items-center justify-center px-5 rounded-full transition-all duration-200 active:scale-95 cursor-pointer font-bold text-sm`}
-      >
-        {viewMode === "tables" ? "Back to Menu" : "Busy Tables"}
-      </button>
     </div>
   );
 }

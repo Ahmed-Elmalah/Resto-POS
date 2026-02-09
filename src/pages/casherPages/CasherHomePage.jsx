@@ -72,7 +72,7 @@ export default function CasherHomePage() {
             </div>
           )}
           {error && (
-            <div className="text-center py-10 text-red-500">{error}</div>
+            <div className="text-center py-10 text-red-500">Sorry Something Went Wrong...</div>
           )}
 
           {!isLoading && !error && (
@@ -153,7 +153,7 @@ export default function CasherHomePage() {
 
       {/* حالات التحميل والخطأ */}
       {isLoading && <div className="text-center py-10">Loading Menu...</div>}
-      {error && <div className="text-center py-10 text-red-500">{error}</div>}
+      {error && <div className="text-center py-10 text-red-500">Sorry Something Went Wrong...</div>}
     </CasherLayout>
   );
 }

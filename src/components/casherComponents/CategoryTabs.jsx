@@ -1,28 +1,64 @@
-export default function CategoryTabs() {
-  const categories = [
-    { name: 'All Items', icon: 'star' },
-    { name: 'Burgers', icon: 'lunch_dining' },
-    { name: 'Pizza', icon: 'local_pizza' },
-    { name: 'Sides', icon: 'tapas' },
-    { name: 'Drinks', icon: 'local_bar' },
-    { name: 'Desserts', icon: 'icecream' }
-  ];
+export default function CategoryTabs({
+  categories = [],
+  activeCategory,
+  onSelectCategory,
+  onToggleView,
+  viewMode,
+}) {
+  const tabs = [{ id: "all", name: "All" }, ...categories];
 
   return (
-    <div className="flex gap-2 md:gap-3 overflow-x-auto no-scrollbar pb-2">
-      {categories.map((cat, i) => (
-        <button 
-          key={cat.name} 
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap border shrink-0 ${
-            i === 0 
-            ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20' 
-            : 'bg-white dark:bg-card-dark border-gray-200 dark:border-border-dark text-gray-500 dark:text-text-muted hover:border-primary/50'
-          }`}
+    <div className="mt-4 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-sm py-3 px-4 md:static md:bg-transparent md:px-0">
+
+      <div className="flex flex-col items-center gap-4 md:flex-row md:justify-between">
+        <div
+          className="w-full md:w-auto overflow-x-auto flex justify-center md:justify-start no-scrollbar"
         >
-          <span className="material-symbols-outlined text-[20px]">{cat.icon}</span>
-          <span>{cat.name}</span>
+          <div className="flex gap-3 flex-wrap items-center justify-center">
+            {tabs.map((cat) => {
+              const isSelected =
+                activeCategory === (cat.name === "All" ? "All" : cat.name);
+
+              return (
+                <button
+                  key={cat.id || cat.name}
+                  onClick={() =>
+                    onSelectCategory(cat.name === "All" ? "All" : cat.name)
+                  }
+                  className={`
+                    flex h-9 shrink-0 items-center justify-center px-4 rounded-full transition-all duration-200 active:scale-95
+                    ${
+                      isSelected
+                        ? "bg-primary text-white shadow-sm"
+                        : "bg-white dark:bg-[#3a2520] text-[#181211] dark:text-[#e0dcdb] border border-[#e5e1e0] dark:border-[#523832] hover:bg-[#f4f1f0] dark:hover:bg-[#4a2e28]"
+                    }
+                  `}
+                >
+                  <span
+                    className={`text-sm ${isSelected ? "font-semibold" : "font-medium"}`}
+                  >
+                    {cat.name}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <button
+          onClick={onToggleView}
+          className={`
+            order-first md:order-last  md:w-auto px-5 h-9 shrink-0 flex items-center justify-center rounded-full transition-all duration-200 active:scale-95 cursor-pointer font-bold text-sm
+            ${
+              viewMode === "tables"
+                ? "bg-white text-primary border-2 border-primary"
+                : "bg-primary text-white"
+            } shadow-sm
+          `}
+        >
+          {viewMode === "tables" ? "Back to Menu" : "Busy Tables"}
         </button>
-      ))}
+      </div>
     </div>
   );
 }
