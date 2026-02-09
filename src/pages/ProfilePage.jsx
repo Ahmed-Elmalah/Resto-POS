@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import useLogin from '../customHook/useLogin';
-import toast from 'react-hot-toast';
+import React, { useState, useEffect } from "react";
+import useLogin from "../customHook/useLogin";
+import toast from "react-hot-toast";
 export default function ProfilePage() {
   const { UpdateData, updatePassword } = useLogin();
-  const [isDark, setIsDark] = useState(localStorage.getItem('theme') !== 'light');
+  const [isDark, setIsDark] = useState(
+    localStorage.getItem("theme") !== "light",
+  );
 
   const [profile, setProfile] = useState({
     id: "",
@@ -11,12 +13,12 @@ export default function ProfilePage() {
     email: "",
     phone: "",
     bio: "",
-    role: "User" // Default value
+    role: "User", // Default value
   });
 
   // 1. Load data when the page opens
   useEffect(() => {
-    const savedUserData = sessionStorage.getItem('user-info');
+    const savedUserData = sessionStorage.getItem("user-info");
     if (savedUserData) {
       const user = JSON.parse(savedUserData);
       setProfile({
@@ -26,7 +28,7 @@ export default function ProfilePage() {
         phone: user.phone_number || "",
         bio: user.bio || "",
         // Get the role name dynamically from the user object
-        role: user.role?.name || "User"
+        role: user.role?.name || "User",
       });
     }
   }, []);
@@ -35,19 +37,19 @@ export default function ProfilePage() {
   useEffect(() => {
     const root = window.document.documentElement;
     if (isDark) {
-      root.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
+      root.classList.add("dark");
+      localStorage.setItem("theme", "dark");
     } else {
-      root.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
+      root.classList.remove("dark");
+      localStorage.setItem("theme", "light");
     }
   }, [isDark]);
 
   const handleChange = (el) => {
     const { name, value } = el.target;
-    setProfile(prev => ({
+    setProfile((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -61,7 +63,7 @@ export default function ProfilePage() {
     const result = await UpdateData(profile.id, {
       username: profile.name,
       phone_number: profile.phone,
-      bio: profile.bio
+      bio: profile.bio,
     });
 
     if (result.success) {
@@ -75,7 +77,7 @@ export default function ProfilePage() {
   const [passwords, setPasswords] = useState({
     current: "",
     new: "",
-    confirm: ""
+    confirm: "",
   });
 
   // 2. Handle request function
@@ -84,7 +86,11 @@ export default function ProfilePage() {
       return toast.error("Password Not Match");
     }
 
-    const res = await updatePassword(passwords.current, passwords.new, passwords.confirm);
+    const res = await updatePassword(
+      passwords.current,
+      passwords.new,
+      passwords.confirm,
+    );
 
     if (res.success) {
       toast.success("Password Changed ✅");
@@ -97,27 +103,28 @@ export default function ProfilePage() {
   return (
     <div className="w-full h-full min-h-screen bg-[#F9FAFB] dark:bg-transparent overflow-y-auto custom-scrollbar transition-colors duration-300 text-left">
       <main className="max-w-212.5 mx-auto px-4 md:px-8 py-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-
         <div className="bg-white dark:bg-[#1A2632] rounded-4xl border border-gray-200 dark:border-white/5 shadow-2xl overflow-hidden transition-colors duration-300">
-
-          <div className="h-24 from-[#FF4500]/10 to-transparent"></div>
+          <div className="h-24 from-primary/10 to-transparent"></div>
 
           <div className="px-6 md:px-12 pb-12 -mt-12">
-
             <div className="flex flex-col items-center text-center mb-10">
               <div className="relative group">
                 <div
                   className="size-32 md:size-36 rounded-full border-4 border-white dark:border-[#1A2632] shadow-2xl bg-cover bg-center"
-                  style={{ backgroundImage: 'url("https://api.dicebear.com/7.x/avataaars/svg?seed=John")' }}
+                  style={{
+                    backgroundImage:
+                      'url("https://api.dicebear.com/7.x/avataaars/svg?seed=John")',
+                  }}
                 ></div>
-                <button className="absolute bottom-1 right-1 bg-[#FF4500] text-white p-2 rounded-full border-4 border-white dark:border-[#1A2632] hover:scale-110 transition-transform">
-                  <span className="material-symbols-outlined text-lg">photo_camera</span>
+                <button className="absolute bottom-1 right-1 bg-primary text-white p-2 rounded-full border-4 border-white dark:border-[#1A2632] hover:scale-110 transition-transform">
+                  <span className="material-symbols-outlined text-lg">
+                    photo_camera
+                  </span>
                 </button>
               </div>
 
               <div className="mt-4 w-full flex flex-col items-center">
-
-                <div className="relative inline-flex items-center group">
+                <div className="relative inline-flex items-center group gap-3">
                   <span className="invisible h-0 text-3xl font-black whitespace-pre px-1">
                     {profile.name || "Name"}
                   </span>
@@ -125,13 +132,13 @@ export default function ProfilePage() {
                     name="name"
                     value={profile.name}
                     onChange={handleChange}
-                    className="absolute inset-0 bg-transparent text-3xl font-black text-center text-gray-900 dark:text-white outline-none focus:text-[#FF4500] transition-colors w-full "
+                    className="absolute inset-0 bg-transparent text-3xl font-black text-center text-gray-900 dark:text-white outline-none focus:text-primary transition-colors w-full "
                   />
-                  <span className="material-symbols-outlined text-gray-400 group-hover:text-[#FF4500] transition-colors text-xl select-none ml-1 pl-6">
+                  <span className="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors text-xl select-none ml-1 pl-6">
                     edit
                   </span>
                 </div>
-                <span className="mt-2 inline-flex items-center px-4 py-1 rounded-full bg-[#FF4500]/10 border border-[#FF4500]/20 text-[#FF4500] text-[10px] font-black uppercase tracking-widest">
+                <span className="mt-4 inline-flex items-center px-4 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest">
                   {profile.role === "Authenticated" ? "User" : profile.role}
                 </span>
               </div>
@@ -140,7 +147,7 @@ export default function ProfilePage() {
             {/* Account Details */}
             <div className="space-y-8">
               <h3 className="text-sm font-black text-gray-800 dark:text-white flex items-center gap-2 uppercase tracking-widest opacity-80">
-                <span className="size-1.5 bg-[#FF4500] rounded-full"></span>
+                <span className="size-1.5 bg-primary rounded-full"></span>
                 Account Details
               </h3>
 
@@ -165,25 +172,30 @@ export default function ProfilePage() {
                     value={profile.phone}
                     onChange={handleChange}
                     readOnly={profile.phone !== "" && profile.phone !== null}
-                    className={`w-full bg-transparent font-medium py-2 border-b border-gray-100 dark:border-white/5 outline-none transition-all ${profile.phone !== "" ? "text-gray-400 cursor-not-allowed" : "text-gray-900 dark:text-white focus:border-[#FF4500]"
-                      }`}
+                    className={`w-full bg-transparent font-medium py-2 border-b border-gray-100 dark:border-white/5 outline-none transition-all ${
+                      profile.phone !== ""
+                        ? "text-gray-400 cursor-not-allowed"
+                        : "text-gray-900 dark:text-white focus:border-primary"
+                    }`}
                   />
                 </div>
                 <div className="md:col-span-2 space-y-2">
-                  <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Bio / Role Description</label>
+                  <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+                    Bio / Role Description
+                  </label>
                   <textarea
                     name="bio"
                     value={profile.bio}
                     onChange={handleChange}
                     rows="2"
-                    className="w-full bg-transparent text-gray-700 dark:text-gray-200 font-medium py-2 border-b border-gray-200 dark:border-white/10 focus:border-[#FF4500] outline-none transition-all resize-none"
+                    className="w-full bg-transparent text-gray-700 dark:text-gray-200 font-medium py-2 border-b border-gray-200 dark:border-white/10 focus:border-primary outline-none transition-all resize-none"
                   />
                 </div>
               </div>
 
               <button
                 onClick={handleSave}
-                className="bg-[#FF4500] text-white px-8 py-3 rounded-xl font-black text-sm shadow-lg shadow-[#FF4500]/20 hover:scale-105 active:scale-95 transition-all"
+                className="bg-primary text-white px-8 py-3 rounded-xl font-black text-sm shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
               >
                 Save Changes
               </button>
@@ -194,31 +206,43 @@ export default function ProfilePage() {
           <div className="p-8 md:p-12 bg-gray-50 dark:bg-black/20 border-t border-gray-100 dark:border-white/5 ">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl">
               <div className="md:col-span-2 space-y-2">
-                <label className="text-xs font-bold text-gray-500">Current Password</label>
+                <label className="text-xs font-bold text-gray-500">
+                  Current Password
+                </label>
                 <input
                   type="password"
                   value={passwords.current}
-                  onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
+                  onChange={(e) =>
+                    setPasswords({ ...passwords, current: e.target.value })
+                  }
                   placeholder="••••••••"
                   className="w-full p-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#101922] outline-none text-gray-900 dark:text-white"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-500">New Password</label>
+                <label className="text-xs font-bold text-gray-500">
+                  New Password
+                </label>
                 <input
                   type="password"
                   value={passwords.new}
-                  onChange={(e) => setPasswords({ ...passwords, new: e.target.value })}
+                  onChange={(e) =>
+                    setPasswords({ ...passwords, new: e.target.value })
+                  }
                   placeholder="••••••••"
                   className="w-full p-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#101922] outline-none text-gray-900 dark:text-white"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-500">Confirm Password</label>
+                <label className="text-xs font-bold text-gray-500">
+                  Confirm Password
+                </label>
                 <input
                   type="password"
                   value={passwords.confirm}
-                  onChange={(e) => setPasswords({ ...passwords, confirm: e.target.value })}
+                  onChange={(e) =>
+                    setPasswords({ ...passwords, confirm: e.target.value })
+                  }
                   placeholder="••••••••"
                   className="w-full p-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#101922] outline-none text-gray-900 dark:text-white"
                 />
@@ -227,21 +251,22 @@ export default function ProfilePage() {
 
             <button
               onClick={handlePasswordUpdate}
-              className="mt-8 px-8 py-3 bg-gray-100 dark:bg-white/5 text-[#FF4500] border border-transparent dark:border-[#FF4500]/20 rounded-xl font-black text-sm hover:bg-[#FF4500] hover:text-white transition-all"
+              className="mt-8 px-8 py-3 bg-gray-100 dark:bg-white/5 text-primary border border-transparent dark:border-primary/20 rounded-xl font-black text-sm hover:bg-primary hover:text-white transition-all"
             >
               Update Password
             </button>
           </div>
-
         </div>
       </main>
-      {profile.role == "Admin" ? <footer className="bg-white dark:bg-background-dark border-t border-gray-100 dark:border-white/5 py-8">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-sm text-text-muted dark:text-gray-500">
-            © 2026 SavoryBites Restaurant. All rights reserved.
-          </p>
-        </div>
-      </footer> : null}
+      {profile.role == "Admin" ? (
+        <footer className="bg-white dark:bg-background-dark border-t border-gray-100 dark:border-white/5 py-8">
+          <div className="container mx-auto px-4 text-center">
+            <p className="text-sm text-text-muted dark:text-gray-500">
+              © 2026 SavoryBites Restaurant. All rights reserved.
+            </p>
+          </div>
+        </footer>
+      ) : null}
     </div>
   );
 }
