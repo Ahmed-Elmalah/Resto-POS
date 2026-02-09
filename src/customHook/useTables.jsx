@@ -8,7 +8,6 @@ export const useTables = () => {
   const [showModal, setShowModal] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [currentTableId, setCurrentTableId] = useState(null);
-  // أضفنا id هنا كقيمة افتراضية
   const [formData, setFormData] = useState({ id: null, table_number: '', capacity: 4 });
 
   const Toast = Swal.mixin({
@@ -43,9 +42,9 @@ export const useTables = () => {
   const openEditModal = (table) => {
     const item = table.attributes || table;
     const docId = table.documentId || table.id;
+    
     setIsUpdating(true);
     setCurrentTableId(docId);
-    // نمرر الـ id داخل الـ formData ليتم استخدامه في الفحص بـ TableGrid
     setFormData({ 
       id: docId, 
       table_number: item.table_number, 
@@ -56,10 +55,23 @@ export const useTables = () => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+
+    // 1. Validation Logic
+    const tableNum = parseInt(formData.table_number);
+    const tableCap = parseInt(formData.capacity);
+
+    if (tableNum <= 0) {
+      return Toast.fire({ icon: 'error', title: 'Table number must be > 0' });
+    }
+
+    if (tableCap < 2) {
+      return Toast.fire({ icon: 'error', title: 'Minimum capacity is 2 seats' });
+    }
+
     try {
       const data = {
-        table_number: parseInt(formData.table_number),
-        capacity: parseInt(formData.capacity),
+        table_number: tableNum,
+        capacity: tableCap,
         table_status: isUpdating ? undefined : "Available"
       };
 
@@ -70,6 +82,7 @@ export const useTables = () => {
         await tableRepo.create(data);
         Toast.fire({ icon: 'success', title: 'Table added' });
       }
+      
       setShowModal(false);
       fetchTables();
     } catch (err) {
@@ -100,6 +113,6 @@ export const useTables = () => {
 
   return {
     tables, loading, showModal, setShowModal, isUpdating, formData, setFormData,
-    openAddModal, openEditModal, handleFormSubmit, handleDelete
+    openAddModal, openEditModal, handleFormSubmit, handleDelete, Toast // Exported Toast for extra use
   };
 };
