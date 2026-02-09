@@ -165,7 +165,10 @@ export default function Sidebar({ isOpen, closeMobileMenu }) {
               <div className="scale-75">
                 <ThemeToggle />
               </div>
-              <button className="text-slate-400 hover:text-red-500 transition-colors">
+              <button
+                onClick={logOut}
+                className="text-slate-400 hover:text-red-500 transition-colors"
+              >
                 <MdLogout size={20} />
               </button>
             </div>

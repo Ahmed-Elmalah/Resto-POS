@@ -24,6 +24,8 @@ import { Toaster } from "react-hot-toast";
 import OrderDetails from "./pages/adminPage/OrderDetails";
 import AddStaffPage from "./pages/adminPage/AddStaffPage";
 import EditStaffPage from "./pages/adminPage/EditStaffPage";
+import CreateOfferPage from "./pages/adminPage/CreateOfferPage";
+import OfferDetailsPage from "./pages/adminPage/OfferDetailsPage";
 
 export default function App() {
   return (
@@ -69,12 +71,16 @@ export default function App() {
             <Route path=":orderId" element={<OrderDetails />} />
           </Route>
           <Route path="tables" element={<TablesPage />} />
-          <Route path="staff"  >
-             <Route index element={<StaffPage />}/>
-             <Route path="add" element={<AddStaffPage />} />
-             <Route path="edit/:id" element={<EditStaffPage />} />
+          <Route path="staff">
+            <Route index element={<StaffPage />} />
+            <Route path="add" element={<AddStaffPage />} />
+            <Route path="edit/:id" element={<EditStaffPage />} />
           </Route>
-          <Route path="promotions" element={<OffersPage />} />
+          <Route path="promotions">
+            <Route index element={<OffersPage />} />
+            <Route path="new" element={<CreateOfferPage />} />
+            <Route path=":id" element={<OfferDetailsPage />} />
+          </Route>
           <Route path="settings" element={<SettingsPage />} />
           <Route path="profile" element={<ProfilePage />} />
         </Route>
