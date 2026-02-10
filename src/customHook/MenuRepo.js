@@ -15,6 +15,10 @@ const MenuRepo = {
     return axios.get(`${domain}/api/categories?populate=*`);
   },
 
+  getAllOffers : ()=>{
+    return axios.get(`${domain}/api/offers?populate[image][fields]=url&populate[offerItems][populate][product][fields]=name`)
+  },
+
   addProduct: (data, token) => {
     return axios.post(`${domain}/api/products`, { data }, {
       headers: { Authorization: `Bearer ${token}` }

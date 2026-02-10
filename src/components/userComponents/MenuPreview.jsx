@@ -1,27 +1,34 @@
 import { useNavigate } from "react-router-dom";
 import MenuCard from "./MenuCard";
+import { useMenuStore } from "../../store";
+import { useEffect } from "react";
+import { domain } from "../../store";
 export default function MenuPreview() {
   const navigate = useNavigate();
-  const dishes = [
-    {
-      title: "Green Harvest Bowl",
-      price: "18.00",
-      img: "https://lh3.googleusercontent.com/aida-public/AB6AXuChGUQi6P2IsC5K17Tq6Ou-vBC8RPJlUo0gXq1Q_FNN1L6JNiD2T0EWJDsP9G5k2CGBpeH9jExlu8nz66TivylSeU02GEiQvOCKMsho4sJDpd-m5irD6dDiK_P8-5uf3Vzwu0aA2xCv3DvFJvrB0bCXTHq7m4FjsUD9T4Ws5G4t9TUh6FUH8JiKs6NsToLuHzFXbCQTQ3JBhgUUKB7g9n2ZkI_wrqxgVg6he1G2c_E1VqIP22ioC2zrz4PxkkC3V2H-k2uHGnR0c2Co",
-      desc: "A vibrant mix of organic quinoa, kale, sliced avocado, and chickpeas.",
-    },
-    {
-      title: "Truffle Margherita",
-      price: "24.00",
-      img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDxZuAmnoc73NkHVPV-4jCRN6SxCc3R9cnLUgZJ6U40YzUPjtEC8LF8qRSMF1LlhvdWcYkncvnuME-vqgKoRNur8-hQ7o_sE5bcsNzE7ygNjoT8BhAHR_OB-SxuolKyFs5Uy39ZuP8J5bJ0RYVPGsgmsznkcxQeqfMXwUAjv3QOBzFIBGAd66RncXNHphZwzthceemAaYSJ7fw4epEUFsaWNQ1dw991O2NJXs026INunqs1_ariDQ-IJyMTX2JYltR-EQBVDzE29Zou",
-      desc: "Wood-fired crust topped with buffalo mozzarella, fresh basil, and truffle oil.",
-    },
-    {
-      title: "Southern Fried Burger",
-      price: "16.50",
-      img: "https://lh3.googleusercontent.com/aida-public/AB6AXuD2N9IwT_SdDREq1H77TVX93wTMCAf7Mfq1ZCrCLbchAKZLLsr9-5LC5DV5D-oLdXFuItCQEm88yGp2foxsLbGaSJgMHAKJr7_WhLWehgtggoHYD7f9HbISkH8_Hm3NUTnhY6dP0ZldisvefKncI8zxXLw6B6vaErG_nLPBuBuN_XDC8NIG9lrUXtMDkcuKCtE5TOcPoEodX5L-_EF0wMPpiWTY4rODYFlMB7sIKXNovGOi_GJB2Pi4_FiwsX0Lcwdt_1zLwX-SLITz",
-      desc: "Buttermilk marinated chicken thigh, spicy slaw, and chipotle mayo.",
-    },
-  ];
+  const { offers, fetchMenuData, isLoading } = useMenuStore();
+
+  useEffect(() => {
+    fetchMenuData();
+  }, []);
+
+  const activeOffers = offers.filter((offer) => {
+    const isAvailable = offer.isAvailable;
+    const isNotExpired = new Date(offer.expiryDate) >= new Date().setHours(0, 0, 0, 0);    
+    return isAvailable && isNotExpired;
+  });
+
+  const displayedOffers = activeOffers.slice(0, 3);
+
+
+  if (isLoading) {
+    return (
+      <section className="py-12 text-center" id="Offers">
+        <p>Loading offers...</p>
+      </section>
+    );
+  }
+
+  if (displayedOffers.length === 0) return null;
 
   return (
     <section className="py-12 px-4 max-w-7xl dark:bg-background-dark mx-auto w-full mb-12" id="Offers">
@@ -38,8 +45,8 @@ export default function MenuPreview() {
         </p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-        {dishes.map((dish, index) => (
-          <MenuCard key={index} {...dish} />
+        {displayedOffers.map((offer, index) => (
+          <MenuCard key={index} offer = {offer} />
         ))}
       </div>
       <div className="flex justify-center">
