@@ -44,12 +44,12 @@ export default function OfferDetailsPage() {
     }
 
     const fetchCategories = async () => {
-        try {
-            const res = await MenuRepo.getAllCategories();
-            setCategories(res.data.data || []);
-        } catch (err) {
-            console.error("Error fetching categories:", err);
-        }
+      try {
+        const res = await MenuRepo.getAllCategories();
+        setCategories(res.data.data || []);
+      } catch (err) {
+        console.error("Error fetching categories:", err);
+      }
     };
     fetchCategories();
   }, [id]);
@@ -75,7 +75,7 @@ export default function OfferDetailsPage() {
 
             return {
               id: productData.id,
-              documentId: productData.documentId, 
+              documentId: productData.documentId,
               name: productData.name,
               price: productData.price,
               qty: item.quantity,
@@ -129,6 +129,12 @@ export default function OfferDetailsPage() {
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
       confirmButtonText: "Yes, delete it!",
+      background: document.documentElement.classList.contains("dark")
+        ? "#1e293b"
+        : "#ffffff",
+      color: document.documentElement.classList.contains("dark")
+        ? "#f8fafc"
+        : "#0f172a",
       // ... Dark mode styling ...
     }).then(async (result) => {
       if (result.isConfirmed) {
@@ -147,8 +153,10 @@ export default function OfferDetailsPage() {
     e.preventDefault();
     setIsSaving(true);
 
-    const offersCategory = categories.find(c => 
-        (c.name?.toLowerCase() === "offers") || (c.attributes?.name?.toLowerCase() === "offers")
+    const offersCategory = categories.find(
+      (c) =>
+        c.name?.toLowerCase() === "offers" ||
+        c.attributes?.name?.toLowerCase() === "offers",
     );
 
     try {
@@ -160,10 +168,10 @@ export default function OfferDetailsPage() {
         imageId = uploaded.id;
       }
 
-      const offerItemsPayload = selectedProducts.map(p => ({
-      product: p.documentId || p.id,
-      quantity: p.qty    
-    }));
+      const offerItemsPayload = selectedProducts.map((p) => ({
+        product: p.documentId || p.id,
+        quantity: p.qty,
+      }));
 
       const payload = {
         ...formData,

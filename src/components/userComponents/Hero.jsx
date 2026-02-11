@@ -1,5 +1,7 @@
+import { useNavigate } from "react-router-dom";
 
 export default function Hero() {
+  const navigate = useNavigate();
   return (
     <section className="relative w-full h-125 md:h-150 flex items-center justify-center overflow-hidden">
       <div
@@ -16,7 +18,7 @@ export default function Hero() {
           Authentic flavors, unforgettable moments. Join us for an evening of
           culinary excellence.
         </p>
-        <button className="h-14 px-8 rounded-lg bg-primary hover:bg-red-600 text-white font-bold transition-all shadow-lg transform hover:-translate-y-0.5">
+        <button onClick={()=> navigate('/reservations')} className="h-14 px-8 rounded-lg bg-primary hover:bg-red-600 text-white font-bold transition-all shadow-lg transform hover:-translate-y-0.5">
           Book a Table
         </button>
       </div>
