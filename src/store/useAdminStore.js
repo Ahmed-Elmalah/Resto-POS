@@ -31,7 +31,33 @@ const useAdminStore = create((set) => ({
     set({ isLoadingOffers: true });
     try {
       const res = await axios.get(`${domain}/api/offers?populate=*`);
-      set({ offers: res.data.data, isLoadingOffers: false });
+      const fetchedOffers = res.data.data;
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const updatedOffersPromises = fetchedOffers.map(async (offer) => {
+        const expiryDate = new Date(offer.expiryDate);
+        
+        if (expiryDate < today && offer.isAvailable) {
+          try {
+            await axios.put(`${domain}/api/offers/${offer.documentId}`, {
+              data: { isAvailable: false }
+            });
+            
+            return { ...offer, isAvailable: false };
+          } catch (err) {
+            console.error("Failed to auto-expire offer:", offer.documentId);
+            return offer; 
+          }
+        }
+        
+        return offer;
+      });
+
+      const finalOffers = await Promise.all(updatedOffersPromises);
+
+      set({ offers: finalOffers, isLoadingOffers: false });
     } catch (error) {
       console.error("Error fetching offers:", error);
       set({ isLoadingOffers: false });

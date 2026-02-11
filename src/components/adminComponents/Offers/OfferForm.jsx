@@ -8,7 +8,7 @@ export default function OfferForm({
   setFormData,
   isLoading,
   setIsEditing,
-  offer, // ده بيجي من currentOffer وفيه offerItems
+  offer, 
   selectedProducts,
   setSelectedProducts
 }) {
@@ -103,7 +103,7 @@ export default function OfferForm({
           )}
         </div>
 
-        {/* --- Products Section (التعديل المهم هنا) --- */}
+        {/* --- Products Section--- */}
         <div className="border-t dark:border-gray-700 pt-6">
           <h3 className="font-bold dark:text-white mb-3">Included Products</h3>
 

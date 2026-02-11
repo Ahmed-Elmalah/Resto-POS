@@ -24,6 +24,7 @@ export const useAuthuser = create((set) => ({
 export const useMenuStore = create((set , get)=>({
   products: [],
   categories: [],
+  offers: [],
   isLoading: false,
   isFetched: false,
   error: null,
@@ -36,17 +37,20 @@ export const useMenuStore = create((set , get)=>({
 
     try {
       
-      const [productsRes , categoriesRes] = await Promise.all([
+      const [productsRes , categoriesRes , offersRes] = await Promise.all([
         MenuRepo.getAllProducts(),
         MenuRepo.getAllCategories(),
+        MenuRepo.getAllOffers(),
       ]);
 
       const rawProducts = productsRes.data.data || [];
       const rawCategories = categoriesRes.data.data || [];
+      const rawOffers = offersRes.data.data || [];
 
       set({
         categories : rawCategories ,
         products : rawProducts,
+        offers: rawOffers,
         isLoading : false , 
         isFetched : true
       })

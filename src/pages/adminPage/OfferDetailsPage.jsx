@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom"; // Removed useLocation
+import { useNavigate, useParams } from "react-router-dom";
 import useAdminStore from "../../store/useAdminStore";
+import MenuRepo from "../../customHook/MenuRepo";
 import Swal from "sweetalert2";
 import { toast } from "react-hot-toast";
 
@@ -24,6 +25,8 @@ export default function OfferDetailsPage() {
     uploadFile,
   } = useAdminStore();
 
+  const [categories, setCategories] = useState([]);
+
   // Local UI States
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false); // Local loading for save action
@@ -39,6 +42,16 @@ export default function OfferDetailsPage() {
     if (id) {
       getOfferById(id);
     }
+
+    const fetchCategories = async () => {
+        try {
+            const res = await MenuRepo.getAllCategories();
+            setCategories(res.data.data || []);
+        } catch (err) {
+            console.error("Error fetching categories:", err);
+        }
+    };
+    fetchCategories();
   }, [id]);
 
   // --- 2. Sync State when 'currentOffer' loads ---
@@ -127,6 +140,10 @@ export default function OfferDetailsPage() {
     e.preventDefault();
     setIsSaving(true);
 
+    const offersCategory = categories.find(c => 
+        (c.name?.toLowerCase() === "offers") || (c.attributes?.name?.toLowerCase() === "offers")
+    );
+
     try {
       let imageId = currentOffer.image?.id;
 
@@ -145,6 +162,7 @@ export default function OfferDetailsPage() {
         ...formData,
         image: imageId,
         offerItems: offerItemsPayload,
+        category: offersCategory?.documentId,
       };
 
       const result = await updateOffer(currentOffer.documentId, payload);

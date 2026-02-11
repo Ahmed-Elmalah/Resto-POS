@@ -1,12 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAdminStore from "../../store/useAdminStore";
 import { toast } from "react-hot-toast";
 import OfferItemSelector from "../../components/adminComponents/Offers/OfferItemSelector";
 import { HiOutlineArrowLeft } from "react-icons/hi";
+import MenuRepo from "../../customHook/MenuRepo";
 
 export default function CreateOfferPage() {
   const navigate = useNavigate();
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      await MenuRepo.getAllCategories()
+        .then((res) => {
+          setCategories(res.data.data || []);
+        })
+        .catch((err) => {
+          console.error("Failed to load categories:", err);
+        });
+    };
+    fetchCategories();
+  }, []);
 
   // Get functions from store
   const { uploadFile, createOffer } = useAdminStore();
@@ -43,10 +58,20 @@ export default function CreateOfferPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-// Validations
+    // Validations
     if (!imageFile) return toast.error("Please select an image");
-    if (!form.name || !form.price) return toast.error("Name and Price are required");
-    if (offerItems.length === 0) return toast.error("Please select at least one product");
+    if (!form.name || !form.price)
+      return toast.error("Name and Price are required");
+    if (offerItems.length === 0)
+      return toast.error("Please select at least one product");
+
+    const offersCategory = categories.find(c => 
+        (c.name?.toLowerCase() === "offers") || (c.attributes?.name?.toLowerCase() === "offers")
+    );
+
+    if (!offersCategory) {
+        toast.error("Category 'Offers' not found! Offer created but not linked to category.");
+    }
 
     setIsLoading(true);
 
@@ -56,22 +81,21 @@ export default function CreateOfferPage() {
       const imageId = uploadedImg.id;
 
       // 2. Extract just IDs for Strapi Relation
-      const offerItemsPayload = offerItems.map(item => ({
-        product: item.documentId || item.id,  
-        quantity: item.qty 
+      const offerItemsPayload = offerItems.map((item) => ({
+        product: item.documentId || item.id,
+        quantity: item.qty,
       }));
-
-      console.log("Sending Offer Items:", offerItemsPayload);
 
       // Step 2: Prepare data object
       const offerData = {
-        name: form.name, 
+        name: form.name,
         description: form.description,
-        price: Number(form.price), 
+        price: Number(form.price),
         expiryDate: form.expiryDate,
         isAvailable: form.isAvailable,
-        image: imageId, 
+        image: imageId,
         offerItems: offerItemsPayload,
+        category: offersCategory?.documentId
       };
 
       // Step 3: Send data to Strapi
@@ -79,7 +103,7 @@ export default function CreateOfferPage() {
 
       if (result.success) {
         toast.success("Offer Created Successfully!");
-        navigate("/admin/promotions"); 
+        navigate("/admin/promotions");
       } else {
         toast.error("Failed to create offer");
       }
@@ -91,7 +115,7 @@ export default function CreateOfferPage() {
     }
   };
 
-    return (
+  return (
     <div className="p-6 max-w-4xl mx-auto animate-in fade-in zoom-in-95 duration-300">
       <div className="w-full flex justify-between items-center p-3">
         <button
@@ -103,19 +127,30 @@ export default function CreateOfferPage() {
           </div>
           <h2 className="text-[13px]">Back to Offers</h2>
         </button>
-        <h1 className="text-lg md:text-xl lg:text-2xl font-bold dark:text-white">Create New Offer</h1>
+        <h1 className="text-lg md:text-xl lg:text-2xl font-bold dark:text-white">
+          Create New Offer
+        </h1>
       </div>
-      
-      <form onSubmit={handleSubmit} className="bg-white dark:bg-[#1a2632] p-8 rounded-xl border border-gray-200 dark:border-gray-700 space-y-6 shadow-sm">
-        
+
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white dark:bg-[#1a2632] p-8 rounded-xl border border-gray-200 dark:border-gray-700 space-y-6 shadow-sm"
+      >
         {/* --- 1. Image Upload --- */}
         <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 hover:bg-gray-50 dark:hover:bg-gray-800 transition">
           {preview ? (
             <div className="relative w-full h-64">
-              <img src={preview} alt="Preview" className="w-full h-full object-contain rounded-md" />
-              <button 
-                type="button" 
-                onClick={() => { setPreview(null); setImageFile(null); }}
+              <img
+                src={preview}
+                alt="Preview"
+                className="w-full h-full object-contain rounded-md"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  setPreview(null);
+                  setImageFile(null);
+                }}
                 className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full shadow-md hover:bg-red-600"
               >
                 <span className="material-symbols-outlined text-sm">close</span>
@@ -123,9 +158,18 @@ export default function CreateOfferPage() {
             </div>
           ) : (
             <label className="cursor-pointer flex flex-col items-center w-full h-full">
-              <span className="material-symbols-outlined text-4xl text-gray-400 mb-2">cloud_upload</span>
-              <span className="text-sm text-gray-500">Click to upload offer image</span>
-              <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
+              <span className="material-symbols-outlined text-4xl text-gray-400 mb-2">
+                cloud_upload
+              </span>
+              <span className="text-sm text-gray-500">
+                Click to upload offer image
+              </span>
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageChange}
+              />
             </label>
           )}
         </div>
@@ -133,50 +177,58 @@ export default function CreateOfferPage() {
         {/* --- 2. Basic Info Fields --- */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium mb-2 dark:text-gray-300">Offer Name</label>
-            <input 
-              type="text" 
+            <label className="block text-sm font-medium mb-2 dark:text-gray-300">
+              Offer Name
+            </label>
+            <input
+              type="text"
               className="w-full p-3 rounded-lg border dark:bg-[#101922] dark:border-gray-700 outline-none focus:border-primary dark:text-white"
               value={form.name}
-              onChange={(e) => setForm({...form, name: e.target.value})}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2 dark:text-gray-300">Price ($)</label>
-            <input 
-              type="number" 
+            <label className="block text-sm font-medium mb-2 dark:text-gray-300">
+              Price ($)
+            </label>
+            <input
+              type="number"
               className="w-full p-3 rounded-lg border dark:bg-[#101922] dark:border-gray-700 outline-none focus:border-primary dark:text-white"
               value={form.price}
-              onChange={(e) => setForm({...form, price: e.target.value})}
+              onChange={(e) => setForm({ ...form, price: e.target.value })}
             />
           </div>
         </div>
 
         {/* --- 3. Product Selection Component (HERE IS THE NEW PART) --- */}
         <div>
-          <OfferItemSelector 
-             selectedItems={offerItems} 
-             onUpdateItems={setOfferItems} 
+          <OfferItemSelector
+            selectedItems={offerItems}
+            onUpdateItems={setOfferItems}
           />
         </div>
 
         {/* --- 4. Dates & Desc --- */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-           <div>
-            <label className="block text-sm font-medium mb-2 dark:text-gray-300">Expiry Date</label>
-            <input 
-              type="date" 
+          <div>
+            <label className="block text-sm font-medium mb-2 dark:text-gray-300">
+              Expiry Date
+            </label>
+            <input
+              type="date"
               className="w-full p-3 rounded-lg border dark:bg-[#101922] dark:border-gray-700 outline-none focus:border-primary dark:text-white"
               value={form.expiryDate}
-              onChange={(e) => setForm({...form, expiryDate: e.target.value})}
+              onChange={(e) => setForm({ ...form, expiryDate: e.target.value })}
             />
           </div>
-           <div className="flex items-center pt-8">
+          <div className="flex items-center pt-8">
             <label className="flex items-center cursor-pointer gap-3">
-              <input 
-                type="checkbox" 
+              <input
+                type="checkbox"
                 checked={form.isAvailable}
-                onChange={(e) => setForm({...form, isAvailable: e.target.checked})}
+                onChange={(e) =>
+                  setForm({ ...form, isAvailable: e.target.checked })
+                }
                 className="w-5 h-5 accent-primary"
               />
               <span className="dark:text-white font-medium">Is Available?</span>
@@ -185,31 +237,37 @@ export default function CreateOfferPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-2 dark:text-gray-300">Description</label>
-          <textarea 
-            rows="3" 
+          <label className="block text-sm font-medium mb-2 dark:text-gray-300">
+            Description
+          </label>
+          <textarea
+            rows="3"
             className="resize-none w-full p-3 rounded-lg border dark:bg-[#101922] dark:border-gray-700 outline-none focus:border-primary dark:text-white"
             value={form.description}
-            onChange={(e) => setForm({...form, description: e.target.value})}
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
           ></textarea>
         </div>
 
         {/* --- 5. Action Buttons --- */}
         <div className="flex justify-end gap-4 pt-4 border-t dark:border-gray-700">
-          <button 
-            type="button" 
-            onClick={() => navigate('/admin/promotions')}
+          <button
+            type="button"
+            onClick={() => navigate("/admin/promotions")}
             className="px-6 py-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 transition dark:text-white"
           >
             Cancel
           </button>
-          
-          <button 
-            type="submit" 
+
+          <button
+            type="submit"
             disabled={isLoading}
             className="px-6 py-2 rounded-lg bg-primary text-white font-bold hover:bg-blue-600 transition disabled:opacity-50 flex items-center gap-2"
           >
-            {isLoading && <span className="material-symbols-outlined animate-spin text-sm">progress_activity</span>}
+            {isLoading && (
+              <span className="material-symbols-outlined animate-spin text-sm">
+                progress_activity
+              </span>
+            )}
             {isLoading ? "Saving..." : "Create Offer"}
           </button>
         </div>

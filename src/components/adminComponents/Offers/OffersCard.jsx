@@ -15,22 +15,24 @@ export default function OffersCard({ offer }) {
   };
 
   return (
-    <div onClick={handleCardClick} className="bg-white dark:bg-[#1a2632] rounded-xl border border-[#e5e7eb] dark:border-[#2a3b4c] overflow-hidden group hover:shadow-lg transition-all">
+    <div onClick={handleCardClick} className={`bg-white dark:bg-[#1a2632] rounded-xl border border-[#e5e7eb] dark:border-[#2a3b4c] overflow-hidden group hover:shadow-lg transition-all`}>
       <div className="relative h-48 w-full">
         <img
           src={imageUrl}
           alt={offer.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          className={`w-full h-full object-cover ${offer.isAvailable && 'group-hover:scale-105 transition-transform duration-500'}`}
         />
-        <div className="absolute top-3 left-3">
-          <span
-            className={`text-[10px] font-bold px-2 py-1 rounded-md border ${offer.isAvailable ? "bg-green-100 text-green-700 border-green-200 dark:bg-green-900/50 dark:text-green-300" : "bg-gray-100 text-gray-600"}`}
-          >
-            {offer.isAvailable ? "Active" : "Expired"}
-          </span>
-        </div>
+
+        {!offer.isAvailable && (
+          <div className="absolute inset-0 bg-black/50 flex items-center justify-center backdrop-blur-[5px]">
+            <span className="bg-red-500 text-white px-3 py-1 rounded-lg font-bold text-sm shadow-lg border border-white/20 transform rotate-[-5deg]">
+              Expired
+            </span>
+          </div>
+        )}
+        
       </div>
-      <div className="p-5 space-y-3">
+      <div className={`p-5 space-y-3`}>
         <h3 className="text-lg font-bold dark:text-white">{offer.name}</h3>
         <p className="text-sm text-[#617589] line-clamp-2">
           {offer.description}
