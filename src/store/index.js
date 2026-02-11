@@ -69,15 +69,19 @@ export const useMenuStore = create((set , get)=>({
 
   silentRefresh: async () => {
     try {
-      const [productsRes, categoriesRes] = await Promise.all([
+      const [productsRes, categoriesRes , offersRes] = await Promise.all([
         MenuRepo.getAllProducts(),
         MenuRepo.getAllCategories(),
+        MenuRepo.getAllOffers(),
       ]);
 
       set({
         categories: categoriesRes.data.data || [],
         products: productsRes.data.data || [],
+        offers : offersRes.data.data || [],
       });
+      console.log('silent refresh done');
+      
     } catch (err) {
       console.error("Silent refresh failed:", err);
     }

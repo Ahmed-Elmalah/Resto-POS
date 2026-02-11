@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { MdEdit } from "react-icons/md";
-import MenuRepo from "../../../customHook/MenuRepo";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { domain } from "../../../store";
@@ -9,12 +8,7 @@ import useAdminStore from "../../../store/useAdminStore";
 export default function AdminProductCard({ product }) {
   const navigate = useNavigate();
 
-  const token =
-    localStorage.getItem("jwt-token") || sessionStorage.getItem("jwt-token");
-
-
-  const { id, documentId, name, desc, price, category, image, isAvailable } =
-    product;
+  const { id, documentId, name, desc, price, category, image, isAvailable } = product;
 
   const [inStock, setInStock] = useState(isAvailable);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -23,40 +17,8 @@ export default function AdminProductCard({ product }) {
   const isOffer = product.offerItems || product.category?.name === "Offers" || product.isOffer;
   const type = isOffer ? "offer" : "product";
 
-  // const toggleStock = async () => {
-  //   if (!token) {
-  //     toast.error("You are not authorized! 🚫");
-  //     return;
-  //   }
-
-  //   if (isUpdating) return;
-  //   setIsUpdating(true);
-
-  //   const newStatus = !inStock;
-
-  //   setInStock(newStatus);
-
-  //   try {
-  //     const targetId = documentId || id;
-
-  //     await MenuRepo.updateProduct(targetId, { isAvailable: newStatus }, token);
-  //     toast.success(
-  //       newStatus
-  //         ? "Product is now In Stock "
-  //         : "Product marked as Out of Stock ",
-  //     );
-  //   } catch (error) {
-  //     console.error("❌ Failed to update stock:", error);
-  //     setInStock(!newStatus);
-  //     toast.error("Failed to update status. Server Error! ⚠️");
-  //   } finally {
-  //     setIsUpdating(false);
-  //   }
-  // };
-
   const handleEditClick = (e)=>{
     e.stopPropagation();
-
 
     if (isOffer){
       navigate(`/admin/promotions/${product.documentId}`,{
@@ -133,7 +95,7 @@ export default function AdminProductCard({ product }) {
         {/* Category Badge */}
         <div className="absolute bottom-0 left-0 right-0 p-4 bg-linear-to-t from-black/80 to-transparent">
           <span className="bg-primary text-white text-xs font-bold px-2 py-1 rounded backdrop-blur-sm">
-            {category?.name || "General"}
+            {category?.name || "Offer"}
           </span>
         </div>
       </div>
