@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import useAdminStore from "../../store/useAdminStore";
 import MenuRepo from "../../customHook/MenuRepo";
 import Swal from "sweetalert2";
@@ -12,7 +12,7 @@ import OfferForm from "../../components/adminComponents/Offers/OfferForm";
 
 export default function OfferDetailsPage() {
   const navigate = useNavigate();
-  // Get ID from URL (Note: in our route config it is :id, but it holds the documentId string)
+  const location = useLocation();
   const { id } = useParams();
 
   // Get Store Functions & State
@@ -87,6 +87,13 @@ export default function OfferDetailsPage() {
       }
     }
   }, [currentOffer]);
+
+  // if comming from menu page to edit
+  useEffect(() => {
+    if (location.state?.startInEditMode) {
+      setIsEditing(true);
+    }
+  }, [location.state]);
 
   // Show Loading Spinner while fetching initial data
   if (isLoadingCurrentOffer || !currentOffer) {

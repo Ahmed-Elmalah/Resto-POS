@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { MdEdit } from "react-icons/md";
 import MenuRepo from "../../../customHook/MenuRepo";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { domain } from "../../../store";
 
 export default function AdminProductCard({ product }) {
   const navigate = useNavigate();
@@ -10,13 +11,12 @@ export default function AdminProductCard({ product }) {
   const token =
     localStorage.getItem("jwt-token") || sessionStorage.getItem("jwt-token");
 
-  const domain = "";
 
   const { id, documentId, name, desc, price, category, image, isAvailable } =
     product;
 
   const [inStock, setInStock] = useState(isAvailable);
-  const [isUpdating, setIsUpdating] = useState(false); // عشان نمنع التكرار (Debounce)
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const toggleStock = async () => {
     if (!token) {
@@ -49,6 +49,23 @@ export default function AdminProductCard({ product }) {
     }
   };
 
+  const handleEditClick = (e)=>{
+    e.stopPropagation();
+
+    const isOffer = product.offerItems || product.category?.name === "Offers" || product.isOffer;
+
+    if (isOffer){
+      navigate(`/admin/promotions/${product.documentId}`,{
+        state : {
+          offer: product,
+          startInEditMode: true
+        }
+      })
+    }else{
+      navigate(`/admin/menu/edit/${product.documentId}`, { state: { product: product } });
+    }
+  }
+
   const imageUrl = image?.url
     ? `${domain}${image.url}`
     : "https://placehold.co/400x300?text=No+Image";
@@ -60,7 +77,7 @@ export default function AdminProductCard({ product }) {
       {/* Image Section */}
       <div className="relative aspect-4/3 overflow-hidden bg-gray-100">
         <img
-          onClick={() => navigate(`/admin/menu/edit/${documentId || id}`)}
+          onClick={handleEditClick}
           src={imageUrl}
           alt={name}
           className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 ${!inStock ? "grayscale" : ""}`}
@@ -73,7 +90,7 @@ export default function AdminProductCard({ product }) {
 
         {/* Out of Stock Overlay */}
         {!inStock && (
-          <div className="absolute inset-0 bg-black/50 flex items-center justify-center backdrop-blur-[1px]">
+          <div onClick={handleEditClick} className="absolute inset-0 bg-black/50 flex items-center justify-center backdrop-blur-[1px]">
             <span className="bg-red-500 text-white px-3 py-1 rounded-lg font-bold text-sm shadow-lg border border-white/20 transform rotate-[-5deg]">
               Out of Stock
             </span>
@@ -83,7 +100,7 @@ export default function AdminProductCard({ product }) {
         {/* Edit Button */}
         <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity z-10">
           <button
-            onClick={() => navigate(`/admin/menu/edit/${documentId || id}`)}
+            onClick={handleEditClick}
             className="bg-black/50 hover:bg-black/70 backdrop-blur-sm text-white p-2 rounded-lg transition-colors"
           >
             <MdEdit size={18} />

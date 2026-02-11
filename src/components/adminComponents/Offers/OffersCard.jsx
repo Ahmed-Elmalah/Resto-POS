@@ -24,7 +24,7 @@ export default function OffersCard({ offer }) {
         />
 
         {!offer.isAvailable && (
-          <div className="absolute inset-0 bg-black/50 flex items-center justify-center backdrop-blur-[5px]">
+          <div onClick={handleCardClick} className="absolute inset-0 bg-black/50 flex items-center justify-center backdrop-blur-[5px]">
             <span className="bg-red-500 text-white px-3 py-1 rounded-lg font-bold text-sm shadow-lg border border-white/20 transform rotate-[-5deg]">
               Expired
             </span>
