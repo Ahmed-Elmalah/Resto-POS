@@ -4,6 +4,7 @@ import MenuRepo from "../../../customHook/MenuRepo";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { domain } from "../../../store";
+import useAdminStore from "../../../store/useAdminStore";
 
 export default function AdminProductCard({ product }) {
   const navigate = useNavigate();
@@ -17,42 +18,45 @@ export default function AdminProductCard({ product }) {
 
   const [inStock, setInStock] = useState(isAvailable);
   const [isUpdating, setIsUpdating] = useState(false);
+  const {toggleItemAvailability} = useAdminStore();
 
-  const toggleStock = async () => {
-    if (!token) {
-      toast.error("You are not authorized! 🚫");
-      return;
-    }
+  const isOffer = product.offerItems || product.category?.name === "Offers" || product.isOffer;
+  const type = isOffer ? "offer" : "product";
 
-    if (isUpdating) return;
-    setIsUpdating(true);
+  // const toggleStock = async () => {
+  //   if (!token) {
+  //     toast.error("You are not authorized! 🚫");
+  //     return;
+  //   }
 
-    const newStatus = !inStock;
+  //   if (isUpdating) return;
+  //   setIsUpdating(true);
 
-    setInStock(newStatus);
+  //   const newStatus = !inStock;
 
-    try {
-      const targetId = documentId || id;
+  //   setInStock(newStatus);
 
-      await MenuRepo.updateProduct(targetId, { isAvailable: newStatus }, token);
-      toast.success(
-        newStatus
-          ? "Product is now In Stock "
-          : "Product marked as Out of Stock ",
-      );
-    } catch (error) {
-      console.error("❌ Failed to update stock:", error);
-      setInStock(!newStatus);
-      toast.error("Failed to update status. Server Error! ⚠️");
-    } finally {
-      setIsUpdating(false);
-    }
-  };
+  //   try {
+  //     const targetId = documentId || id;
+
+  //     await MenuRepo.updateProduct(targetId, { isAvailable: newStatus }, token);
+  //     toast.success(
+  //       newStatus
+  //         ? "Product is now In Stock "
+  //         : "Product marked as Out of Stock ",
+  //     );
+  //   } catch (error) {
+  //     console.error("❌ Failed to update stock:", error);
+  //     setInStock(!newStatus);
+  //     toast.error("Failed to update status. Server Error! ⚠️");
+  //   } finally {
+  //     setIsUpdating(false);
+  //   }
+  // };
 
   const handleEditClick = (e)=>{
     e.stopPropagation();
 
-    const isOffer = product.offerItems || product.category?.name === "Offers" || product.isOffer;
 
     if (isOffer){
       navigate(`/admin/promotions/${product.documentId}`,{
@@ -64,7 +68,26 @@ export default function AdminProductCard({ product }) {
     }else{
       navigate(`/admin/menu/edit/${product.documentId}`, { state: { product: product } });
     }
-  }
+  };
+
+  const handleToggle = async () => {
+    if (isUpdating) return;
+    setIsUpdating(true);
+
+    const result = await toggleItemAvailability(product.documentId, inStock, type);
+
+    if (result.success) {
+      const newStatus = !inStock;
+      setInStock(newStatus); 
+      
+      toast.success(newStatus ? "Item is now Available ✅" : "Item is now Unavailable ❌");
+    } else {
+      toast.error("Failed to update status");
+    }
+
+    setIsUpdating(false);
+
+  };
 
   const imageUrl = image?.url
     ? `${domain}${image.url}`
@@ -141,7 +164,7 @@ export default function AdminProductCard({ product }) {
 
             {/* toggle btn*/}
             <button
-              onClick={toggleStock}
+              onClick={handleToggle}
               disabled={isUpdating}
               className={`w-10 h-6 rounded-full relative transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary 
                   ${inStock ? "bg-primary" : "bg-slate-300 dark:bg-slate-600"} 
