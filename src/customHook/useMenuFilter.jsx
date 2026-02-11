@@ -9,6 +9,7 @@ export default function useMenuFilter(enablePolling = false) {
     silentRefresh,
     isLoading,
     error,
+    offers,
   } = useMenuStore();
 
   const [activeCategory, setActiveCategory] = useState("All");
@@ -32,14 +33,27 @@ export default function useMenuFilter(enablePolling = false) {
   }, [enablePolling, silentRefresh]);
 
   const filteredProducts = useMemo(() => {
-    let result = Array.isArray(products) ? [...products] : [];
-
     // category filter
-    if (activeCategory !== "All") {
+    const safeProducts = Array.isArray(products) ? products : [];
+    const safeOffers = Array.isArray(offers)
+      ? offers.map((o) => ({ ...o, isOffer: true }))
+      : [];
+
+    let result = [];
+
+    if (activeCategory === "All") {
+      result = [...safeOffers, ...safeProducts];
+    } else if (activeCategory === "Offers") {
+      result = [...safeOffers];
+    } else {
+      result = [...safeProducts];
+    }
+
+    if (activeCategory !== "All" && activeCategory !== "Offers") {
       result = result.filter((item) => {
         const data = item?.attributes || item;
         const catName =
-          data?.category?.data?.attributes?.name || data?.category?.name;
+          data?.category?.name || data?.category?.data?.attributes?.name;
         return catName === activeCategory;
       });
     }

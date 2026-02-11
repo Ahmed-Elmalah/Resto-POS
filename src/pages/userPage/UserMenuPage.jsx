@@ -106,8 +106,6 @@ export default function UserMenuPage() {
 
       </main>
 
-      {/* Floating Cart (Static for now) */}
-      {/* <FloatingCart /> */}
       
     </div>
   );
