@@ -1,96 +1,197 @@
- import {
-  MdSchedule,
-  MdGroup,
-  MdChair,
-  MdClose,
-  MdCheck,
-  MdEdit,
-  MdDeck,
+import {
+  MdAccessTime,
+  MdPeople,
+  MdTableRestaurant,
+  MdCancel,
+  MdCheckCircle,
+  MdHourglassEmpty,
+  MdHistory,
 } from "react-icons/md";
+import Swal from "sweetalert2";
+import { reservationRepo } from "../../../customHook/reservationRepo";
+import { useAuthuser } from "../../../store";
 
-// Card component displaying reservation details
-export default function ReservationCard({ reservation }) {
-  // Determine status color and icon based on reservation status
-  const isConfirmed = reservation.status === "Confirmed";
+export default function ReservationCard({ reservation, onCancelSuccess }) {
+  const { user } = useAuthuser();
+
+  // Destructure data
+  const { id, status, date, time, endTime, guests, location } = reservation;
+
+  // --- 1. Helper: Format Date for the "Date Box" ---
+  const getDayAndMonth = (dateString) => {
+    const d = new Date(dateString);
+    const day = d.getDate();
+    // Get short month name (e.g., "Oct")
+    const month = d.toLocaleString("default", { month: "short" });
+    const weekday = d.toLocaleString("default", { weekday: "short" });
+    return { day, month, weekday };
+  };
+
+  const { day, month, weekday } = getDayAndMonth(date);
+
+  // --- 2. Styles Config based on Status ---
+  const statusConfig = {
+    confirmed: {
+      color: "text-green-600 dark:text-green-400",
+      bg: "bg-green-50 dark:bg-green-900/20",
+      border: "border-green-100 dark:border-green-900",
+      icon: <MdCheckCircle />,
+      label: "Confirmed",
+    },
+    pending: {
+      color: "text-amber-600 dark:text-amber-400",
+      bg: "bg-amber-50 dark:bg-amber-900/20",
+      border: "border-amber-100 dark:border-amber-900",
+      icon: <MdHourglassEmpty />,
+      label: "Pending",
+    },
+    cancelled: {
+      color: "text-red-500 dark:text-red-400",
+      bg: "bg-red-50 dark:bg-red-900/20",
+      border: "border-red-100 dark:border-red-900",
+      icon: <MdCancel />,
+      label: "Cancelled",
+    },
+    completed: {
+      color: "text-gray-500 dark:text-gray-400",
+      bg: "bg-gray-50 dark:bg-gray-800",
+      border: "border-gray-100 dark:border-gray-700",
+      icon: <MdHistory />,
+      label: "Completed",
+    },
+  };
+
+  const currentStatus = statusConfig[status] || statusConfig.confirmed;
+
+  // --- 3. Cancel Logic ---
+  const handleCancel = async () => {
+    const result = await Swal.fire({
+      title: "Cancel Reservation?",
+      text: "Are you sure? This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ef4444",
+      cancelButtonColor: "#cbd5e1",
+      confirmButtonText: "Yes, cancel it!",
+      background: document.documentElement.classList.contains("dark")
+        ? "#1e293b"
+        : "#fff",
+      color: document.documentElement.classList.contains("dark")
+        ? "#fff"
+        : "#000",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await reservationRepo.cancel(id, user.token);
+        if (onCancelSuccess) onCancelSuccess();
+
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          background: document.documentElement.classList.contains("dark")
+            ? "#1e293b"
+            : "#fff",
+          color: document.documentElement.classList.contains("dark")
+            ? "#fff"
+            : "#000",
+        });
+        Toast.fire({ icon: "success", title: "Reservation cancelled" });
+      } catch (error) {
+        Swal.fire("Error", "Failed to cancel", "error");
+      }
+    }
+  };
 
   return (
-    <div className="group flex flex-col md:flex-row items-stretch justify-between gap-6 rounded-xl bg-white dark:bg-card-dark p-5 shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-none border border-transparent dark:border-border-dark hover:shadow-md transition-shadow font-display">
-      {/* Left Side: Details */}
-      <div className="flex flex-col justify-between flex-[2_2_0px] gap-4">
-        <div className="flex flex-col gap-3">
-          {/* Status Badge */}
-          <div className="flex items-center justify-between md:justify-start gap-3">
-            <span
-              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider 
-              ${
-                isConfirmed
-                  ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200"
-                  : "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200"
-              }`}
-            >
-              {isConfirmed ? (
-                <MdCheck className="text-sm font-bold" />
-              ) : (
-                <span className="size-2 rounded-full bg-yellow-500"></span>
-              )}
-              {reservation.status}
+    <div
+      className={`group relative bg-white dark:bg-[#1e1e1e] rounded-2xl border transition-all duration-300 hover:shadow-lg hover:-translate-y-1 overflow-hidden
+      ${currentStatus.border} ${status === "cancelled" ? "opacity-75 grayscale-[0.5]" : "border-gray-100 dark:border-gray-800"}`}
+    >
+      {/* --- Card Layout: Flex --- */}
+      <div className="flex flex-col sm:flex-row h-full">
+        {/* 1. Date Box (Left Side) */}
+        <div className="sm:w-24 bg-gray-50 dark:bg-[#252525] flex flex-row sm:flex-col items-center justify-between sm:justify-center p-4 sm:p-0 border-b sm:border-b-0 sm:border-r border-dashed border-gray-200 dark:border-gray-700">
+          <div className="text-center">
+            <span className="block text-xs font-bold uppercase text-red-500 tracking-wider mb-1">
+              {month}
+            </span>
+            <span className="block text-3xl font-black text-gray-800 dark:text-white leading-none">
+              {day}
+            </span>
+            <span className="block text-xs text-gray-400 mt-1 font-medium">
+              {weekday}
             </span>
           </div>
-
-          {/* Date & Time */}
-          <div>
-            <h3 className="text-[#181211] dark:text-white text-xl font-bold leading-tight mb-1">
-              {reservation.date}
-            </h3>
-            <div className="flex items-center gap-2 text-text-muted dark:text-text-muted text-sm font-medium">
-              <MdSchedule className="text-lg" />
-              {reservation.time}
-            </div>
-          </div>
-
-          {/* Info Tags (Guests, Location) */}
-          <div className="flex flex-wrap gap-4 mt-1">
-            <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300 text-sm">
-              <MdGroup className="text-primary text-lg" />
-              {reservation.guests} Guests
-            </div>
-            <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300 text-sm">
-              {isConfirmed ? (
-                <MdDeck className="text-primary text-lg" />
-              ) : (
-                <MdChair className="text-primary text-lg" />
-              )}
-              {reservation.location}
-            </div>
+          {/* Mobile Status Badge (Visible only on mobile inside date box) */}
+          <div
+            className={`sm:hidden px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1 ${currentStatus.bg} ${currentStatus.color}`}
+          >
+            {currentStatus.icon} {currentStatus.label}
           </div>
         </div>
 
-        {/* Action Buttons */}
-        {isConfirmed ? (
-          // Confirmed Actions
-          <div className="flex gap-3">
-            <button className="flex items-center justify-center rounded-lg h-9 px-4 bg-primary/10 hover:bg-primary/20 text-primary text-sm font-bold leading-normal w-fit transition-colors gap-2 cursor-pointer">
-              <MdEdit className="text-lg" />
-              Modify
-            </button>
-            <button className="flex items-center justify-center rounded-lg h-9 px-4 text-primary text-sm font-medium leading-normal w-fit transition-colors hover:underline cursor-pointer">
-              View Details
-            </button>
-          </div>
-        ) : (
-          // Pending Actions
-          <button className="flex items-center justify-center rounded-lg h-9 px-4 border border-border-light dark:border-border-dark hover:bg-gray-50 dark:hover:bg-border-dark text-gray-700 dark:text-gray-300 text-sm font-medium leading-normal w-fit transition-colors gap-2 cursor-pointer">
-            <MdClose className="text-lg" />
-            <span className="truncate">Cancel Request</span>
-          </button>
-        )}
-      </div>
+        {/* 2. Content Area */}
+        <div className="flex-1 p-5 flex flex-col justify-center">
+          {/* Top Row: Time & Desktop Status */}
+          <div className="flex justify-between items-start mb-4">
+            <div>
+              <h3 className="text-lg font-bold text-gray-800 dark:text-white flex items-center gap-2">
+                {location}
+              </h3>
+              <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-sm mt-1">
+                <MdAccessTime className="text-primary" />
+                <span className="font-medium">
+                  {time} {endTime ? `- ${endTime}` : ""}
+                </span>
+              </div>
+            </div>
 
-      {/* Right Side: Image */}
-      <div
-        className="w-full md:w-1/3 aspect-video md:aspect-auto md:h-auto bg-center bg-no-repeat bg-cover rounded-lg"
-        style={{ backgroundImage: `url("${reservation.image}")` }}
-      ></div>
+            {/* Status Badge (Desktop) */}
+            <div
+              className={`hidden sm:flex px-3 py-1 rounded-full text-xs font-bold items-center gap-1.5 border ${currentStatus.bg} ${currentStatus.color} ${currentStatus.border}`}
+            >
+              {currentStatus.icon}
+              {currentStatus.label}
+            </div>
+          </div>
+
+          {/* Bottom Row: Guests & Actions */}
+          <div className="flex justify-between items-end border-t border-gray-100 dark:border-gray-700 pt-4 mt-auto">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-500 flex items-center justify-center">
+                <MdPeople size={16} />
+              </div>
+              <div>
+                <span className="block text-xs text-gray-400 font-bold uppercase">
+                  Guests
+                </span>
+                <span className="block text-sm font-bold text-gray-700 dark:text-gray-200">
+                  {guests} People
+                </span>
+              </div>
+            </div>
+
+            {/* Cancel Button */}
+            {(status === "confirmed" || status === "pending") && (
+              <button
+                onClick={handleCancel}
+                className="group/btn flex items-center gap-2 px-4 py-2 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-sm font-bold"
+              >
+                <span>Cancel</span>
+                <MdCancel className="text-lg group-hover/btn:scale-110 transition-transform" />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* 3. Decorative Side Line (Optional chic touch) */}
+        <div
+          className={`w-1.5 h-full absolute left-0 top-0 sm:relative sm:left-auto sm:top-auto ${status === "confirmed" ? "bg-green-500" : status === "pending" ? "bg-amber-500" : "bg-gray-300"}`}
+        ></div>
+      </div>
     </div>
   );
 }

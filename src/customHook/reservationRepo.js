@@ -1,0 +1,60 @@
+import axios from "axios";
+import { domain } from "../store";
+
+const API_URL = `${domain}/api/reservations`;
+
+export const reservationRepo = {
+  getByDate: (dateString) =>
+    axios.get(API_URL, {
+      params: {
+        "filters[reservation_date][$eq]": dateString,
+        "filters[res_status][$ne]": "cancelled",
+        populate: "table",
+      },
+    }),
+
+  create: (data, token) =>
+    axios.post(
+      API_URL,
+      { data },
+      {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      },
+    ),
+
+  getUserReservations: (userId, token) =>
+    axios.get(API_URL, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      params: {
+        "filters[users_permissions_user][id][$eq]": userId, // Filter by User ID
+        populate: "*",
+        sort: "reservation_date:desc", // Newest first
+      },
+    }),
+
+  cancel: (id, token) =>
+    axios.put(
+      `${API_URL}/${id}`,
+      {
+        data: { res_status: "cancelled" },
+      },
+      {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      },
+    ),
+
+    getAll: (token, params = {}) => axios.get(API_URL, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    params: {
+        populate: ["table", "users_permissions_user"], 
+        sort: "reservation_date:desc,start_time:asc",
+        ...params 
+    }
+  }),
+
+  updateStatus: (documentId, status, token) => axios.put(`${API_URL}/${documentId}`, {
+     data: { res_status: status }
+  }, {
+     headers: token ? { Authorization: `Bearer ${token}` } : {}
+  })
+};

@@ -13,12 +13,7 @@ export default function ReservationsHeader() {
           Manage your upcoming and past dining bookings
         </p>
       </div>
-
-      {/* Book New Table Button */}
-      <button className="flex items-center justify-center rounded-lg h-10 px-6 bg-primary hover:bg-primary-hover text-white text-sm font-bold leading-normal tracking-[0.015em] transition-colors shadow-sm gap-2 font-display cursor-pointer">
-        <MdAdd className="text-lg" />
-        <span className="truncate">Book New Table</span>
-      </button>
+      
     </div>
   );
 }

@@ -80,7 +80,6 @@ export const useMenuStore = create((set , get)=>({
         products: productsRes.data.data || [],
         offers : offersRes.data.data || [],
       });
-      console.log('silent refresh done');
       
     } catch (err) {
       console.error("Silent refresh failed:", err);

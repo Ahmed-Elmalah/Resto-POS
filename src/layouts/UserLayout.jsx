@@ -107,7 +107,7 @@ export default function UserLayout() {
       <footer className="bg-white dark:bg-background-dark border-t border-gray-100 dark:border-white/5 py-8">
         <div className="container mx-auto px-4 text-center">
           <p className="text-sm text-text-muted dark:text-gray-500">
-            © 2026 SavoryBites Restaurant. All rights reserved.
+            © 2026 RestoPOS Restaurant. All rights reserved.
           </p>
         </div>
       </footer>

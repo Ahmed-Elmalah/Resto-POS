@@ -13,16 +13,6 @@ export default function ReservationTabs() {
             Upcoming
           </p>
         </a>
-
-        {/* Inactive Tab (Past) */}
-        <a
-          className="flex flex-col items-center justify-center border-b-[3px] border-transparent hover:border-gray-300 dark:hover:border-gray-600 pb-3.25 pt-4 px-2 transition-colors cursor-pointer"
-          href="#"
-        >
-          <p className="text-text-muted dark:text-text-muted hover:text-[#181211] dark:hover:text-white text-sm font-bold leading-normal tracking-[0.015em]">
-            Past
-          </p>
-        </a>
       </div>
     </div>
   );
