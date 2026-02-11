@@ -1,11 +1,8 @@
-import React from 'react';
 import MenuFilters from '../../sections/adminSections/menu/MenuFilters';
 import MenuGrid from '../../sections/adminSections/menu/MenuGrid';
-// استدعاء الهوك اللي فيه كل داتا المنيو والبحث
 import useMenuFilter from '../../customHook/useMenuFilter';
 
 export default function MenuPage() {
-  // 1. استخدام الهوك لجلب البيانات (نفس اللي استخدمناه عند اليوزر)
   const { 
     products, 
     categories, 

@@ -22,6 +22,7 @@ const useAdminStore = create((set) => ({
     })),
 
   offers: [],
+  products: [],
   isLoadingOffers: false,
 
   currentOffer: null,
@@ -145,6 +146,46 @@ const useAdminStore = create((set) => ({
     } catch (error) {
       console.error("Get Offer Error:", error);
       set({ isLoadingCurrentOffer: false });
+      return { success: false, error: error.message };
+    }
+  },
+
+  toggleItemAvailability: async (id, currentStatus, type = "product") => {
+    const endpoint = type === "offer" 
+      ? `${domain}/api/offers/${id}` 
+      : `${domain}/api/products/${id}`;
+
+
+    const fieldName = "isAvailable" ; 
+
+    try {
+      await axios.put(endpoint, {
+        data: {
+          [fieldName]: !currentStatus
+        }
+      });
+      
+      set((state) => {
+        if (type === "offer") {
+            return {
+                offers: state.offers.map(o => 
+                    o.documentId === id ? { ...o, [fieldName]: !currentStatus } : o
+                )
+            };
+        } else {
+            if (!state.products) return state;
+
+            return {
+                products: state.products.map(p => 
+                    p.documentId === id ? { ...p, [fieldName]: !currentStatus } : p
+                )
+            };
+        }
+      });
+      
+      return { success: true };
+    } catch (error) {
+      console.error(`Error toggling ${type}:`, error);
       return { success: false, error: error.message };
     }
   },
