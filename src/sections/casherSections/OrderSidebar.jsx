@@ -54,7 +54,6 @@ export default function OrderSidebar() {
           await axios.put(`${domain}/api/tables/${finalOrderDetails.table}`, {
             data: { table_status: "Busy" },
           });
-          console.log("Table is now Busy");
         } catch (err) {
           console.error("Failed to update table status:", err);
         }

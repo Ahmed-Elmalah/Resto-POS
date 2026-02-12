@@ -48,7 +48,7 @@ export default function TableSidebar({ activeTable, onClose }) {
     <>
       {/* Backdrop for mobile */}
       <div
-        className={`fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm z-[100] transition-opacity duration-300 lg:hidden ${
+        className={`fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm z-100 transition-opacity duration-300 lg:hidden ${
           isOpen ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
         onClick={onClose}
@@ -56,8 +56,8 @@ export default function TableSidebar({ activeTable, onClose }) {
 
       <aside
         className={`
-        fixed top-0 right-0 h-full z-[110]
-        w-[380px] max-w-[90%] 
+        fixed top-0 right-0 h-full z-110
+        w-95 max-w-[90%] 
         /* Background & Border for both modes */
         bg-white dark:bg-[#0f172a] 
         border-l border-slate-200 dark:border-slate-800 

@@ -19,7 +19,6 @@ export default function OrderDetails() {
       .then((res) => {
         setOrder(res.data.data);
       })
-      .catch((err) => console.log("Check if ID exists in Strapi:", err));
   }, [orderId]);
 
   if (!order)

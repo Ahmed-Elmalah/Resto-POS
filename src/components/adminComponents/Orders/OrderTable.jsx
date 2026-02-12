@@ -15,7 +15,6 @@ export default function OrderTable() {
       const orders = res.data.data || [];
       const sorted = orders.sort((a, b) => b.id - a.id);
       setData(sorted);
-      console.log(sorted);
 
       const uniqueCashiers = [
         ...new Set(
@@ -83,7 +82,7 @@ export default function OrderTable() {
   };
   return (
     <div className="w-full overflow-auto max-h-500 no-scrollbar">
-      <table className="w-full text-center border-collapse min-w-[800px]">
+      <table className="w-full text-center border-collapse min-w-200">
         <thead className="bg-slate-100 dark:bg-[#1c2127] text-slate-500 dark:text-[#9dabb9] text-xs uppercase font-bold">
           <tr>
             <th className="px-3 py-4 ">Order ID</th>

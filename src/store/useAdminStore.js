@@ -52,7 +52,6 @@ const useAdminStore = create((set , get) => ({
         const isExpired = offer.expiryDate <= todayStr;
 
         if (isExpired && offer.isAvailable) {
-          console.log(`🚨 Expiring: ${offer.name} (${offer.expiryDate})`);
 
           if (token) {
             try {
@@ -61,7 +60,6 @@ const useAdminStore = create((set , get) => ({
                 { data: { isAvailable: false } },
                 { headers: { Authorization: `Bearer ${token}` } }
               );
-              console.log("✅ DB Updated");
             } catch (err) {
               console.error("❌ DB Update Failed:", err.message);
             }
