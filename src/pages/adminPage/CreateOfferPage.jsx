@@ -105,7 +105,7 @@ export default function CreateOfferPage() {
         toast.success("Offer Created Successfully!");
         navigate("/admin/promotions");
       } else {
-        toast.error("Failed to create offer");
+        toast.error(result.error.message || "Failed to create offer");
       }
     } catch (error) {
       console.error(error);
