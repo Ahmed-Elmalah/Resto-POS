@@ -2,7 +2,7 @@ import axios from "axios";
 import { create } from "zustand";
 import { domain } from "../store";
 
-const useAdminStore = create((set) => ({
+const useAdminStore = create((set , get) => ({
   orders: [],
   filters: {
     status: "All",
@@ -30,29 +30,46 @@ const useAdminStore = create((set) => ({
 
   fetchOffers: async () => {
     set({ isLoadingOffers: true });
+
+    const token = localStorage.getItem("jwt-token") || sessionStorage.getItem("jwt-token");
+
     try {
       const res = await axios.get(`${domain}/api/offers?populate=*`);
-      const fetchedOffers = res.data.data;
+      
+      const fetchedOffers = res.data.data; 
 
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      const getLocalDateString = () => {
+        const d = new Date();
+        const offset = d.getTimezoneOffset() * 60000;
+        return new Date(d.getTime() - offset).toISOString().split('T')[0];
+      };
+
+      const todayStr = getLocalDateString();
 
       const updatedOffersPromises = fetchedOffers.map(async (offer) => {
-        const expiryDate = new Date(offer.expiryDate);
         
-        if (expiryDate < today && offer.isAvailable) {
-          try {
-            await axios.put(`${domain}/api/offers/${offer.documentId}`, {
-              data: { isAvailable: false }
-            });
-            
-            return { ...offer, isAvailable: false };
-          } catch (err) {
-            console.error("Failed to auto-expire offer:", offer.documentId);
-            return offer; 
+        if (!offer.expiryDate) return offer;
+        const isExpired = offer.expiryDate <= todayStr;
+
+        if (isExpired && offer.isAvailable) {
+          console.log(`🚨 Expiring: ${offer.name} (${offer.expiryDate})`);
+
+          if (token) {
+            try {
+              await axios.put(
+                `${domain}/api/offers/${offer.documentId}`,
+                { data: { isAvailable: false } },
+                { headers: { Authorization: `Bearer ${token}` } }
+              );
+              console.log("✅ DB Updated");
+            } catch (err) {
+              console.error("❌ DB Update Failed:", err.message);
+            }
           }
+
+          return { ...offer, isAvailable: false };
         }
-        
+
         return offer;
       });
 
@@ -60,7 +77,7 @@ const useAdminStore = create((set) => ({
 
       set({ offers: finalOffers, isLoadingOffers: false });
     } catch (error) {
-      console.error("Error fetching offers:", error);
+      console.error("❌ Error:", error);
       set({ isLoadingOffers: false });
     }
   },
@@ -81,6 +98,20 @@ const useAdminStore = create((set) => ({
   },
 
   createOffer: async (offerData) => {
+    // 1. Validation: Check if Expiry Date is missing
+    if (!offerData.expiryDate) {
+      return { success: false, error: { message: "Expiry Date is required! Please select a date." } };
+    }
+
+    // 2. Validation: Check for Duplicate Name
+    const isDuplicate = get().offers.some(
+      (offer) => offer.name.trim().toLowerCase() === offerData.name.trim().toLowerCase()
+    );
+
+    if (isDuplicate) {
+      return { success: false, error: { message: "An offer with this name already exists!" } };
+    }
+
     try {
       // Wrap data in 'data' object as Strapi expects
       const payload = { data: offerData };
@@ -91,10 +122,10 @@ const useAdminStore = create((set) => ({
       return { success: true };
     } catch (error) {
       console.error("Create Offer Error:", error);
-      return { success: false, error: error.response?.data || error.message };
+      // Return the error message from Strapi or a generic one
+      return { success: false, error: error.response?.data?.error || error.message };
     }
   },
-
   deleteOffer: async (documentId) => {
     try {
       await axios.delete(`${domain}/api/offers/${documentId}`);

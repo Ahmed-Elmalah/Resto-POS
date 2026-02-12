@@ -140,7 +140,17 @@ export default function OfferDetailsPage() {
       if (result.isConfirmed) {
         const res = await deleteOffer(currentOffer.documentId);
         if (res.success) {
-          Swal.fire("Deleted!", "Offer has been deleted.", "success");
+          Swal.fire({
+            title: "Deleted!",
+            text: "Offer has been deleted.",
+            icon: "success",
+            background: document.documentElement.classList.contains("dark")
+              ? "#1e293b"
+              : "#ffffff",
+            color: document.documentElement.classList.contains("dark")
+              ? "#f8fafc"
+              : "#0f172a",
+          });
           navigate("/admin/promotions");
         } else {
           toast.error("Failed to delete.");
