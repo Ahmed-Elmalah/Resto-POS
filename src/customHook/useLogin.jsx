@@ -43,7 +43,6 @@ export default function useLogin() {
         return res.data;
       })
       .catch((err) => {
-        console.error("Login failed");
         throw err;
       });
   };

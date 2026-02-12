@@ -56,5 +56,15 @@ export const reservationRepo = {
      data: { res_status: status }
   }, {
      headers: token ? { Authorization: `Bearer ${token}` } : {}
-  })
+  }),
+
+  getByTable: (tableId, todayDate) => axios.get(API_URL, {
+    params: {
+        "filters[table][documentId][$eq]": tableId, // Filter by Table
+        "filters[reservation_date][$gte]": todayDate, // Only future/today
+        "filters[res_status][$in]": ["confirmed", "pending"], // Active only
+        "populate": "*", // Get details
+        "sort": "reservation_date:asc,start_time:asc" // Sort: Earliest first
+    }
+  }),
 };
