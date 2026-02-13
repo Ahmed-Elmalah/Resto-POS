@@ -10,9 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "aos": "^2.3.4",
     "axios": "^1.13.2",
     "formik": "^2.4.9",
+    "framer-motion": "^12.34.0",
     "react": "^19.2.3",
+    "react-awesome-reveal": "^4.3.1",
     "react-datepicker": "^9.1.0",
     "react-dom": "^19.2.3",
     "react-hot-toast": "^2.6.0",

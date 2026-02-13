@@ -159,15 +159,27 @@ export default function ReservationsPage() {
     <div className="bg-background-light dark:bg-background-dark min-h-screen flex flex-col font-display pb-20">
       {/* 1. Header Area */}
       <div className="bg-surface-light dark:bg-surface-dark shadow-xs pt-24 pb-10 px-4 text-center">
-        <h1 className="text-3xl md:text-4xl font-bold text-text-main dark:text-white mb-2">
+        <h1
+          data-aos="fade-down"
+          data-aos-duration="1000"
+          className="text-3xl md:text-4xl font-bold text-text-main dark:text-white mb-2"
+        >
           Reservations
         </h1>
-        <p className="text-gray-500 dark:text-gray-400">
+        <p
+          data-aos="fade-right"
+          data-aos-duration="1000"
+          className="text-gray-500 dark:text-gray-400"
+        >
           Book a new table or manage your existing bookings
         </p>
 
         {/* 2. TAB SWITCHER (The Chic Part) */}
-        <div className="mt-8 flex justify-center">
+        <div
+          data-aos="fade-left"
+          data-aos-duration="1000"
+          className="mt-8 flex justify-center"
+        >
           <div className="bg-gray-100 dark:bg-gray-800 p-1 rounded-full inline-flex relative">
             {/* Active Tab Background Animation (Simple version: just conditional classes) */}
             <button

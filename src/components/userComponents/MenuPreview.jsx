@@ -13,12 +13,12 @@ export default function MenuPreview() {
 
   const activeOffers = offers.filter((offer) => {
     const isAvailable = offer.isAvailable;
-    const isNotExpired = new Date(offer.expiryDate) >= new Date().setHours(0, 0, 0, 0);    
+    const isNotExpired =
+      new Date(offer.expiryDate) >= new Date().setHours(0, 0, 0, 0);
     return isAvailable && isNotExpired;
   });
 
   const displayedOffers = activeOffers.slice(0, 3);
-
 
   if (isLoading) {
     return (
@@ -31,8 +31,15 @@ export default function MenuPreview() {
   if (displayedOffers.length === 0) return null;
 
   return (
-    <section className="py-12 px-4 max-w-7xl dark:bg-background-dark mx-auto w-full mb-12" id="Offers">
-      <div className="text-center mb-12">
+    <section
+      className="py-12 px-4 max-w-7xl dark:bg-background-dark mx-auto w-full mb-12"
+      id="Offers"
+    >
+      <div
+        data-aos="fade-up"
+        data-aos-duration="1000"
+        className="text-center mb-12"
+      >
         <span className="text-primary font-bold text-sm uppercase tracking-widest mb-2 block">
           Special Deals
         </span>
@@ -46,11 +53,14 @@ export default function MenuPreview() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
         {displayedOffers.map((offer, index) => (
-          <MenuCard key={index} offer = {offer} />
+          <MenuCard key={index} offer={offer} />
         ))}
       </div>
       <div className="flex justify-center">
-        <button onClick={()=> navigate("/menu")} className="h-12 px-8 rounded-lg border-2 border-primary text-primary hover:bg-primary hover:text-white font-bold transition-all">
+        <button
+          onClick={() => navigate("/menu")}
+          className="h-12 px-8 rounded-lg border-2 border-primary text-primary hover:bg-primary hover:text-white font-bold transition-all"
+        >
           View Full Digital Menu
         </button>
       </div>

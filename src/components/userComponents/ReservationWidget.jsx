@@ -11,7 +11,7 @@ import { useReservation } from "../../customHook/useReservation";
 import Swal from "sweetalert2";
 
 export default function ReservationWidget() {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   // --- Local State ---
   const [date, setDate] = useState("");
@@ -25,10 +25,10 @@ export default function ReservationWidget() {
   // --- Generate Time Slots (From 1 PM to 11 PM) ---
   const generateTimeSlots = () => {
     const times = [];
-    for (let i = 13; i <= 23; i++) { 
+    for (let i = 13; i <= 23; i++) {
       const hour = i < 10 ? `0${i}` : i;
       times.push(`${hour}:00:00`);
-      times.push(`${hour}:30:00`); 
+      times.push(`${hour}:30:00`);
     }
     return times;
   };
@@ -46,26 +46,31 @@ export default function ReservationWidget() {
     }
 
     await checkAvailability(date, time, guests);
-    
-    navigate("/reservations", { 
-        state: { 
-            reservationData: { date, time, guests, seating } 
-        } 
+
+    navigate("/reservations", {
+      state: {
+        reservationData: { date, time, guests, seating },
+      },
     });
   };
 
   return (
-    <section className="relative z-20 px-4 -mt-16 mb-16">
+    <section
+      data-aos="fade-up"
+      data-aos-duration="1200"
+      className="relative z-20 px-4 -mt-16 mb-16"
+    >
       <div className="max-w-275 bg-white dark:bg-background-dark mx-auto bg-surface-light dark:bg-surface-dark rounded-xl shadow-2xl border border-gray-100 dark:border-white/5 p-6 md:p-8">
-        
         {/* Widget Header */}
         <h3 className="text-xl font-bold text-text-main dark:text-white flex items-center gap-2 mb-6">
           <MdCalendarMonth className="text-primary" size={24} />
           Make a Reservation
         </h3>
 
-        <form onSubmit={handleFindTable} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-          
+        <form
+          onSubmit={handleFindTable}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4"
+        >
           {/* 1. Date Picker */}
           <div className="flex flex-col gap-1.5 text-left">
             <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted dark:text-gray-400">
@@ -76,11 +81,14 @@ export default function ReservationWidget() {
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                min={new Date().toISOString().split('T')[0]} // Disable past days
+                min={new Date().toISOString().split("T")[0]} // Disable past days
                 className="w-full h-12 rounded-lg border border-gray-200 dark:border-gray-700 bg-background-light dark:bg-background-dark text-text-main dark:text-white text-sm focus:ring-2 focus:ring-primary pl-10 outline-none transition-all cursor-pointer"
                 required
               />
-              <MdCalendarMonth className="absolute left-3 top-1/2 -translate-y-1/2 text-primary pointer-events-none" size={20} />
+              <MdCalendarMonth
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-primary pointer-events-none"
+                size={20}
+              />
             </div>
           </div>
 
@@ -96,15 +104,20 @@ export default function ReservationWidget() {
                 className="w-full h-12 rounded-lg border border-gray-200 dark:border-gray-700 bg-background-light dark:bg-background-dark text-text-main dark:text-white text-sm focus:ring-2 focus:ring-primary pl-10 outline-none appearance-none cursor-pointer transition-all"
                 required
               >
-                <option value="" disabled>Select Time</option>
+                <option value="" disabled>
+                  Select Time
+                </option>
                 {timeSlots.map((slot, index) => (
                   <option key={index} value={slot}>
                     {/* Display readable time (e.g. 13:00) */}
-                    {slot.slice(0, 5)} 
+                    {slot.slice(0, 5)}
                   </option>
                 ))}
               </select>
-              <MdSchedule className="absolute left-3 top-1/2 -translate-y-1/2 text-primary pointer-events-none" size={20} />
+              <MdSchedule
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-primary pointer-events-none"
+                size={20}
+              />
             </div>
           </div>
 
@@ -114,16 +127,21 @@ export default function ReservationWidget() {
               Guests
             </label>
             <div className="relative">
-              <select 
+              <select
                 value={guests}
                 onChange={(e) => setGuests(Number(e.target.value))}
                 className="w-full h-12 rounded-lg border border-gray-200 dark:border-gray-700 bg-background-light dark:bg-background-dark text-text-main dark:text-white text-sm focus:ring-2 focus:ring-primary pl-10 outline-none appearance-none cursor-pointer transition-all"
               >
-                {[2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
-                    <option key={num} value={num}>{num} People</option>
+                {[2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                  <option key={num} value={num}>
+                    {num} People
+                  </option>
                 ))}
               </select>
-              <MdGroup className="absolute left-3 top-1/2 -translate-y-1/2 text-primary pointer-events-none" size={20} />
+              <MdGroup
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-primary pointer-events-none"
+                size={20}
+              />
             </div>
           </div>
 
@@ -133,7 +151,7 @@ export default function ReservationWidget() {
               Seating
             </label>
             <div className="relative">
-              <select 
+              <select
                 value={seating}
                 onChange={(e) => setSeating(e.target.value)}
                 className="w-full h-12 rounded-lg border border-gray-200 dark:border-gray-700 bg-background-light dark:bg-background-dark text-text-main dark:text-white text-sm focus:ring-2 focus:ring-primary pl-10 outline-none appearance-none cursor-pointer transition-all"
@@ -141,28 +159,30 @@ export default function ReservationWidget() {
                 <option value="Indoor">Indoor</option>
                 <option value="Outdoor">Outdoor</option>
               </select>
-              <MdTableRestaurant className="absolute left-3 top-1/2 -translate-y-1/2 text-primary pointer-events-none" size={20} />
+              <MdTableRestaurant
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-primary pointer-events-none"
+                size={20}
+              />
             </div>
           </div>
 
           {/* 5. Submit Button */}
           <div className="flex items-end">
-            <button 
-                type="submit"
-                disabled={loading}
-                className="w-full h-12 rounded-lg bg-primary hover:bg-primary/90 disabled:opacity-70 disabled:cursor-not-allowed text-white font-bold text-sm shadow-md flex items-center justify-center gap-2 transition-all transform active:scale-95"
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full h-12 rounded-lg bg-primary hover:bg-primary/90 disabled:opacity-70 disabled:cursor-not-allowed text-white font-bold text-sm shadow-md flex items-center justify-center gap-2 transition-all transform active:scale-95"
             >
               {loading ? (
-                 <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
+                <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
               ) : (
-                 <>
-                   <span>Find Table</span>
-                   <MdArrowForward size={18} />
-                 </>
+                <>
+                  <span>Find Table</span>
+                  <MdArrowForward size={18} />
+                </>
               )}
             </button>
           </div>
-
         </form>
       </div>
     </section>

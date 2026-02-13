@@ -4,7 +4,6 @@ export default function CategoryTabs({
   activeCategory,
   onSelectCategory,
 }) {
-
   const tabs = [{ id: "all", name: "All" }, ...categories];
 
   return (
@@ -16,6 +15,8 @@ export default function CategoryTabs({
 
           return (
             <button
+              data-aos="zoom-in"
+              data-aos-duration="1100"
               key={cat.id || cat.name}
               // When clicked, we call the parent function with the category name
               onClick={() =>

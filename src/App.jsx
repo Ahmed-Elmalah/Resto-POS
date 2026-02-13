@@ -26,8 +26,14 @@ import AddStaffPage from "./pages/adminPage/AddStaffPage";
 import EditStaffPage from "./pages/adminPage/EditStaffPage";
 import CreateOfferPage from "./pages/adminPage/CreateOfferPage";
 import OfferDetailsPage from "./pages/adminPage/OfferDetailsPage";
+import Aos from "aos";
+import "aos/dist/aos.css";
+import { useEffect } from "react";
 
 export default function App() {
+  useEffect(() => {
+    Aos.init();
+  }, []);
   return (
     <BrowserRouter>
       <Toaster
