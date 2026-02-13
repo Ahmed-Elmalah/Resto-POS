@@ -3,14 +3,18 @@ import { domain } from "../../store";
 import { useNavigate } from "react-router-dom";
 
 export default function MenuCard({ offer }) {
-
   const imgurl = offer.image?.url
     ? domain + offer.image.url
     : "https://placehold.co/600x400";
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   return (
-    <div onClick={()=> navigate('/menu')} className="group bg-surface-light dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-primary/10">
+    <div
+      data-aos="zoom-in-down"
+      data-aos-duration="1100"
+      onClick={() => navigate("/menu")}
+      className="group bg-surface-light dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-primary/10"
+    >
       <div className="aspect-4/3 w-full overflow-hidden relative">
         <img
           alt={offer.name}

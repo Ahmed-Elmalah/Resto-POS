@@ -7,46 +7,53 @@ import FloatingCart from "../../components/userComponents/menu/FloatingCart";
 import useMenuFilter from "../../customHook/useMenuFilter";
 
 export default function UserMenuPage() {
-  
   // 1. Destructure data and control functions from our custom hook
-  const { 
-    products,       
-    categories,     
-    activeCategory, 
+  const {
+    products,
+    categories,
+    activeCategory,
     setActiveCategory,
-    searchQuery,  
-    setSearchQuery, 
-    setSortOrder,   
-    isLoading,   
-    error       
+    searchQuery,
+    setSearchQuery,
+    setSortOrder,
+    isLoading,
+    error,
   } = useMenuFilter();
 
   return (
     <div className="bg-background-light dark:bg-background-dark font-display min-h-screen flex flex-col relative text-[#181211] dark:text-[#f4f1f0]">
-      
       {/* --- Main Content --- */}
       <main className="flex-1 w-full max-w-300 mt-15 mx-auto px-4 md:px-8 py-6 pb-24">
-        
         {/* 2. Category Tabs (Dynamic) */}
-        <CategoryTabs 
-          categories={categories} 
-          activeCategory={activeCategory} 
-          onSelectCategory={setActiveCategory} 
+        <CategoryTabs
+          categories={categories}
+          activeCategory={activeCategory}
+          onSelectCategory={setActiveCategory}
         />
 
         {/* 3. Controls Section (Search & Sort) */}
         <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          
           {/* Header & Count */}
-          <h2 className="text-2xl font-bold text-[#181211] dark:text-white">
-            Resto Menu <span className="text-sm font-normal text-gray-500">({products.length} items)</span>
+          <h2
+            data-aos="fade-right"
+            data-aos-duration="1000"
+            className="text-2xl font-bold text-[#181211] dark:text-white"
+          >
+            Resto Menu{" "}
+            <span className="text-sm font-normal text-gray-500">
+              ({products.length} items)
+            </span>
           </h2>
-          
+
           <div className="flex gap-3">
             {/* Search Input */}
-            <div className="relative">
+            <div
+              className="relative"
+              data-aos="fade-down"
+              data-aos-duration="1000"
+            >
               <MdSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
-              <input 
+              <input
                 type="text"
                 placeholder="Search food..."
                 value={searchQuery}
@@ -57,9 +64,13 @@ export default function UserMenuPage() {
             </div>
 
             {/* Sort Dropdown */}
-            <div className="relative">
+            <div
+              className="relative"
+              data-aos="fade-left"
+              data-aos-duration="1000"
+            >
               <MdSort className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
-              <select 
+              <select
                 // Update sort order on selection change
                 onChange={(e) => setSortOrder(e.target.value)}
                 className="appearance-none pl-10 pr-8 py-2 bg-white dark:bg-[#3a2520] border border-[#e5e1e0] dark:border-[#523832] rounded-full text-sm outline-none focus:border-primary transition-colors cursor-pointer"
@@ -74,7 +85,9 @@ export default function UserMenuPage() {
 
         {/* 4. State Handling (Loading / Error / Empty) */}
         {isLoading && (
-          <div className="text-center py-20 text-gray-500">Loading delicious food... 🍔</div>
+          <div className="text-center py-20 text-gray-500">
+            Loading delicious food... 🍔
+          </div>
         )}
 
         {error && (
@@ -92,9 +105,14 @@ export default function UserMenuPage() {
               </div>
             ) : (
               <div className="text-center py-20">
-                <p className="text-gray-500 text-lg">No items found matching your selection 😔</p>
-                <button 
-                  onClick={() => {setActiveCategory("All"); setSearchQuery("");}}
+                <p className="text-gray-500 text-lg">
+                  No items found matching your selection 😔
+                </p>
+                <button
+                  onClick={() => {
+                    setActiveCategory("All");
+                    setSearchQuery("");
+                  }}
                   className="mt-4 text-primary hover:underline font-medium"
                 >
                   Clear Filters
@@ -103,10 +121,7 @@ export default function UserMenuPage() {
             )}
           </>
         )}
-
       </main>
-
-      
     </div>
   );
 }
