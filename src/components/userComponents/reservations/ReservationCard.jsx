@@ -107,6 +107,8 @@ export default function ReservationCard({ reservation, onCancelSuccess }) {
 
   return (
     <div
+      data-aos="fade-up"
+      data-aos-duration="900"
       className={`group relative bg-white dark:bg-[#1e1e1e] rounded-2xl border transition-all duration-300 hover:shadow-lg hover:-translate-y-1 overflow-hidden
       ${currentStatus.border} ${status === "cancelled" ? "opacity-75 grayscale-[0.5]" : "border-gray-100 dark:border-gray-800"}`}
     >
