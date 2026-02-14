@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+// UI Color mapping for order statuses
 const statusColors = {
   New: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
   Cooking: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300",
@@ -11,7 +12,7 @@ export default function RecentOrdersTable({ orders = [] }) {
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 6;
 
-  // 1. دالة تنسيق الوقت (خرجناها بره الـ map)
+  // Format 24h time string to 12h AM/PM format
   const formatOrderTime = (timeStr) => {
     if (!timeStr) return "--:--";
     try {
@@ -25,46 +26,45 @@ export default function RecentOrdersTable({ orders = [] }) {
     }
   };
 
-  // 2. ترتيب من الأحدث للأقدم
+  // Sort: Newest IDs first
   const sortedOrders = [...orders].sort((a, b) => b.id - a.id);
 
-  // 3. حسابات الترقيم
+  // Pagination Logic
+  const totalPages = Math.ceil(sortedOrders.length / ordersPerPage);
   const indexOfLastOrder = currentPage * ordersPerPage;
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
   const currentOrders = sortedOrders.slice(indexOfFirstOrder, indexOfLastOrder);
-  const totalPages = Math.ceil(sortedOrders.length / ordersPerPage);
 
   return (
     <div className="bg-white dark:bg-[#1a2632] rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col h-full">
-      {/* Header */}
+      
+      {/* Table Header with Pagination Controls */}
       <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
         <h3 className="text-lg font-bold text-slate-900 dark:text-white">Recent Orders</h3>
-        <div className="flex gap-2">
-          {totalPages > 1 && (
-            <div className="flex items-center bg-slate-100 dark:bg-slate-800 rounded-lg p-1">
-              <button
-                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-                className="p-1 disabled:opacity-30 text-slate-500 dark:text-slate-400 hover:text-blue-600"
-              >
-                <span className="material-symbols-outlined text-sm">chevron_left</span>
-              </button>
-              <span className="text-[11px] font-bold px-2 text-slate-600 dark:text-slate-400">
-                {currentPage} / {totalPages}
-              </span>
-              <button
-                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                disabled={currentPage === totalPages}
-                className="p-1 disabled:opacity-30 text-slate-500 dark:text-slate-400 hover:text-blue-600"
-              >
-                <span className="material-symbols-outlined text-sm">chevron_right</span>
-              </button>
-            </div>
-          )}
-        </div>
+        {totalPages > 1 && (
+          <div className="flex items-center bg-slate-100 dark:bg-slate-800 rounded-lg p-1">
+            <button
+              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className="p-1 disabled:opacity-30 text-slate-500 dark:text-slate-400 hover:text-blue-600 transition-opacity"
+            >
+              <span className="material-symbols-outlined text-sm">chevron_left</span>
+            </button>
+            <span className="text-[11px] font-bold px-2 text-slate-600 dark:text-slate-400">
+              {currentPage} / {totalPages}
+            </span>
+            <button
+              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className="p-1 disabled:opacity-30 text-slate-500 dark:text-slate-400 hover:text-blue-600 transition-opacity"
+            >
+              <span className="material-symbols-outlined text-sm">chevron_right</span>
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* Table */}
+      {/* Responsive Table Area */}
       <div className="overflow-x-auto flex-1">
         <table className="w-full text-left border-collapse">
           <thead>
@@ -79,7 +79,9 @@ export default function RecentOrdersTable({ orders = [] }) {
           <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {currentOrders.length > 0 ? (
               currentOrders.map((order) => {
+                // Support both Strapi v4 (attributes) and v5 (flat)
                 const data = order.attributes || order;
+                
                 return (
                   <tr key={order.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors">
                     <td className="px-6 py-4 text-sm font-medium text-slate-900 dark:text-white">
@@ -91,10 +93,12 @@ export default function RecentOrdersTable({ orders = [] }) {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">
-                      {data.order_place === 'takeaway' ? `Note: ${data.note || 'N/A'}` : `Table: ${data.table?.data?.attributes?.table_number || 'N/A'}`}
+                      {data.order_place === 'takeaway' 
+                        ? `Note: ${data.note || 'N/A'}` 
+                        : `Table: ${data.table?.data?.attributes?.table_number || 'N/A'}`
+                      }
                     </td>
                     <td className="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">
-                      {/* ناديت على الدالة وبعت ليها الوقت فعلاً */}
                       {formatOrderTime(data.time)}
                     </td>
                     <td className="px-6 py-4 text-sm font-bold text-slate-900 dark:text-white text-right">
@@ -105,7 +109,9 @@ export default function RecentOrdersTable({ orders = [] }) {
               })
             ) : (
               <tr>
-                <td colSpan="5" className="px-6 py-10 text-center text-slate-400 italic">No orders found</td>
+                <td colSpan="5" className="px-6 py-10 text-center text-slate-400 italic">
+                  No orders found for today
+                </td>
               </tr>
             )}
           </tbody>

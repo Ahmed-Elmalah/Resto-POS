@@ -13,7 +13,7 @@ import RecentOrdersTable from '../../components/adminComponents/dashboard/Recent
 import QuickActions from '../../components/adminComponents/dashboard/QuickActions';
 
 export default function Dashboard() {
-  // استخدام الهوك الجديد
+   
   const { todayOrders, stats, loading, error, refreshData } = useDashboardData();
 
   if (error) return <div className="p-8 text-red-500">{error}</div>;
