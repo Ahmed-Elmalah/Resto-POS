@@ -17,7 +17,7 @@ export default function QuickActions() {
         subtitle: "Launch a special offer", 
         icon: <MdCampaign size={24} />, 
         color: "text-purple-600 bg-purple-50 group-hover:bg-purple-600 group-hover:text-white" ,
-        to : '/admin/promotions'
+        to : '/admin/promotions/new'
     },
     { 
         title: "Add New Table", 
