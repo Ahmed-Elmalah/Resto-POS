@@ -46,9 +46,14 @@ export default function SignUpForm() {
   const handleSubmit = async (values) => {
     try {
       await signup(values);
-      toast.success("SinUp Successfully");
+      toast.success("Signed up successfully");
     } catch (err) {
-      toast.error("Something went Wrong");
+      const serverErrorMessage = err.response?.data?.error?.message;
+      if (serverErrorMessage === "Email or Username are already taken") {
+        toast.error("Email or Username already exists");
+      } else {
+        toast.error("Something went Wrong");
+      }
     }
   };
 
