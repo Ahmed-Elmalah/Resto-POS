@@ -23,13 +23,7 @@ export default function Dashboard() {
       {/* Header */}
       <header className="h-16 bg-white dark:bg-[#1a2632] border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-8 z-40 sticky top-0">
         <h2 className="text-lg font-bold text-slate-900 dark:text-white">Dashboard Overview</h2>
-        <button 
-          onClick={refreshData}
-          className="flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
-        >
-          <span className="material-symbols-outlined text-sm">refresh</span>
-          Refresh Data
-        </button>
+        
       </header>
 
       {/* Content Area */}
