@@ -3,33 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import { useDashboardData } from '../../../customHook/useDashboardData'; 
 
 export default function RecentOrdersTable() {
-    // Get filtered data from hook
-    const { processedOrders, loading } = useDashboardData(); 
-    const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
     const ordersPerPage = 6;
+    const navigate = useNavigate();
 
-    // Pagination logic
-    const totalPages = Math.ceil(processedOrders.length / ordersPerPage);
-    const currentOrders = processedOrders.slice(
-        (currentPage - 1) * ordersPerPage,
-        currentPage * ordersPerPage
-    );
+    // Pull paginated data and helpers from Hook
+    const { currentOrders, totalPages, loading, formatCairoTime, processedOrders } = 
+        useDashboardData(currentPage, ordersPerPage);
 
-    // Navigate to details using Strapi documentId
+    // Navigate using Strapi documentId
     const handleRowClick = (docId) => {
         if (docId) navigate(`/admin/orders/${docId}`);
-    };
-
-    // Format time specifically for Cairo
-    const formatTime = (isoString) => {
-        if (!isoString) return "--:--";
-        return new Date(isoString).toLocaleTimeString('en-US', {
-            timeZone: 'Africa/Cairo',
-            hour: '2-digit', 
-            minute: '2-digit', 
-            hour12: true
-        });
     };
 
     if (loading && processedOrders.length === 0) {
@@ -39,14 +23,14 @@ export default function RecentOrdersTable() {
     return (
         <div className="bg-white dark:bg-[#1a2632] rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col h-full overflow-hidden">
             
-            {/* Header section */}
+            {/* Table Header */}
             <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
                 <div>
                     <h3 className="text-lg font-bold dark:text-white uppercase tracking-tight">Today's Orders</h3>
-                    <p className="text-[10px] text-blue-500 uppercase font-black">Cairo Timezone</p>
+                    <p className="text-[10px] text-blue-500 uppercase font-black italic">Cairo Timezone</p>
                 </div>
                 
-                {/* Pagination controls */}
+                {/* Simplified Pagination UI */}
                 {totalPages > 1 && (
                     <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
                         <button disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)} className="p-1 disabled:opacity-20 dark:text-white">
@@ -75,17 +59,16 @@ export default function RecentOrdersTable() {
                         {currentOrders.map((order) => {
                             const isCash = String(order.pay_by).toLowerCase() === 'cash';
                             const orderPlace = String(order.order_place).toLowerCase();
-                            const docId = order.documentId; // Use documentId for routing
 
                             return (
                                 <tr 
                                     key={order.id} 
-                                    onClick={() => handleRowClick(docId)} 
+                                    onClick={() => handleRowClick(order.documentId)} 
                                     className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50 cursor-pointer text-sm transition-colors"
                                 >
                                     <td className="px-6 py-4 font-bold text-slate-900 dark:text-white">#ORD-{order.id}</td>
                                     <td className="px-6 py-4 dark:text-slate-300 font-bold">
-                                        {/* Service type logic */}
+                                        {/* Dynamic Service Icons */}
                                         {orderPlace === 'table' ? (
                                             <span className="text-blue-500">🍽️ Table {order.table?.table_number || 'N/A'}</span>
                                         ) : orderPlace === 'delivery' ? (
@@ -99,7 +82,7 @@ export default function RecentOrdersTable() {
                                             {isCash ? 'CASH' : 'VISA'}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 text-slate-500 font-mono text-xs">{formatTime(order.createdAt)}</td>
+                                    <td className="px-6 py-4 text-slate-500 font-mono text-xs">{formatCairoTime(order.createdAt)}</td>
                                     <td className="px-6 py-4 text-right font-black dark:text-white">{order.total} EGP</td>
                                 </tr>
                             );
@@ -107,7 +90,7 @@ export default function RecentOrdersTable() {
                     </tbody>
                 </table>
                 
-                {/* Auto-clear message at 12:00 AM */}
+                {/* Empty State */}
                 {processedOrders.length === 0 && !loading && (
                     <div className="p-20 text-center text-slate-400 italic font-bold uppercase tracking-widest">
                         No orders found for today.

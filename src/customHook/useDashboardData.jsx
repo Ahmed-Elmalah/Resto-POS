@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { domain } from "../store";
 
-export const useDashboardData = () => {
+export const useDashboardData = (currentPage = 1, ordersPerPage = 6) => {
     const [allOrders, setAllOrders] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -19,39 +19,55 @@ export const useDashboardData = () => {
 
     useEffect(() => {
         fetchOrders();
-        const interval = setInterval(fetchOrders, 5000); 
+        const interval = setInterval(fetchOrders, 5000);
         return () => clearInterval(interval);
     }, []);
 
     const results = useMemo(() => {
-    // 1. تاريخ جهازك الحالي في مصر (هيطلع 2026-02-16)
-    const egyptTime = new Intl.DateTimeFormat('en-CA', {
-        timeZone: 'Africa/Cairo',
-        year: 'numeric', month: '2-digit', day: '2-digit',
-    }).format(new Date());
-
-    const todayOrders = allOrders.filter(order => {
-        // 2. تحويل تاريخ الأوردر ليوم فقط (بدون ساعات) لتجنب فرق التوقيت
-        // السطر ده هو اللي هيخلي أوردرات الساعة 10 بالليل تختفي أول ما تيجي 12
-        const orderDate = new Intl.DateTimeFormat('en-CA', {
+        // 1. Get current date in Cairo
+        const egyptTime = new Intl.DateTimeFormat('en-CA', {
             timeZone: 'Africa/Cairo',
             year: 'numeric', month: '2-digit', day: '2-digit',
-        }).format(new Date(order.createdAt));
-        
-        return orderDate === egyptTime;
-    });
+        }).format(new Date());
 
-    const revenue = todayOrders.reduce((sum, ord) => sum + Number(ord.total || 0), 0);
+        // 2. Filter orders for today only
+        const todayOrders = allOrders.filter(order => {
+            const orderDate = new Intl.DateTimeFormat('en-CA', {
+                timeZone: 'Africa/Cairo',
+                year: 'numeric', month: '2-digit', day: '2-digit',
+            }).format(new Date(order.createdAt));
+            return orderDate === egyptTime;
+        });
 
-    return {
-        processedOrders: todayOrders,
-        stats: { 
-            revenue: revenue.toLocaleString(), 
-            count: todayOrders.length 
-        }
+        // 3. Calculate Revenue
+        const revenue = todayOrders.reduce((sum, ord) => sum + Number(ord.total || 0), 0);
+
+        // 4. Pagination logic moved here
+        const totalPages = Math.ceil(todayOrders.length / ordersPerPage);
+        const currentOrders = todayOrders.slice(
+            (currentPage - 1) * ordersPerPage,
+            currentPage * ordersPerPage
+        );
+
+        return {
+            processedOrders: todayOrders, // Full list for today
+            currentOrders,               // Paginated list for table
+            totalPages,
+            stats: { 
+                revenue: revenue.toLocaleString(), 
+                count: todayOrders.length 
+            }
+        };
+    }, [allOrders, currentPage, ordersPerPage]);
+
+    // Helper to format time in Cairo
+    const formatCairoTime = (isoString) => {
+        if (!isoString) return "--:--";
+        return new Date(isoString).toLocaleTimeString('en-US', {
+            timeZone: 'Africa/Cairo',
+            hour: '2-digit', minute: '2-digit', hour12: true
+        });
     };
-}, [allOrders]);
 
-    // تأكد من إرجاع stats لتجنب إيرور undefined اللي في الصورة
-    return { ...results, loading }; 
+    return { ...results, loading, formatCairoTime }; 
 };
