@@ -1,6 +1,5 @@
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-// داتا وهمية لحد ما نربط بالباك اند
 const data = [
   { name: 'Mon', sales: 4000 },
   { name: 'Tue', sales: 3000 },

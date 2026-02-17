@@ -12,14 +12,14 @@ import ReservationsHeader from "../../components/userComponents/reservations/Res
 import EmptyReservations from "../../components/userComponents/reservations/EmptyReservations";
 import ReservationCard from "../../components/userComponents/reservations/ReservationCard";
 import BookingConfirmationView from "../../components/userComponents/reservations/BookingConfirmationView";
-import ReservationWidget from "../../components/userComponents/ReservationWidget"; // الويدجيت
+import ReservationWidget from "../../components/userComponents/ReservationWidget";
 
 export default function ReservationsPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuthuser();
 
-  // Booking Data (from Widget)
+  // Booking Data (from Widget navigation state)
   const bookingData = location.state?.reservationData;
 
   // --- State ---
@@ -39,14 +39,16 @@ export default function ReservationsPage() {
   } = useReservation();
 
   // --- Effects ---
-  // 1. Check Availability (Only if confirming)
+
+  // 1. Check Availability (Only if confirming a booking)
+  // This ensures the table is still free when the user lands on the confirmation screen
   useEffect(() => {
     if (bookingData) {
       checkAvailability(bookingData.date, bookingData.time, bookingData.guests);
     }
   }, [bookingData]);
 
-  // 2. Auto-select table
+  // 2. Auto-select the first available table
   useEffect(() => {
     if (availableTables.length > 0) {
       setTargetTable(availableTables[0]);
@@ -56,7 +58,8 @@ export default function ReservationsPage() {
   // 3. Fetch History (When switching to 'list' tab)
   useEffect(() => {
     const fetchMyReservations = async () => {
-      if (!user || activeTab !== "list") return; // Fetch only when tab is active
+      // Fetch only if user is logged in and tab is 'list'
+      if (!user || activeTab !== "list") return;
 
       setIsLoadingList(true);
       try {
@@ -73,9 +76,11 @@ export default function ReservationsPage() {
     };
 
     fetchMyReservations();
-  }, [user, activeTab]); // Run when tab changes
+  }, [user, activeTab]);
 
   // --- Handlers ---
+
+  // Confirm and Create Reservation
   const handleConfirmReservation = async () => {
     if (!user) {
       Swal.fire({
@@ -89,6 +94,7 @@ export default function ReservationsPage() {
           ? "#fff"
           : "#000",
       });
+      // Redirect to login, keeping the booking data to return later
       navigate("/login", {
         state: { from: "/reservations", reservationData: bookingData },
       });
@@ -118,9 +124,10 @@ export default function ReservationsPage() {
         confirmButtonColor: "#d39f4f",
       });
 
-      // After success, switch to list view
+      // After success, clear state and switch to history list
       navigate("/reservations", { replace: true, state: {} });
       setActiveTab("list");
+      // Optional: reload to refresh data
       window.location.reload();
     } catch (error) {
       Swal.fire("Error", "Booking failed", "error");
@@ -129,6 +136,7 @@ export default function ReservationsPage() {
     }
   };
 
+  // Helper: Calculate End Time (Start + 1 Hour)
   const calculateEndTime = (startTime) => {
     const [hours, minutes] = startTime.split(":").map(Number);
     const endHour = hours + 1;
@@ -136,11 +144,11 @@ export default function ReservationsPage() {
   };
 
   const handleCancelSuccess = () => {
-    // Reload list logic
+    // Reload page to refresh list after cancellation
     window.location.reload();
   };
 
-  // --- VIEW 1: CONFIRMATION MODE (If coming from widget with data) ---
+  // --- VIEW 1: CONFIRMATION MODE (If booking data exists) ---
   if (bookingData) {
     return (
       <BookingConfirmationView
@@ -174,14 +182,13 @@ export default function ReservationsPage() {
           Book a new table or manage your existing bookings
         </p>
 
-        {/* 2. TAB SWITCHER (The Chic Part) */}
+        {/* 2. TAB SWITCHER */}
         <div
           data-aos="fade-left"
           data-aos-duration="1000"
           className="mt-8 flex justify-center"
         >
           <div className="bg-gray-100 dark:bg-gray-800 p-1 rounded-full inline-flex relative">
-            {/* Active Tab Background Animation (Simple version: just conditional classes) */}
             <button
               onClick={() => setActiveTab("book")}
               className={`px-8 py-2 rounded-full text-sm font-bold transition-all duration-300 ${
@@ -211,12 +218,10 @@ export default function ReservationsPage() {
         {/* A) BOOK TAB CONTENT */}
         {activeTab === "book" && (
           <div className="max-w-4xl mx-auto animate-in fade-in zoom-in-95 duration-300">
-            {/* Wrap Widget in a clean container to fix margins */}
             <div className="pt-4">
               <ReservationWidget />
             </div>
 
-            {/* Helper Text */}
             <div className="text-center mt-8 text-gray-400 text-sm">
               <p>
                 Need help with a large party? Call us directly at (555) 123-4567

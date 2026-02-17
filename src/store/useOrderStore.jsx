@@ -65,12 +65,14 @@ const useOrderStore = create((set, get) => ({
     try {
       // Get the current cart state
       const currentCart = get().cart;
+
+      const cartTotal = currentCart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+
+      const orderTotal = orderDetails.finalTotal ? Number(orderDetails.finalTotal) : Number(cartTotal);
       
       // Prepare the payload structure expected by Strapi API
       const payload = {
         data: {
-          // Map cart items to the format required by 'order_items' field in database
-          // Note: We send names as text because we don't track inventory strictly
           items: currentCart.map((item) => ({
             product_name: item.isOffer ? `${item.name} (Offer)` : item.name, // Append (Offer) for clarity
             unit_price: Number(item.price), // Snapshot price at time of sale
@@ -78,12 +80,7 @@ const useOrderStore = create((set, get) => ({
           })),
 
           // Calculate total order value
-          total: Number(
-            currentCart.reduce(
-              (acc, item) => acc + item.price * item.quantity,
-              0
-            )
-          ),
+          total: orderTotal,
 
           // Add other order details from checkout modal
           pay_by: orderDetails.pay_by,

@@ -20,20 +20,7 @@ export default function ReservationWidget() {
   const [seating, setSeating] = useState("Indoor");
 
   // --- Custom Hook Logic ---
-  const { checkAvailability, loading } = useReservation();
-
-  // --- Generate Time Slots (From 1 PM to 11 PM) ---
-  const generateTimeSlots = () => {
-    const times = [];
-    for (let i = 13; i <= 23; i++) {
-      const hour = i < 10 ? `0${i}` : i;
-      times.push(`${hour}:00:00`);
-      times.push(`${hour}:30:00`);
-    }
-    return times;
-  };
-
-  const timeSlots = generateTimeSlots();
+  const { checkAvailability, loading, timeSlots } = useReservation();
 
   // --- Handle Submit ---
   const handleFindTable = async (e) => {
@@ -52,6 +39,15 @@ export default function ReservationWidget() {
         reservationData: { date, time, guests, seating },
       },
     });
+  };
+
+  const formatTime12H = (time24) => {
+    if (!time24) return "";
+    const [hours, minutes] = time24.split(':').map(Number);
+    const period = hours >= 12 ? 'PM' : 'AM';
+    const hours12 = hours % 12 || 12;
+    const strHours = hours12 < 10 ? `0${hours12}` : hours12;
+    return `${strHours}:${minutes < 10 ? '0' + minutes : minutes} ${period}`;
   };
 
   return (
@@ -107,12 +103,17 @@ export default function ReservationWidget() {
                 <option value="" disabled>
                   Select Time
                 </option>
-                {timeSlots.map((slot, index) => (
-                  <option key={index} value={slot}>
-                    {/* Display readable time (e.g. 13:00) */}
-                    {slot.slice(0, 5)}
-                  </option>
-                ))}
+
+                {timeSlots && timeSlots.length > 0 ? (
+                  timeSlots.map((slot, index) => (
+                    <option key={index} value={slot}>
+                      {formatTime12H(slot)}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>Loading hours...</option>
+                )}
+
               </select>
               <MdSchedule
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-primary pointer-events-none"

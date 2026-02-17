@@ -18,6 +18,7 @@ export default function CheckoutModal({
   const [tables, setTables] = useState([]);
   const [reservations, setReservations] = useState([]);
   const [selectedTable, setSelectedTable] = useState(null);
+  const [serviceFeePercent, setServiceFeePercent] = useState(0);
 
   // Reset on Close
   useEffect(() => {
@@ -29,10 +30,23 @@ export default function CheckoutModal({
     }
   }, [isOpen]);
 
-  // --- 1. Fetch Data ---
+  // --- 1. Fetch Settings (Once on Open) ---
+  useEffect(() => {
+    if (isOpen) {
+      axios
+        .get(`${domain}/api/restaurant-setting`)
+        .then((res) => {
+          const data = res.data.data?.attributes || res.data.data;
+          setServiceFeePercent(data?.serviceFee || 0);
+        })
+        .catch((err) => console.error("Settings Error:", err));
+    }
+  }, [isOpen]);
+
+  // --- 2. Fetch Tables (Only if Hall) ---
   useEffect(() => {
     if (isOpen && orderType === "hall") {
-      const fetchData = async () => {
+      const fetchTablesData = async () => {
         try {
           const tablesRes = await axios.get(`${domain}/api/tables?populate=*`);
           const today = new Date().toLocaleDateString("en-CA");
@@ -43,18 +57,26 @@ export default function CheckoutModal({
               populate: "table",
             },
           });
-
           setTables(tablesRes.data.data || []);
           setReservations(resRes.data.data || []);
         } catch (err) {
-          console.error("Error fetching data", err);
+          console.error("Tables Error:", err);
         }
       };
-      fetchData();
+      fetchTablesData();
     }
   }, [isOpen, orderType]);
 
-  // --- 2. Smart Logic ---
+  // --- Calculations ---
+  // حساب قيمة الخدمة فقط لو النوع صالة
+  const serviceAmount =
+    orderType === "hall" ? (totalPrice * serviceFeePercent) / 100 : 0;
+  const finalTotal = totalPrice + serviceAmount;
+
+  const change = amountPaid > 0 ? Number(amountPaid) - finalTotal : 0;
+  const isSufficient = Number(amountPaid) >= finalTotal;
+
+  // --- Table Status Logic ---
   const getTableStatus = (table) => {
     if (table.table_status === "Busy") return { status: "busy", label: "Busy" };
 
@@ -88,12 +110,17 @@ export default function CheckoutModal({
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "Please select a table!",
-        // colors adjust automatically or use custom logic if needed
+        text: "Please select a table!", background: document.documentElement.classList.contains("dark")
+          ? "#1e293b"
+          : "#fff",
+        color: document.documentElement.classList.contains("dark")
+          ? "#fff"
+          : "#000",
       });
       return;
     }
 
+    // Check-in Logic
     if (
       orderType === "hall" &&
       selectedTable?.statusInfo?.status === "reserved"
@@ -126,18 +153,16 @@ export default function CheckoutModal({
         table: selectedTable
           ? selectedTable.documentId || selectedTable.id
           : null,
+        serviceFee: serviceAmount,
+        finalTotal: finalTotal,
       });
     }
   };
-
-  const change = amountPaid > 0 ? Number(amountPaid) - totalPrice : 0;
-  const isSufficient = Number(amountPaid) >= totalPrice;
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-200 flex items-center justify-center bg-black/50 dark:bg-black/80 backdrop-blur-xl p-4 font-sans text-left animate-in fade-in duration-200">
-      {/* Modal Container: White in Light, Dark in Dark */}
       <div className="bg-white dark:bg-[#121212] w-full max-w-120 rounded-[2.5rem] px-8 py-6 border border-gray-200 dark:border-white/10 shadow-2xl relative overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
         <h2 className="text-xl font-black text-center text-gray-800 dark:text-white mb-6 tracking-widest uppercase italic border-b border-gray-100 dark:border-white/5 pb-4 shrink-0">
@@ -145,23 +170,40 @@ export default function CheckoutModal({
         </h2>
 
         <div className="space-y-4 overflow-y-auto pr-1 custom-scrollbar">
-          {/* Total Amount Card */}
-          <div className="w-full flex justify-between items-center bg-gray-50 dark:bg-black/40 p-5 rounded-[1.8rem] border border-gray-100 dark:border-white/5">
-            <div className="flex flex-col">
-              <span className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">
-                Total Payable
-              </span>
-              <h1 className="text-gray-900 dark:text-white font-bold text-sm">
-                Amount Due
-              </h1>
+          {/* Bill Breakdown */}
+          <div className="bg-gray-50 dark:bg-black/40 p-5 rounded-[1.8rem] border border-gray-100 dark:border-white/5 space-y-2">
+            <div className="flex justify-between text-xs text-gray-500 font-bold">
+              <span>Subtotal</span>
+              <span>{totalPrice.toFixed(2)}</span>
             </div>
-            <div className="text-right">
-              <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tighter italic">
-                {Number(totalPrice).toFixed(2)}
-                <small className="text-[#ff4500] text-xs ml-1 not-italic">
-                  EGP
-                </small>
-              </h1>
+
+            {/* Show Service Fee Row only if applicable */}
+            {orderType === "hall" && serviceFeePercent > 0 && (
+              <div className="flex justify-between text-xs text-orange-500 font-bold">
+                <span>Service Fee ({serviceFeePercent}%)</span>
+                <span>+ {serviceAmount.toFixed(2)}</span>
+              </div>
+            )}
+
+            <div className="border-t border-dashed border-gray-300 dark:border-gray-700 my-2"></div>
+
+            <div className="flex justify-between items-center">
+              <div className="flex flex-col">
+                <span className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">
+                  Total Payable
+                </span>
+                <h1 className="text-gray-900 dark:text-white font-bold text-sm">
+                  Amount Due
+                </h1>
+              </div>
+              <div className="text-right">
+                <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tighter italic">
+                  {Number(finalTotal).toFixed(2)}
+                  <small className="text-[#ff4500] text-xs ml-1 not-italic">
+                    EGP
+                  </small>
+                </h1>
+              </div>
             </div>
           </div>
 
@@ -187,7 +229,7 @@ export default function CheckoutModal({
             </div>
           </div>
 
-          {/* Table Selection Grid */}
+          {/* Table Selection Grid (Only Hall) */}
           {orderType === "hall" && (
             <div className="space-y-2 animate-in fade-in slide-in-from-top-4">
               <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase ml-2 tracking-widest flex justify-between">
@@ -211,23 +253,18 @@ export default function CheckoutModal({
                       .map((t) => {
                         const statusInfo = getTableStatus(t);
                         const isSelected = selectedTable?.id === t.id;
-
-                        // Style Config (Light/Dark)
                         let btnStyle =
-                          "border-gray-200 dark:border-white/5 bg-white dark:bg-[#1a1a1a] text-gray-400 dark:text-gray-400"; // Default
+                          "border-gray-200 dark:border-white/5 bg-white dark:bg-[#1a1a1a] text-gray-400 dark:text-gray-400";
 
                         if (statusInfo.status === "available")
                           btnStyle =
                             "border-green-200 dark:border-green-500/20 bg-green-50 dark:bg-green-500/5 text-green-600 dark:text-green-500 hover:bg-green-100 dark:hover:bg-green-500/10";
-
                         if (statusInfo.status === "reserved")
                           btnStyle =
                             "border-amber-200 dark:border-amber-500/20 bg-amber-50 dark:bg-amber-500/5 text-amber-600 dark:text-amber-500 hover:bg-amber-100 dark:hover:bg-amber-500/10";
-
                         if (statusInfo.status === "busy")
                           btnStyle =
                             "border-red-200 dark:border-red-500/20 bg-red-50 dark:bg-red-500/5 text-red-500 opacity-60 cursor-not-allowed";
-
                         if (isSelected)
                           btnStyle =
                             "bg-[#ff4500] text-white border-[#ff4500] shadow-lg shadow-[#ff4500]/20";
@@ -303,21 +340,13 @@ export default function CheckoutModal({
                 Change Due
               </p>
               <span
-                className={`text-[10px] font-black uppercase tracking-widest ${
-                  isSufficient
-                    ? "text-green-600 dark:text-[#00ff88]"
-                    : "text-red-500"
-                }`}
+                className={`text-[10px] font-black uppercase tracking-widest ${isSufficient ? "text-green-600 dark:text-[#00ff88]" : "text-red-500"}`}
               >
                 {isSufficient ? "Sufficient" : "Insufficient"}
               </span>
             </div>
             <div
-              className={`text-3xl font-black tracking-tighter ${
-                isSufficient
-                  ? "text-green-600 dark:text-[#00ff88]"
-                  : "text-red-500"
-              }`}
+              className={`text-3xl font-black tracking-tighter ${isSufficient ? "text-green-600 dark:text-[#00ff88]" : "text-red-500"}`}
             >
               {change.toFixed(2)}
               <small className="text-[11px] ml-1 opacity-60">EGP</small>
