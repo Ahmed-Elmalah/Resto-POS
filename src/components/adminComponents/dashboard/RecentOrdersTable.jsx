@@ -4,7 +4,7 @@ import { useDashboardData } from '../../../customHook/useDashboardData';
 
 export default function RecentOrdersTable() {
     const [currentPage, setCurrentPage] = useState(1);
-    const ordersPerPage = 6;
+    const ordersPerPage = 11;
     const navigate = useNavigate();
 
     // Pull paginated data and helpers from Hook

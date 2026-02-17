@@ -9,7 +9,7 @@ import Dashboard from "./pages/adminPage/Dashboard";
 import MenuPage from "./pages/adminPage/MenuPage";
 import LoginPage from "./pages/loginPage/LoginPage";
 import Register from "./pages/signUpPage/Register";
-import LandingPage from "./pages/userPage/LandingPage"; // استيراد اللاندنج بيدج
+import LandingPage from "./pages/userPage/LandingPage"; 
 import OrdersPage from "./pages/adminPage/OrdersPage";
 import TablesPage from "./pages/adminPage/TablesPage";
 import StaffPage from "./pages/adminPage/StaffPage";
