@@ -35,11 +35,6 @@ const LINKS = [
     label: "Offers",
     icon: <MdLocalOffer size={24} />,
   },
-  {
-    path: "/admin/settings",
-    label: "Settings",
-    icon: <MdSettings size={24} />,
-  },
 ];
 
 const SidebarLink = ({ path, label, icon, end, onClick }) => (
