@@ -3,56 +3,50 @@ import React, { useEffect, useState } from "react";
 import { domain } from "../../../store";
 import useAdminStore from "../../../store/useAdminStore";
 import { useNavigate } from "react-router-dom";
+import { MdNavigateNext } from "react-icons/md";
+import { GrFormPrevious } from "react-icons/gr";
 
 export default function OrderTable() {
-  const { filters, setFilters } = useAdminStore();
+  const { filters, setFilters, paginationMeta, setMeta } = useAdminStore();
   const navigate = useNavigate();
 
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    axios.get(`${domain}/api/orders?populate=*`).then((res) => {
-      const orders = res.data.data || [];
-      const sorted = orders.sort((a, b) => b.id - a.id);
-      setData(sorted);
+    const fetchOrders = async () => {
+      const queryParams = {
+        populate: "*",
+        sort: ["id:desc"],
+        "pagination[page]": filters.page,
+        "pagination[pageSize]": 10,
+        filters: {},
+      };
+      if (filters.searchTerm) {
+        queryParams["filters[$or][0][id][$contains]"] = filters.searchTerm;
+        queryParams["filters[$or][1][cashier][username][$containsi]"] =
+          filters.searchTerm;
+      }
 
-      const uniqueCashiers = [
-        ...new Set(
-          orders.map((order) => order.cashier?.username).filter(Boolean),
-        ),
-      ];
-      setFilters({ allCashiers: uniqueCashiers });
-    });
-  }, []);
+      if (filters.cashier !== "All") {
+        queryParams["filters[cashier][username][$eq]"] = filters.cashier;
+      }
 
-  const filteredData = data.filter((el) => {
-    const search = filters.searchTerm.toLowerCase();
+      if (filters.startDate) {
+        queryParams["filters[time][$gte]"] = filters.startDate.toISOString();
+      }
 
-    const matchesCashier =
-      !filters.cashier ||
-      filters.cashier === "All" ||
-      el.cashier?.username === filters.cashier;
+      try {
+        const res = await axios.get(`${domain}/api/orders`, {
+          params: queryParams,
+        });
 
-    const orderDate = new Date(el.time);
-    const start = filters.startDate
-      ? new Date(filters.startDate).setHours(0, 0, 0, 0)
-      : null;
-    const end = filters.endDate
-      ? new Date(filters.endDate).setHours(23, 59, 59, 999)
-      : null;
+        setData(res.data.data || []);
+        setMeta(res.data.meta.pagination);
+      } catch (err) {}
+    };
 
-    let matchesDate = true;
-    if (start && end) {
-      matchesDate = orderDate >= start && orderDate <= end;
-    } else if (start) {
-      matchesDate = orderDate >= start;
-    }
-    const matchesSearch =
-      el.id.toString().includes(search) ||
-      (el.cashier?.username || "").toLowerCase().includes(search);
-
-    return matchesSearch && matchesCashier && matchesDate;
-  });
+    fetchOrders();
+  }, [filters]);
 
   const formatDateTime = (isoString) => {
     if (!isoString) return "-";
@@ -94,7 +88,7 @@ export default function OrderTable() {
           </tr>
         </thead>
         <tbody className="divide-y  divide-slate-200 dark:divide-[#283039]">
-          {filteredData.map((el) => (
+          {data.map((el) => (
             <tr
               key={el.id}
               onClick={() => navigate(`/admin/orders/${el.documentId}`)}
@@ -129,7 +123,31 @@ export default function OrderTable() {
           ))}
         </tbody>
       </table>
-      {filteredData.length === 0 && (
+
+      {/* Pagination*/}
+      <div className="flex justify-start items-center gap-9 p-2">
+        <button
+          disabled={filters.page === 1}
+          onClick={() => setFilters({ page: filters.page - 1 })}
+          className="btn bg-[#101010] hover:bg-[#00000093] text-white border-none btn-md flex justify-center items-center gap-2 transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-lg"
+        >
+          <GrFormPrevious size={20} /> Previous
+        </button>
+
+        <span className="font-bold text-[17px]">
+          Page {filters.page} of {paginationMeta?.pageCount}
+        </span>
+
+        <button
+          disabled={filters.page >= (paginationMeta?.pageCount || 1)}
+          onClick={() => setFilters({ page: filters.page + 1 })}
+          className="btn bg-[#1D4ED8] hover:bg-[#1e40af] text-white border-none btn-md flex items-center justify-center gap-2 transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-lg"
+        >
+          Next <MdNavigateNext size={20} />
+        </button>
+      </div>
+
+      {data.length === 0 && (
         <div className="flex flex-col items-center justify-center py-20 bg-white dark:bg-transparent">
           <p className="text-slate-400 font-bold italic">
             No orders match your search...
