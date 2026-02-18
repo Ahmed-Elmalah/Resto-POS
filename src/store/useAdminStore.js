@@ -2,19 +2,22 @@ import axios from "axios";
 import { create } from "zustand";
 import { domain } from "../store";
 
-const useAdminStore = create((set , get) => ({
+const useAdminStore = create((set, get) => ({
   orders: [],
   filters: {
     status: "All",
     dateRange: "Last 30 Days",
     searchTerm: "",
     cashier: "All",
+    page: 1,
   },
+  paginationMeta: {},
 
   setFilters: (newFilters) =>
     set((state) => ({
-      filters: { ...state.filters, ...newFilters },
+      filters: { ...state.filters, ...newFilters, page: newFilters.page || 1 },
     })),
+  setMeta: (metaData) => set({ paginationMeta: metaData }),
 
   setSearchTerm: (term) =>
     set((state) => ({
@@ -31,34 +34,33 @@ const useAdminStore = create((set , get) => ({
   fetchOffers: async () => {
     set({ isLoadingOffers: true });
 
-    const token = localStorage.getItem("jwt-token") || sessionStorage.getItem("jwt-token");
+    const token =
+      localStorage.getItem("jwt-token") || sessionStorage.getItem("jwt-token");
 
     try {
       const res = await axios.get(`${domain}/api/offers?populate=*`);
-      
-      const fetchedOffers = res.data.data; 
+
+      const fetchedOffers = res.data.data;
 
       const getLocalDateString = () => {
         const d = new Date();
         const offset = d.getTimezoneOffset() * 60000;
-        return new Date(d.getTime() - offset).toISOString().split('T')[0];
+        return new Date(d.getTime() - offset).toISOString().split("T")[0];
       };
 
       const todayStr = getLocalDateString();
 
       const updatedOffersPromises = fetchedOffers.map(async (offer) => {
-        
         if (!offer.expiryDate) return offer;
         const isExpired = offer.expiryDate <= todayStr;
 
         if (isExpired && offer.isAvailable) {
-
           if (token) {
             try {
               await axios.put(
                 `${domain}/api/offers/${offer.documentId}`,
                 { data: { isAvailable: false } },
-                { headers: { Authorization: `Bearer ${token}` } }
+                { headers: { Authorization: `Bearer ${token}` } },
               );
             } catch (err) {
               console.error("❌ DB Update Failed:", err.message);
@@ -98,16 +100,23 @@ const useAdminStore = create((set , get) => ({
   createOffer: async (offerData) => {
     // 1. Validation: Check if Expiry Date is missing
     if (!offerData.expiryDate) {
-      return { success: false, error: { message: "Expiry Date is required! Please select a date." } };
+      return {
+        success: false,
+        error: { message: "Expiry Date is required! Please select a date." },
+      };
     }
 
     // 2. Validation: Check for Duplicate Name
     const isDuplicate = get().offers.some(
-      (offer) => offer.name.trim().toLowerCase() === offerData.name.trim().toLowerCase()
+      (offer) =>
+        offer.name.trim().toLowerCase() === offerData.name.trim().toLowerCase(),
     );
 
     if (isDuplicate) {
-      return { success: false, error: { message: "An offer with this name already exists!" } };
+      return {
+        success: false,
+        error: { message: "An offer with this name already exists!" },
+      };
     }
 
     try {
@@ -121,7 +130,10 @@ const useAdminStore = create((set , get) => ({
     } catch (error) {
       console.error("Create Offer Error:", error);
       // Return the error message from Strapi or a generic one
-      return { success: false, error: error.response?.data?.error || error.message };
+      return {
+        success: false,
+        error: error.response?.data?.error || error.message,
+      };
     }
   },
   deleteOffer: async (documentId) => {
@@ -164,7 +176,7 @@ const useAdminStore = create((set , get) => ({
     set({ isLoadingCurrentOffer: true, currentOffer: null });
     try {
       const res = await axios.get(
-        `${domain}/api/offers/${documentId}?populate[image][fields]=url&populate[offerItems][populate][product][fields]=name,price,documentId`
+        `${domain}/api/offers/${documentId}?populate[image][fields]=url&populate[offerItems][populate][product][fields]=name,price,documentId`,
       );
 
       set({
@@ -180,38 +192,38 @@ const useAdminStore = create((set , get) => ({
   },
 
   toggleItemAvailability: async (id, currentStatus, type = "product") => {
-    const endpoint = type === "offer" 
-      ? `${domain}/api/offers/${id}` 
-      : `${domain}/api/products/${id}`;
+    const endpoint =
+      type === "offer"
+        ? `${domain}/api/offers/${id}`
+        : `${domain}/api/products/${id}`;
 
-
-    const fieldName = "isAvailable" ; 
+    const fieldName = "isAvailable";
 
     try {
       await axios.put(endpoint, {
         data: {
-          [fieldName]: !currentStatus
-        }
+          [fieldName]: !currentStatus,
+        },
       });
-      
+
       set((state) => {
         if (type === "offer") {
-            return {
-                offers: state.offers.map(o => 
-                    o.documentId === id ? { ...o, [fieldName]: !currentStatus } : o
-                )
-            };
+          return {
+            offers: state.offers.map((o) =>
+              o.documentId === id ? { ...o, [fieldName]: !currentStatus } : o,
+            ),
+          };
         } else {
-            if (!state.products) return state;
+          if (!state.products) return state;
 
-            return {
-                products: state.products.map(p => 
-                    p.documentId === id ? { ...p, [fieldName]: !currentStatus } : p
-                )
-            };
+          return {
+            products: state.products.map((p) =>
+              p.documentId === id ? { ...p, [fieldName]: !currentStatus } : p,
+            ),
+          };
         }
       });
-      
+
       return { success: true };
     } catch (error) {
       console.error(`Error toggling ${type}:`, error);
