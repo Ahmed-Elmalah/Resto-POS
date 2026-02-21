@@ -125,11 +125,11 @@ export default function OrderTable() {
       </table>
 
       {/* Pagination*/}
-      <div className="flex justify-start items-center gap-9 p-2">
+      <div className="flex justify-start items-center gap-9 p-2 mt-6">
         <button
           disabled={filters.page === 1}
           onClick={() => setFilters({ page: filters.page - 1 })}
-          className="btn bg-[#101010] hover:bg-[#00000093] text-white border-none btn-md flex justify-center items-center gap-2 transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-lg"
+          className="cursor-pointer bg-[#101010] hover:bg-[#00000093] text-white flex justify-center items-center gap-2 transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-lg px-4 py-2 min-h-[2.5rem] h-[2.5rem] rounded-lg text-sm font-medium active:scale-95"
         >
           <GrFormPrevious size={20} /> Previous
         </button>
@@ -141,7 +141,7 @@ export default function OrderTable() {
         <button
           disabled={filters.page >= (paginationMeta?.pageCount || 1)}
           onClick={() => setFilters({ page: filters.page + 1 })}
-          className="btn bg-[#1D4ED8] hover:bg-[#1e40af] text-white border-none btn-md flex items-center justify-center gap-2 transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-lg"
+          className="cursor-pointer bg-[#1D4ED8] hover:bg-[#1e40af] text-white flex items-center justify-center gap-2 transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-lg px-5 h-10 rounded-lg text-sm font-semibold active:scale-[0.98] outline-none"
         >
           Next <MdNavigateNext size={20} />
         </button>
