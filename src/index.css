@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@plugin "daisyui";
 @theme {
   /* ألوان الـ Dark */
   --color-primary: #ec3713;
